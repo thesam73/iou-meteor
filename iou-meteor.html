@@ -32,8 +32,13 @@
 		  <option value="activity">Activity</option>
 		  <option value="car">Car</option>
 		</select>
-		Sam<input type="checkbox" id="sam" name="sam" value="Sam">
-		Marion<input type="checkbox" id="marion" name="marion" value="Marion">
+		<select id="payeur" name="payeur" >
+		  <option value="marion">Marion</option>
+		  <option value="sam">Sam</option>
+		  <option value="both">Both</option>
+		</select>
+<!--		Sam<input type="checkbox" id="sam" name="sam" value="Sam">
+		Marion<input type="checkbox" id="marion" name="marion" value="Marion">-->
 		Date<input type="date" id="timestamp">
 		<button type="button" id="submit" class="btn">Add</button>
 	</form>
@@ -44,16 +49,16 @@
 	<tr>
 	  <th>Amount</th>
 	  <th>Category</th> 
-	  <th>Sam</th>
-	  <th>Marion</th>
+	  <th>Payeur</th>
 	  <th>Date</th>
 	</tr>
 	{{#each depenses}}
 	<tr>
 		<td>$ {{amount}}</td>
 		<td>{{category}}</td>
-		<td><button type="button" class="btn sambtn">{{sam}}</button></td>
-		<td><button type="button" class="btn marionbtn">{{marion}}</button></td>
+		<td>{{payeur}}</td>
+<!--		<td><button type="button" class="btn sambtn">{{sam}}</button></td>
+		<td><button type="button" class="btn marionbtn">{{marion}}</button></td>-->
 		<td>{{timestamp}}</td>
 		<td><button type="button" class="btn update">Remove</button></td>
 	</tr>

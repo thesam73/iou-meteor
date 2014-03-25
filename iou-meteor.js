@@ -9,20 +9,42 @@ if (Meteor.isClient) {
   }
 
   Template.debt.samDebt = function(){
-    var Items = Depenses.find({sam: {$ne: true}});
-    var sum = 0;
-    Items.forEach(function(item){
-      sum += Math.round(item.amount);
+    var samItems = Depenses.find({payeur: 'sam'});
+    var samSum = 0;
+    samItems.forEach(function(item){
+      samSum += Math.round(item.amount);
     })
-    return sum/2;
+    var marionItems = Depenses.find({payeur: 'marion'});
+    var marionSum = 0;
+    marionItems.forEach(function(item){
+      marionSum += Math.round(item.amount);
+    })
+    var sum = marionSum-samSum;
+    if (sum < 0){
+    	return 0;
+    }
+    else {
+    	return sum/2;
+    }
   }
   Template.debt.marionDebt = function(){
-    var Items = Depenses.find({marion: {$ne: true}});
-    var sum = 0;
-    Items.forEach(function(item){
-      sum += Math.round(item.amount);
+    var samItems = Depenses.find({payeur: 'sam'});
+    var samSum = 0;
+    samItems.forEach(function(item){
+      samSum += Math.round(item.amount);
     })
-    return sum/2;
+    var marionItems = Depenses.find({payeur: 'marion'});
+    var marionSum = 0;
+    marionItems.forEach(function(item){
+      marionSum += Math.round(item.amount);
+    })
+    var sum = samSum-marionSum;
+    if (sum < 0){
+    	return 0;
+    }
+    else {
+    	return sum/2;
+    }
   }
   Template.entrydetail.isVisible = function(){
     if(Session.get('show_dialog')){
@@ -85,8 +107,9 @@ if (Meteor.isClient) {
         //submit the form
         var amount = document.getElementById('amount');
         var category = document.getElementById('category');
-        var sam = document.getElementById('sam');
-        var marion = document.getElementById('marion');
+        var payeur = document.getElementById('payeur');
+        //var sam = document.getElementById('sam');
+        //var marion = document.getElementById('marion');
         var date_html = document.getElementById('timestamp');
         var d = new Date();
         var curr_date = d.getDate();
@@ -101,8 +124,9 @@ if (Meteor.isClient) {
           Depenses.insert({
             amount: amount.value,
             category: category.value,
-            sam: sam.checked,
-            marion: marion.checked,
+            //sam: sam.checked,
+            //marion: marion.checked,
+            payeur: payeur.value,
             timestamp: date,
             time: Date()
           });
