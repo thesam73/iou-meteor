@@ -1,0 +1,101 @@
+<head>
+  <title>IOU</title>
+  <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700' rel='stylesheet' type='text/css'>
+</head>
+
+<body>
+  <div class="grid container">
+  	<div class="submit-form">
+  		<h2>Add a new depense</h2>
+  		{{> entryfield}}
+  	</div>
+  	<div class="debt">
+  		 <h2>Summary</h2>
+  		{{> debt}}
+  	</div>
+  	<div class="depenses-table">
+  		<h2>Historical</h2>
+  		{{> depenses}}
+	</div>
+  </div>
+</body>
+
+
+<template name="entryfield">
+	<form class="form-inline" id="new_entry">
+		<input type="text" id="amount" placeholder="Amout"/>
+		<select id="category" name="category" >
+		  <option value="rent">Rent</option>
+		  <option value="bills">Bills</option>
+		  <option value="food">Food</option>
+		  <option value="shopping">Shopping</option>
+		  <option value="activity">Activity</option>
+		  <option value="car">Car</option>
+		</select>
+		Sam<input type="checkbox" id="sam" name="sam" value="Sam">
+		Marion<input type="checkbox" id="marion" name="marion" value="Marion">
+		Date<input type="date" id="timestamp">
+		<button type="button" id="submit" class="btn">Add</button>
+	</form>
+</template>
+
+<template name="depenses">
+	{{> entrydetail}}
+	<tr>
+	  <th>Amount</th>
+	  <th>Category</th> 
+	  <th>Sam</th>
+	  <th>Marion</th>
+	  <th>Date</th>
+	</tr>
+	{{#each depenses}}
+	<tr>
+		<td>$ {{amount}}</td>
+		<td>{{category}}</td>
+		<td><button type="button" class="btn sambtn">{{sam}}</button></td>
+		<td><button type="button" class="btn marionbtn">{{marion}}</button></td>
+		<td>{{timestamp}}</td>
+		<td><button type="button" class="btn update">Remove</button></td>
+	</tr>
+	{{/each}}
+</template>
+
+<template name="debt">
+	<tr class="summary-name">
+	  <th>Sam</th>
+	  <th>Marion</th> 
+	</tr>
+	<tr class="summary-amount">
+		<td>$ {{samDebt}}</td>
+		<td>$ {{marionDebt}}</td>
+	</tr>
+</template>
+
+
+
+<template name="entrydetail">
+ {{#if isVisible}}
+ <form class="form-inline" id="update_entry">
+		<input type="text" id="update_amount" placeholder="Amout"/>{{update_amount}}
+		<input type="text" id="update_category" placeholder="Category"/>
+		<input type="checkbox" id="update_sam" name="sam" value="Sam">Sam
+		<input type="checkbox" id="update_marion" name="marion" value="Marion">Marion
+		<button type="button" id="update_submit" class="btn">Update</button>
+		<button type="button" id="update_remove" class="btn">Remove</button>
+</form>
+<!-- <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+ <div class="modal-header">
+  <a class="close" data-dismiss="modal">×</a>
+  <h3>This is a Modal Heading</h3>
+</div>
+<div class="modal-body" >
+  <h4>Text in a modal</h4>
+  <p>You can add some text here.</p>
+</div>
+<div class="modal-footer">
+  <a href="#" class="btn btn-success">Call to action</a>
+  <a href="#" class="btn" data-dismiss="modal">Close</a>
+</div>  
+</div> -->
+ {{/if}}
+</template>
