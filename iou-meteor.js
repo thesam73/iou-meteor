@@ -7,8 +7,7 @@ if (Meteor.isClient) {
   Template.depenses.depenses = function() {
     return Depenses.find({}, {sort: {timestamp: -1}});
   }
-
-  Template.debt.samDebt = function(){
+  Template.summary.amountDebt = function(){
     var samItems = Depenses.find({payeur: 'sam'});
     var samSum = 0;
     samItems.forEach(function(item){
@@ -21,13 +20,13 @@ if (Meteor.isClient) {
     })
     var sum = marionSum-samSum;
     if (sum < 0){
-    	return 0;
+      return -sum/2;
     }
     else {
-    	return sum/2;
+      return sum/2;
     }
   }
-  Template.debt.marionDebt = function(){
+  Template.summary.nameDebt = function(){
     var samItems = Depenses.find({payeur: 'sam'});
     var samSum = 0;
     samItems.forEach(function(item){
@@ -38,71 +37,36 @@ if (Meteor.isClient) {
     marionItems.forEach(function(item){
       marionSum += Math.round(item.amount);
     })
-    var sum = samSum-marionSum;
+    var sum = marionSum-samSum;
     if (sum < 0){
-    	return 0;
+      return "Marion";
     }
     else {
-    	return sum/2;
+      return "Sam";
     }
   }
-  Template.entrydetail.isVisible = function(){
-    if(Session.get('show_dialog')){
-        return true;
-    } else {
-        return false;
-    }
-  }
-
-  Template.depenses.events = {
-    'click .sambtn': function(){
-      var c = confirm("Update depense?");
+  Template.summary.events = {
+    'click #updatedebt': function(){
+      var c = confirm("Reset debt?");
       if (c == true) {
-        //console.log(!this.sam);
-        var value = !this.sam;
-        Depenses.update(this._id, { $set:{"sam": value}});
+        var Items = Depenses.find({payeur: { $ne: 'both' }});
+        Items.forEach(function(item){
+          Depenses.update(item._id, { $set:{"payeur": "both"}});
+        })
       };
-    },
-    'click .marionbtn': function(){
-      var c = confirm("Update depense?");
-      if (c == true)  {
-        //console.log(!this.marion);
-        var value = !this.marion;
-        Depenses.update(this._id, { $set:{"marion": value}});
-      };
-    },
-    'click button.update': function(){
+    }
+  }
+  Template.depenses.events = {
+    'click button.remove': function(){
       var c = confirm("Delete depense?");
         if (c == true) {
-          //console.log(this._id);
-          //confirm("Would you like to delete this element");
           Depenses.remove(this._id);
         };
     }
   }
   
   Template.entryfield.events = {
-    // "keydown #depense": function(event) {
-    //   if (event.which == 13) {
-    //     //submit the form
-    //     var amount = document.getElementById('amount');
-    //     var category = document.getElementById('category');
-    //     //var sam = document.getElementById('sam');
-    //     //var marion = document.getElementById('category');
 
-    //     if (amount.value != '' && category.value != '') {
-    //       Depenses.insert({
-    //         amount: amount.value,
-    //         category: category.value,
-    //         //sam: sam.checked,
-    //         //marion: marion.checked,
-    //         time: Date.Now()
-    //       });
-    //       amount.value = '';
-    //       category.value = '';
-    //     };
-    //   }
-    // }
     'click #submit': function(){
         //submit the form
         var amount = document.getElementById('amount');

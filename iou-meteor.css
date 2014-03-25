@@ -1,4 +1,128 @@
 /* CSS declarations go here */
+html {
+	background-color: #DDD;
+}
+body {
+	margin: 0;
+}
+html, button, input, textarea, select {
+	font-family: 'Source Sans Pro', "Helvetica Neue", Helvetica, Arial, sans-serif;
+	-webkit-font-smoothing: antialiased;
+	font-size: 18px;
+	line-height: 22px;
+	color: #313140;
+}
+
+.menu {
+	background-color: #FFF;
+	margin: 0;
+	width: 100%;
+	min-height: 45px;
+	border-bottom: 1px solid #BEBEBE;
+}
+.menu__title {
+	margin:0px auto;
+	text-align:center;
+}
+.menu__title h1 {
+	margin: 0;
+	padding: 10px 5px;
+}
+.submit {
+	margin-top: 20px;
+	width: 100%;
+}
+.submit__form {
+	margin:0px auto;
+	text-align:center;
+}
+.summary{
+	background-color: #FFF;
+	margin-top: 20px;
+	width: 100%;
+	border-top: 1px solid #BEBEBE;
+	border-bottom: 1px solid #BEBEBE;
+}
+.summary__block {
+	margin: 1.5em auto;
+	text-align:center;
+}
+.summary--amount {
+	font-size: 3em
+}
+a, .pseudo-link {
+	color: #6064AD;
+	cursor: pointer;
+	text-decoration: none;
+}
+a.btn:hover, .pseudo-link:hover {
+	color: #4A4E90;
+	text-decoration: underline;
+}
+a.btn:active {
+	box-shadow: #6064ad 0 0 0 3em inset;
+	color: #ffffff;
+}
+a.btn {
+	font-size: 20px;
+	text-transform:lowercase;
+	line-height: 20px;
+	line-height: 1.5em !important;
+	padding: .375em .75em;
+	font-weight: 600;
+	border-radius: 3px;
+	display: inline-block;
+	position: relative;
+	text-align: center;
+	text-decoration: none !important;
+	white-space: nowrap;
+	box-shadow: #6064AD 0 0 0 1px inset;
+	color: #6064AD;
+	-webkit-transition: -webkit-box-shadow 100ms ease-in-out, color 300ms ease-in;
+	-moz-transition: -moz-box-shadow 100ms ease-in-out, color 300ms ease-in;
+	-o-transition: box-shadow 100ms ease-in-out, color 300ms ease-in;
+	transition: box-shadow 100ms ease-in-out, color 300ms ease-in;
+}
+a#submit {
+	margin-top: 5px;
+	padding: .375em 6em;
+}
+a#updatedebt {
+	/*padding: 1em 6em;*/
+	width: 85%;
+}
+a#updatedebt {
+	box-shadow: #6064ad 0 0 0 5em inset;
+	color: #ffffff;
+}
+a#updatedebt:active {
+	box-shadow: #6064AD 0 0 0 1px inset;
+	color: #6064AD;
+}
+#amount, #category, #payeur, #timestamp {
+	text-align:center; 
+	height: 2em;
+	margin: 0.2em 0.1em;
+}
+.money {
+	font-family: 'Source Code Pro';
+}
+
+h2 {
+	font-weight: 300;
+	margin: 0;
+	font-size: 2em;
+	padding-bottom: 0.7em;
+}
+
+
+
+
+
+
+
+
+
 .grid {
 	margin-right: auto;
 	margin-left: auto;
@@ -46,33 +170,14 @@
 	font-weight: 700;
 	font-size: 1.3em;
 }
-body {
-	
-}
 
-html, button, input, textarea, select {
-	font-family: 'Source Sans Pro', "Helvetica Neue", Helvetica, Arial, sans-serif;
-	-webkit-font-smoothing: antialiased;
-	font-size: 18px;
-	line-height: 22px;
-	color: #313140;
-}
 
-h2 {
-	font-weight: 300;
-	margin: 0;
-	padding-bottom: 15px;
-}
 
-html {
-	background-color: #DDD;
-}
 
-a, .pseudo-link {
-color: #6064AD;
-cursor: pointer;
-text-decoration: none;
-}
+
+
+
+
 tr {
 	margin: 5px 10px;
 }
