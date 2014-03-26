@@ -7,7 +7,118 @@ if (Meteor.isClient) {
   Template.depenses.depenses = function() {
     return Depenses.find({}, {sort: {timestamp: -1}});
   }
-  Template.summary.amountDebt = function(){
+
+  Template.summary.totalAmount = function() {
+    var Items = Depenses.find();
+    var total = 0;
+    Items.forEach(function(item){
+          total += Math.round(item.amount);
+    });
+    return total;
+  }
+  Template.summary.rentratio = function() {
+    var selectItems = Depenses.find({category: 'rent'}).count();
+    var allItems = Depenses.find().count();
+    if (selectItems == 0) {return 0;}
+    else if (allItems != 0) {
+      var ratio = selectItems / allItems * 100;
+      return ratio;
+    }
+  }
+  Template.summary.rentAmount = function() {
+    var Items = Depenses.find({category: 'rent'});
+    var total = 0;
+    Items.forEach(function(item){
+          total += Math.round(item.amount);
+    });
+    return total;
+  }
+  Template.summary.billsratio = function() {
+    var selectItems = Depenses.find({category: 'bills'}).count();
+    var allItems = Depenses.find().count();
+    if (selectItems == 0) {return 0;}
+    else if (allItems != 0) {
+      var ratio = selectItems / allItems * 100;
+      return ratio;
+    }
+  }
+  Template.summary.billsAmount = function() {
+    var Items = Depenses.find({category: 'bills'});
+    var total = 0;
+    Items.forEach(function(item){
+          total += Math.round(item.amount);
+    });
+    return total;
+  }
+  Template.summary.foodratio = function() {
+    var selectItems = Depenses.find({category: 'food'}).count();
+    var allItems = Depenses.find().count();
+    if (selectItems == 0) {return 0;}
+    else if (allItems != 0) {
+      var ratio = selectItems / allItems * 100;
+      return ratio;
+    }
+  }
+  Template.summary.foodAmount = function() {
+    var Items = Depenses.find({category: 'food'});
+    var total = 0;
+    Items.forEach(function(item){
+          total += Math.round(item.amount);
+    });
+    return total;
+  }
+  Template.summary.shoppingratio = function() {
+    var selectItems = Depenses.find({category: 'shopping'}).count();
+    var allItems = Depenses.find().count();
+    if (selectItems == 0) {return 0;}
+    else if (allItems != 0) {
+      var ratio = selectItems / allItems * 100;
+      return ratio;
+    }
+  }
+  Template.summary.shoppingAmount = function() {
+    var Items = Depenses.find({category: 'shopping'});
+    var total = 0;
+    Items.forEach(function(item){
+          total += Math.round(item.amount);
+    });
+    return total;
+  }
+  Template.summary.activityratio = function() {
+    var selectItems = Depenses.find({category: 'activity'}).count();
+    var allItems = Depenses.find().count();
+    if (selectItems == 0) {return 0;}
+    else if (allItems != 0) {
+      var ratio = selectItems / allItems * 100;
+      return ratio;
+    }
+  }
+  Template.summary.activityAmount = function() {
+    var Items = Depenses.find({category: 'activity'});
+    var total = 0;
+    Items.forEach(function(item){
+          total += Math.round(item.amount);
+    });
+    return total;
+  }
+  Template.summary.carratio = function() {
+    var selectItems = Depenses.find({category: 'car'}).count();
+    var allItems = Depenses.find().count();
+    if (selectItems == 0) {return 0;}
+    else if (allItems != 0) {
+      var ratio = selectItems / allItems * 100;
+      return ratio;
+    }
+  }
+  Template.summary.carAmount = function() {
+    var Items = Depenses.find({category: 'car'});
+    var total = 0;
+    Items.forEach(function(item){
+          total += Math.round(item.amount);
+    });
+    return total;
+  }
+  Template.action.amountDebt = function(){
     var samItems = Depenses.find({payeur: 'sam'});
     var samSum = 0;
     samItems.forEach(function(item){
@@ -26,7 +137,7 @@ if (Meteor.isClient) {
       return sum/2;
     }
   }
-  Template.summary.nameDebt = function(){
+  Template.action.nameDebt = function(){
     var samItems = Depenses.find({payeur: 'sam'});
     var samSum = 0;
     samItems.forEach(function(item){
@@ -45,7 +156,7 @@ if (Meteor.isClient) {
       return "Sam";
     }
   }
-  Template.summary.events = {
+  Template.action.events = {
     'click #updatedebt': function(){
       var c = confirm("Reset debt?");
       if (c == true) {

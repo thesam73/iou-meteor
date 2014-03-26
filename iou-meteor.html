@@ -1,5 +1,6 @@
 <head>
   <title>IOU</title>
+  <meta name="viewport" content="initial-scale=1.0" />
   <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700' rel='stylesheet' type='text/css'>
   <link href='http://fonts.googleapis.com/css?family=Source+Code+Pro:300,400,700' rel='stylesheet' type='text/css'>
 </head>
@@ -15,6 +16,11 @@
   		{{> entryfield}}
   	</div>
   </div>
+  <div class="action">
+  	<div class="action__block">
+  		{{> action}}
+  	</div>
+  </div>
   <div class="summary">
   	<div class="summary__block">
   		{{> summary}}
@@ -22,10 +28,10 @@
   </div>
   
 
-  	<div class="depenses-table">
+   	<div class="depenses-table">
   		<h2>Historical</h2>
   		{{> depenses}}
-	</div>
+	</div> 
 </body>
 
 
@@ -77,13 +83,46 @@
 
 
 
-<template name="summary">
+<template name="action">
 	<a id="updatedebt" class="btn">
 		<h2>{{nameDebt}}</h2>
-		<span class="summary--amount money">$ {{amountDebt}}</span>
+		<span class="action--amount money">$ {{amountDebt}}</span>
 	</a>
 </template>
 
+<template name="summary">
+	<span class="summary__bar class__rent" style="width: {{rentratio}}%"></span><span class="summary__bar class__bills" style="width: {{billsratio}}%"></span><span class="summary__bar class__food" style="width: {{foodratio}}%"></span><span class="summary__bar class__shopping" style="width: {{shoppingratio}}%"></span><span class="summary__bar class__activity" style="width: {{activityratio}}%"></span><span class="summary__bar class__car" style="width: {{carratio}}%"></span>
+	<table class="summary__table">
+	<tr class="table__total">
+		<td>Total: </td>
+		<td>$ {{totalAmount}}</td>
+	</tr>
+	<tr class="table__rent">
+		<td>Rent: </td>
+		<td>$ {{rentAmount}}</td>
+	</tr>
+	<tr class="table__bills">
+		<td>Bills: </td>
+		<td>$ {{billsAmount}}</td>
+	</tr>
+	<tr class="table__food">
+		<td>Food: </td>
+		<td>$ {{foodAmount}}</td>
+	</tr>
+	<tr class="table__shopping">
+		<td>Shopping: </td>
+		<td>$ {{shoppingAmount}}</td>
+	</tr>
+	<tr class="table__activity">
+		<td>Activity: </td>
+		<td>$ {{activityAmount}}</td>
+	</tr>
+	<tr class="table__car">
+		<td>Car: </td>
+		<td>$ {{carAmount}}</td>
+	</tr>
+	</table>
+</template>
 
 <template name="entrydetail">
  {{#if isVisible}}
