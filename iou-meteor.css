@@ -74,11 +74,35 @@ html, button, input, textarea, select {
 	font-size: 1.2em;
 	font-weight: 700;
 }
+.summary__table tr {
+	margin: 5px 10px;
+}
+.summary__table th {
+	padding: 10px 25px;
+}
+.summary__table td {
+	padding: 2px 25px;
+}
 .summary__bar {
 	display: inline-block;
 	height: 3em;
 }
-
+.depenses{
+	background-color: #FFF;
+	margin-top: 20px;
+	width: 100%;
+	border-top: 1px solid #BEBEBE;
+	border-bottom: 1px solid #BEBEBE;
+}
+.depenses__block {
+	margin: 1.5em auto;
+	text-align:center;
+}
+.depenses__table {
+	margin: 1.5em auto;
+	text-align:center;
+	width: 95%;
+}
 .class__rent {
 	background-color: #7f8c8d;
 }
@@ -181,75 +205,3 @@ h2 {
 	padding-bottom: 0.7em;
 }
 
-
-
-
-
-
-
-
-
-.grid {
-	margin-right: auto;
-	margin-left: auto;
-}
-
-.container {
-	margin-top: 50px;
-	width: 900px;
-}
-
-.grid:after {
-  content: "";
-  display: table;
-  clear: both;
-}
-
-*, *:after, *:before {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-}
-
-.depenses-table {
-	margin-top: 10px;
-}
-.submit-form {
-}
-.debt {
-	margin-top: 10px;
-	margin-right: auto;
-	margin-left: auto;
-	width: 50%;
-}
-
-.depenses-table, .submit-form, .debt {
-	background-color: #FFF;
-	padding: 25px 50px;
-}
-
-.action-name th {
-	font-weight: 300;
-	font-size: 1.3em;
-}
-.action-amount {
-	font-weight: 700;
-	font-size: 1.3em;
-}
-
-
-
-
-
-
-
-
-tr {
-	margin: 5px 10px;
-}
-th {
-	padding: 10px 25px;
-}
-td {
-	padding: 2px 25px;
-}

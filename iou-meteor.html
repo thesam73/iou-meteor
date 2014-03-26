@@ -26,12 +26,11 @@
   		{{> summary}}
   	</div>
   </div>
-  
-
-   	<div class="depenses-table">
-  		<h2>Historical</h2>
-  		{{> depenses}}
-	</div> 
+  	<div class="depenses">
+  		<div class="depenses__block">
+  			{{> depenses}}
+  		</div>
+	</div>
 </body>
 
 
@@ -63,12 +62,13 @@
 </template>
 
 <template name="depenses">
-	{{> entrydetail}}
+	<table class="depenses__table">
 	<tr>
 	  <th>Amount</th>
 	  <th>Category</th> 
 	  <th>Payeur</th>
 	  <th>Date</th>
+	  <th>Remove</th>
 	</tr>
 	{{#each depenses}}
 	<tr>
@@ -79,6 +79,7 @@
 		<td><button type="button" class="btn remove">Remove</button></td>
 	</tr>
 	{{/each}}
+	</table>
 </template>
 
 
