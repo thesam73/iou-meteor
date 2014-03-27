@@ -37,8 +37,8 @@
 <template name="entryfield">
 	<form id="new_entry">
 		<div class="submit__form__row">
-			<input type="text" id="amount" placeholder="Amout"/>
-			<select id="category" name="category" >
+			<input class="input__amount" type="number" id="amount" placeholder="$"/>
+			<select class="select__category" id="category" name="category" >
 			  <option value="rent">Rent</option>
 			  <option value="bills">Bills</option>
 			  <option value="food">Food</option>
@@ -46,14 +46,12 @@
 			  <option value="activity">Activity</option>
 			  <option value="car">Car</option>
 			</select>
-		</div>
-		<div class="submit__form__row">
-			<select id="payeur" name="payeur" >
+			<select class="select__payeur" id="payeur" name="payeur" >
 			  <option value="marion">Marion</option>
 			  <option value="sam">Sam</option>
 			  <option value="both">Both</option>
 			</select>
-			<input type="date" id="timestamp">
+			<input class="input__date" type="date" id="timestamp">
 		</div>
 		<div class="submit__form__row">
 			<a id="submit" class="btn" href="#">Submit</a>
@@ -66,17 +64,15 @@
 	<tr>
 	  <th>Amount</th>
 	  <th>Category</th> 
-	  <th>Payeur</th>
 	  <th>Date</th>
-	  <th>Remove</th>
+	  <th>X</th>
 	</tr>
 	{{#each depenses}}
 	<tr>
 		<td>$ {{amount}}</td>
 		<td>{{category}}</td>
-		<td>{{payeur}}</td>
 		<td>{{timestamp}}</td>
-		<td><button type="button" class="btn remove">Remove</button></td>
+		<td><button type="button" class="btn remove">X</button></td>
 	</tr>
 	{{/each}}
 	</table>

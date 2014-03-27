@@ -1,5 +1,28 @@
 Depenses = new Meteor.Collection('depenses');
 
+function totalCat(Items) {
+    var total = 0;
+    Items.forEach(function(item){
+          total += Math.round(item.amount);
+    });
+    return total;
+}
+function ratioCat(allItems, selectedItems) {
+  var ratio = 0; 
+  var totalForCat = 0;
+  var total = 0;
+  allItems.forEach(function(item){
+          total += Math.round(item.amount);
+  });
+  selectedItems.forEach(function(item){
+          totalForCat += Math.round(item.amount);
+  });
+  if (totalForCat == 0) {return 0;}
+  else if (total != 0) {
+    var ratio = totalForCat / total * 100;
+    return ratio;
+  }
+}
 
 if (Meteor.isClient) {
   Session.set('show_dialog', false);
@@ -7,117 +30,52 @@ if (Meteor.isClient) {
   Template.depenses.depenses = function() {
     return Depenses.find({}, {sort: {timestamp: -1}});
   }
-
   Template.summary.totalAmount = function() {
-    var Items = Depenses.find();
-    var total = 0;
-    Items.forEach(function(item){
-          total += Math.round(item.amount);
-    });
-    return total;
-  }
-  Template.summary.rentratio = function() {
-    var selectItems = Depenses.find({category: 'rent'}).count();
-    var allItems = Depenses.find().count();
-    if (selectItems == 0) {return 0;}
-    else if (allItems != 0) {
-      var ratio = selectItems / allItems * 100;
-      return ratio;
-    }
+    return totalCat(Depenses.find());
   }
   Template.summary.rentAmount = function() {
-    var Items = Depenses.find({category: 'rent'});
-    var total = 0;
-    Items.forEach(function(item){
-          total += Math.round(item.amount);
-    });
-    return total;
-  }
-  Template.summary.billsratio = function() {
-    var selectItems = Depenses.find({category: 'bills'}).count();
-    var allItems = Depenses.find().count();
-    if (selectItems == 0) {return 0;}
-    else if (allItems != 0) {
-      var ratio = selectItems / allItems * 100;
-      return ratio;
-    }
+    return totalCat(Depenses.find({category: 'rent'}));
   }
   Template.summary.billsAmount = function() {
-    var Items = Depenses.find({category: 'bills'});
-    var total = 0;
-    Items.forEach(function(item){
-          total += Math.round(item.amount);
-    });
-    return total;
-  }
-  Template.summary.foodratio = function() {
-    var selectItems = Depenses.find({category: 'food'}).count();
-    var allItems = Depenses.find().count();
-    if (selectItems == 0) {return 0;}
-    else if (allItems != 0) {
-      var ratio = selectItems / allItems * 100;
-      return ratio;
-    }
+    return totalCat(Depenses.find({category: 'bills'}));
   }
   Template.summary.foodAmount = function() {
-    var Items = Depenses.find({category: 'food'});
-    var total = 0;
-    Items.forEach(function(item){
-          total += Math.round(item.amount);
-    });
-    return total;
-  }
-  Template.summary.shoppingratio = function() {
-    var selectItems = Depenses.find({category: 'shopping'}).count();
-    var allItems = Depenses.find().count();
-    if (selectItems == 0) {return 0;}
-    else if (allItems != 0) {
-      var ratio = selectItems / allItems * 100;
-      return ratio;
-    }
+    return totalCat(Depenses.find({category: 'food'}));
   }
   Template.summary.shoppingAmount = function() {
-    var Items = Depenses.find({category: 'shopping'});
-    var total = 0;
-    Items.forEach(function(item){
-          total += Math.round(item.amount);
-    });
-    return total;
-  }
-  Template.summary.activityratio = function() {
-    var selectItems = Depenses.find({category: 'activity'}).count();
-    var allItems = Depenses.find().count();
-    if (selectItems == 0) {return 0;}
-    else if (allItems != 0) {
-      var ratio = selectItems / allItems * 100;
-      return ratio;
-    }
+    return totalCat(Depenses.find({category: 'shopping'}));
   }
   Template.summary.activityAmount = function() {
-    var Items = Depenses.find({category: 'activity'});
-    var total = 0;
-    Items.forEach(function(item){
-          total += Math.round(item.amount);
-    });
-    return total;
-  }
-  Template.summary.carratio = function() {
-    var selectItems = Depenses.find({category: 'car'}).count();
-    var allItems = Depenses.find().count();
-    if (selectItems == 0) {return 0;}
-    else if (allItems != 0) {
-      var ratio = selectItems / allItems * 100;
-      return ratio;
-    }
+    return totalCat(Depenses.find({category: 'activity'}));
   }
   Template.summary.carAmount = function() {
-    var Items = Depenses.find({category: 'car'});
-    var total = 0;
-    Items.forEach(function(item){
-          total += Math.round(item.amount);
-    });
-    return total;
+    return totalCat(Depenses.find({category: 'car'}));
   }
+
+  Template.summary.rentratio = function() {
+    return ratioCat(Depenses.find(), Depenses.find({category: 'rent'}));
+  }
+  
+  Template.summary.billsratio = function() {
+    return ratioCat(Depenses.find(), Depenses.find({category: 'bills'}));
+  }
+  
+  Template.summary.foodratio = function() {
+    return ratioCat(Depenses.find(), Depenses.find({category: 'food'}));
+  }
+
+  Template.summary.shoppingratio = function() {
+    return ratioCat(Depenses.find(), Depenses.find({category: 'shopping'}));
+  }
+  
+  Template.summary.activityratio = function() {
+    return ratioCat(Depenses.find(), Depenses.find({category: 'activity'}));
+  }
+
+  Template.summary.carratio = function() {
+    return ratioCat(Depenses.find(), Depenses.find({category: 'car'}));
+  }
+  
   Template.action.amountDebt = function(){
     var samItems = Depenses.find({payeur: 'sam'});
     var samSum = 0;

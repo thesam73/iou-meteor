@@ -35,7 +35,12 @@ html, button, input, textarea, select {
 .submit__form {
 	margin:0px auto;
 	text-align:center;
+	width: 85%;
 }
+.submit__form__row {
+
+}
+
 .action{
 	background-color: #FFF;
 	margin-top: 20px;
@@ -140,6 +145,25 @@ html, button, input, textarea, select {
 .table__car {
 	color: #34495e;
 }
+button.remove {
+	background-color: rgba(231, 76, 60, 0);
+	background-image: none;
+	border: 2px solid #e74c3c;
+	color: #e74c3c;
+	text-transform:lowercase;
+	border-radius: 3px;
+	cursor: pointer;
+	font-weight: 700;
+}
+button.remove:hover {
+	border: 2px solid #c0392b;
+	color: #c0392b;
+	background-color: rgba(231, 76, 60, 0.2);
+}
+button.remove:active {
+	background-color: rgba(231, 76, 60, 0.5);
+}
+
 a, .pseudo-link {
 	color: #6064AD;
 	cursor: pointer;
@@ -166,7 +190,7 @@ a.btn {
 	text-align: center;
 	text-decoration: none !important;
 	white-space: nowrap;
-	box-shadow: #6064AD 0 0 0 1px inset;
+	box-shadow: #6064AD 0 0 0 2px inset;
 	color: #6064AD;
 	-webkit-transition: -webkit-box-shadow 100ms ease-in-out, color 300ms ease-in;
 	-moz-transition: -moz-box-shadow 100ms ease-in-out, color 300ms ease-in;
@@ -189,11 +213,29 @@ a#updatedebt:active {
 	box-shadow: #6064AD 0 0 0 1px inset;
 	color: #6064AD;
 }
+input, select {
+	border: none;
+}
 #amount, #category, #payeur, #timestamp {
 	text-align:center; 
 	height: 2em;
-	margin: 0.2em 0.1em;
+	margin: 0.1em 0;
+	padding: 0;
+	background-image: none;
+	vertical-align: bottom;
+	color: black;
+	background-color: white;
+	border: 1px solid #95a5a6;
 }
+
+.input__amount, .input__date {
+	width: 18%;
+}
+.select__category, .select__payeur {
+	width: 27%;
+	height: 2.1em!important;
+}
+
 .money {
 	font-family: 'Source Code Pro';
 }
