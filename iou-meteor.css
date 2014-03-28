@@ -359,7 +359,7 @@ h2 {
   margin-top: -10em;
   margin-left: -50%;
 }
-#section__current {
+#section__current, #section__stats {
   	margin-bottom: 40px;
 }
 @media screen and (max-width: 52.375em) {

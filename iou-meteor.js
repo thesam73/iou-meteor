@@ -75,7 +75,7 @@ function drawChart(){
           //This will get the first returned node in the jQuery collection.
           var myNewChart = new Chart(ctx);
         
-          new Chart(ctx).Pie(data);
+          new Chart(ctx).Doughnut(data);
           
 }
 if (Meteor.isClient) {
