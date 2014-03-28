@@ -93,7 +93,7 @@ html, button, input, textarea, select {
 .summary__table tr td:first-child{
 	text-align: right;
 	font-size: 1.2em;
-	color: #313140!important;
+/*	color: #313140!important;*/
 }
 .summary__table tr td:last-child{
 	text-align: left;
@@ -107,18 +107,18 @@ html, button, input, textarea, select {
 	padding: 10px 25px;
 }
 .summary__table td {
-	padding: 2px 25px;
+	padding: 4px 25px;
 }
 .summary__bar {
 	display: inline-block;
 	height: 3em;
 }
 .depenses{
-	background-color: #FFF;
-/*	margin-top: 20px;*/
 	width: 100%;
+/*	background-color: #FFF;
+	margin-top: 20px;
 	border-top: 1px solid #BEBEBE;
-	border-bottom: 1px solid #BEBEBE;
+	border-bottom: 1px solid #BEBEBE;*/
 }
 .depenses__block {
 	margin: 1.5em auto;
@@ -350,7 +350,11 @@ h2 {
 .content section:after {
     clear: both;
 }
+td:before {
+margin-right: 10px;
+vertical-align: bottom;
 
+ }
 
 #section__add {
   position: fixed;
@@ -360,7 +364,7 @@ h2 {
   margin-left: -50%;
 }
 #section__current, #section__stats {
-  	margin-bottom: 40px;
+  	margin-bottom: 80px;
 }
 @media screen and (max-width: 52.375em) {
 	.tabs nav a span {
