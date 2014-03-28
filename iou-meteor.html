@@ -1,38 +1,51 @@
 <head>
   <title>IOU</title>
   <meta name="viewport" content="initial-scale=1.0" />
+  <link rel="stylesheet" href="/css/font-outline.css">
   <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700' rel='stylesheet' type='text/css'>
   <link href='http://fonts.googleapis.com/css?family=Source+Code+Pro:300,400,700' rel='stylesheet' type='text/css'>
 </head>
 
 <body>
-  <div class="menu">
-  	<div class="menu__title">
-  		<h1>I O U</h1>
-  	</div>
-  </div>
-  <div class="submit">
-  	<div class="submit__form">
-  		{{> entryfield}}
-  	</div>
-  </div>
-  <div class="action">
-  	<div class="action__block">
-  		{{> action}}
-  	</div>
-  </div>
-  <div class="summary">
-  	<div class="summary__block">
-  		{{> summary}}
-  	</div>
-  </div>
-  	<div class="depenses">
-  		<div class="depenses__block">
-  			{{> depenses}}
-  		</div>
+	<div id="tabs" class="tabs">
+	 	{{> navmenu}}
+    <div class="content">
+
+	  <section id="section__add" class="submit">
+	  	<div class="submit__form">
+	  		{{> entryfield}}
+	  	</div>
+	  	<div class="action">
+	  	<div class="action__block">
+	  		{{> action}}
+	  	</div>
+	  </section>
+
+	  <section id="section__current" class="summary">
+	  	<div class="summary__block">
+	  		{{> summary}}
+	  	</div>
+	  </section>
+
+	  <section id="section__stats" class="depenses">
+	  	<div class="depenses__block">
+	  		{{> depenses}}
+	  	</div>
+	  </section>
+
+	 </div>
 	</div>
 </body>
 
+<template name="navmenu">
+	<nav>
+        <ul>
+            <li id="btn__add"><a href="#section__add" class="btn__add icon-plus"><span>Add</span></a></li>
+            <li id="btn__current"><a href="#section__current" class="icon-graph"><span>Current</span></a></li>
+            <li id="btn__stats"><a href="#section__stats" class="icon-calendar"><span>Stats</span></a></li>
+        </ul>
+    </nav>
+</template>
 
 <template name="entryfield">
 	<form id="new_entry">

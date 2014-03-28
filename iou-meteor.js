@@ -1,5 +1,7 @@
 Depenses = new Meteor.Collection('depenses');
 
+
+
 function totalCat(Items) {
     var total = 0;
     Items.forEach(function(item){
@@ -112,6 +114,36 @@ if (Meteor.isClient) {
     }
     else {
       return "Sam";
+    }
+  }
+
+  Template.navmenu.events = {
+    'click #btn__add': function(e){
+      $("#btn__add").addClass("tab-current");
+      $("#btn__current").removeClass("tab-current");
+      $("#btn__stats").removeClass("tab-current");
+
+      $("#section__add").addClass("current");
+      $("#section__current").removeClass("current");
+      $("#section__stats").removeClass("current");
+    },
+    'click #btn__current': function(e){
+      $("#btn__current").addClass("tab-current");
+      $("#btn__stats").removeClass("tab-current");
+      $("#btn__add").removeClass("tab-current");
+
+      $("#section__add").removeClass("current");
+      $("#section__current").addClass("current");
+      $("#section__stats").removeClass("current");
+    },
+    'click #btn__stats': function(e){
+      $("#btn__stats").addClass("tab-current");
+      $("#btn__current").removeClass("tab-current");
+      $("#btn__add").removeClass("tab-current");
+
+      $("#section__add").removeClass("current");
+      $("#section__current").removeClass("current");
+      $("#section__stats").addClass("current");
     }
   }
   Template.action.events = {
