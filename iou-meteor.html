@@ -4,6 +4,8 @@
   <link rel="stylesheet" href="/css/font-outline.css">
   <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700' rel='stylesheet' type='text/css'>
   <link href='http://fonts.googleapis.com/css?family=Source+Code+Pro:300,400,700' rel='stylesheet' type='text/css'>
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script src="/js/Chart.js"></script>
 </head>
 
 <body>
@@ -11,7 +13,7 @@
 	 	{{> navmenu}}
     <div class="content">
 
-	  <section id="section__add" class="submit">
+	  <section id="section__add" class="submit current">
 	  	<div class="submit__form">
 	  		{{> entryfield}}
 	  	</div>
@@ -40,7 +42,7 @@
 <template name="navmenu">
 	<nav>
         <ul>
-            <li id="btn__add"><a href="#section__add" class="btn__add icon-plus"><span>Add</span></a></li>
+            <li id="btn__add" class="tab-current"><a href="#section__add" class="btn__add icon-plus"><span>Add</span></a></li>
             <li id="btn__current"><a href="#section__current" class="icon-graph"><span>Current</span></a></li>
             <li id="btn__stats"><a href="#section__stats" class="icon-calendar"><span>Stats</span></a></li>
         </ul>
@@ -101,6 +103,12 @@
 </template>
 
 <template name="summary">
+<!-- <canvas id="pieChart" width="400" height="400"></canvas>
+
+  <div class="d3board" height="150px" width="600px">
+    <svg id="d3vis"></svg>
+  </div> -->
+
 	<span class="summary__bar class__rent" style="width: {{rentratio}}%"></span><span class="summary__bar class__bills" style="width: {{billsratio}}%"></span><span class="summary__bar class__food" style="width: {{foodratio}}%"></span><span class="summary__bar class__shopping" style="width: {{shoppingratio}}%"></span><span class="summary__bar class__activity" style="width: {{activityratio}}%"></span><span class="summary__bar class__car" style="width: {{carratio}}%"></span>
 	<table class="summary__table">
 	<tr class="table__total">

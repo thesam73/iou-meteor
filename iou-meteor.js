@@ -1,7 +1,5 @@
 Depenses = new Meteor.Collection('depenses');
 
-
-
 function totalCat(Items) {
     var total = 0;
     Items.forEach(function(item){
@@ -26,12 +24,44 @@ function ratioCat(allItems, selectedItems) {
   }
 }
 
+function drawChart(){        
+        var data = [
+            {
+                value: "1",
+                color:"#F38630"
+            },
+            {
+                value : "4",
+                color : "#E0E4CC"
+            },
+            {
+                value : "5",
+                color : "#69D2E7"
+            },          
+            {
+                value : "56",
+                color : "green"
+            },
+            {
+                value : "4",
+                color : "red"
+            },
+            {
+                value : "6",
+                color : "yellow"
+            }           
+        ]
+          var ctx = $("#pieChart").get(0).getContext("2d");
+          var myPieChart = new Chart(ctx);
+          new Chart(ctx).Pie(data);
+}
 if (Meteor.isClient) {
   Session.set('show_dialog', false);
 
   Template.depenses.depenses = function() {
     return Depenses.find({}, {sort: {timestamp: -1}});
   }
+
   Template.summary.totalAmount = function() {
     return totalCat(Depenses.find());
   }
@@ -128,6 +158,7 @@ if (Meteor.isClient) {
       $("#section__stats").removeClass("current");
     },
     'click #btn__current': function(e){
+      //drawChart();
       $("#btn__current").addClass("tab-current");
       $("#btn__stats").removeClass("tab-current");
       $("#btn__add").removeClass("tab-current");
@@ -200,6 +231,7 @@ if (Meteor.isClient) {
         };
       }
   }
+
 }
 
 if (Meteor.isServer) {
