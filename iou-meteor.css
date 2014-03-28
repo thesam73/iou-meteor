@@ -77,7 +77,7 @@ html, button, input, textarea, select {
 	font-size: 3em
 }
 .summary{
-	margin-top: 20px;
+/*	margin-top: 20px;*/
 	width: 100%;
 }
 .summary__block {
@@ -115,7 +115,7 @@ html, button, input, textarea, select {
 }
 .depenses{
 	background-color: #FFF;
-	margin-top: 20px;
+/*	margin-top: 20px;*/
 	width: 100%;
 	border-top: 1px solid #BEBEBE;
 	border-bottom: 1px solid #BEBEBE;
@@ -273,7 +273,7 @@ h2 {
     position: relative;
     width: 100%;
     overflow: hidden;
-    margin: 1em 0 2em;
+/*    margin: 1em 0 2em;*/
 }
  
 /* Nav */
