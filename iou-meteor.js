@@ -24,36 +24,59 @@ function ratioCat(allItems, selectedItems) {
   }
 }
 
+//.class__rent {
+//	background-color: #7f8c8d;
+//}
+//.class__bills {
+//	background-color: #2ecc71;
+//}
+//.class__food {
+//	background-color: #3498db;
+//}
+//.class__shopping {
+//	background-color: #9b59b6;
+//}
+//.class__activity {
+//	background-color: #e67e22;
+//}
+//.class__car {
+//	background-color: #34495e;
+//}
 function drawChart(){        
         var data = [
-            {
-                value: "1",
-                color:"#F38630"
-            },
-            {
-                value : "4",
-                color : "#E0E4CC"
-            },
-            {
-                value : "5",
-                color : "#69D2E7"
-            },          
-            {
-                value : "56",
-                color : "green"
-            },
-            {
-                value : "4",
-                color : "red"
-            },
-            {
-                value : "6",
-                color : "yellow"
-            }           
+        	{
+        		value: totalCat(Depenses.find({category: 'rent'})),
+        		color:"#7f8c8d"
+        	},
+        	{
+        		value : totalCat(Depenses.find({category: 'bills'})),
+        		color : "#2ecc71"
+        	},
+        	{
+        		value : totalCat(Depenses.find({category: 'food'})),
+        		color : "#3498db"
+        	},
+        	{
+        		value : totalCat(Depenses.find({category: 'shopping'})),
+        		color : "#9b59b6"
+        	},
+        	{
+        		value : totalCat(Depenses.find({category: 'activity'})),
+        		color : "#e67e22"
+        	}
+        	,
+        	{
+        		value : totalCat(Depenses.find({category: 'car'})),
+        		color : "#34495e"
+        	}			
         ]
-          var ctx = $("#pieChart").get(0).getContext("2d");
-          var myPieChart = new Chart(ctx);
+        //Get context with jQuery - using jQuery's .get() method.
+          var ctx = $("#myChart").get(0).getContext("2d");
+          //This will get the first returned node in the jQuery collection.
+          var myNewChart = new Chart(ctx);
+        
           new Chart(ctx).Pie(data);
+          
 }
 if (Meteor.isClient) {
   Session.set('show_dialog', false);
@@ -61,7 +84,9 @@ if (Meteor.isClient) {
   Template.depenses.depenses = function() {
     return Depenses.find({}, {sort: {timestamp: -1}});
   }
-
+  Template.summary.rendered = function () {
+  	drawChart();
+  }
   Template.summary.totalAmount = function() {
     return totalCat(Depenses.find());
   }

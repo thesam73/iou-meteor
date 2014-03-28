@@ -103,13 +103,18 @@
 </template>
 
 <template name="summary">
+<div class="chartdonut">
+	<canvas id="myChart" width="200px" height="200px"></canvas>
+</div>
 <!-- <canvas id="pieChart" width="400" height="400"></canvas>
 
   <div class="d3board" height="150px" width="600px">
     <svg id="d3vis"></svg>
-  </div> -->
+  </div>
+  	<span class="summary__bar class__rent" style="width: {{rentratio}}%"></span><span class="summary__bar class__bills" style="width: {{billsratio}}%"></span><span class="summary__bar class__food" style="width: {{foodratio}}%"></span><span class="summary__bar class__shopping" style="width: {{shoppingratio}}%"></span><span class="summary__bar class__activity" style="width: {{activityratio}}%"></span><span class="summary__bar class__car" style="width: {{carratio}}%"></span>
+  	 -->
 
-	<span class="summary__bar class__rent" style="width: {{rentratio}}%"></span><span class="summary__bar class__bills" style="width: {{billsratio}}%"></span><span class="summary__bar class__food" style="width: {{foodratio}}%"></span><span class="summary__bar class__shopping" style="width: {{shoppingratio}}%"></span><span class="summary__bar class__activity" style="width: {{activityratio}}%"></span><span class="summary__bar class__car" style="width: {{carratio}}%"></span>
+
 	<table class="summary__table">
 	<tr class="table__total">
 		<td>Total: </td>
