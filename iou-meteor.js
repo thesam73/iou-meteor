@@ -1,5 +1,19 @@
 Depenses = new Meteor.Collection('depenses');
 
+function totalmonthCat(Items) {
+	var ds = new Date();
+	var curr_date = ds.getFullYear();
+	var curr_month = ds.getMonth() + 1; //Months are zero based
+	
+	//Items.find({timestamp: { $lt: new Date(), $gt: new Date(curr_date+','+curr_month) }});
+	//created: { $lt: new Date(), $gt: new Date(year+','+month) } // Get results from start of current month to current time.
+	
+    var total = 0;
+    Items.forEach(function(item){
+          total += Math.round(item.amount);
+    });
+    return total;
+}
 function totalCat(Items) {
     var total = 0;
     Items.forEach(function(item){
@@ -88,25 +102,32 @@ if (Meteor.isClient) {
   	drawChart();
   }
   Template.summary.totalAmount = function() {
-    return totalCat(Depenses.find());
+  var ds = new Date();
+  var curr_dates = ds.getDate();
+  var curr_months = ds.getMonth() + 1; //Months are zero based
+  var curr_years = ds.getFullYear();
+  var dates = '' + curr_years + ', ' + (curr_months<=9 ? '0' + curr_months : curr_months) + ', ' + '00';
+  
+  //Items.find({timestamp: { $lt: new Date(), $gt: new Date(curr_date+','+curr_month) }});
+    return totalmonthCat(Depenses.find({timestamp: { $lt: new Date(), $gte: new Date(curr_years, curr_months, 0) }}));
   }
   Template.summary.rentAmount = function() {
-    return totalCat(Depenses.find({category: 'rent'}));
+    return totalmonthCat(Depenses.find({category: 'rent'}));
   }
   Template.summary.billsAmount = function() {
-    return totalCat(Depenses.find({category: 'bills'}));
+    return totalmonthCat(Depenses.find({category: 'bills'}));
   }
   Template.summary.foodAmount = function() {
-    return totalCat(Depenses.find({category: 'food'}));
+    return totalmonthCat(Depenses.find({category: 'food'}));
   }
   Template.summary.shoppingAmount = function() {
-    return totalCat(Depenses.find({category: 'shopping'}));
+    return totalmonthCat(Depenses.find({category: 'shopping'}));
   }
   Template.summary.activityAmount = function() {
-    return totalCat(Depenses.find({category: 'activity'}));
+    return totalmonthCat(Depenses.find({category: 'activity'}));
   }
   Template.summary.carAmount = function() {
-    return totalCat(Depenses.find({category: 'car'}));
+    return totalmonthCat(Depenses.find({category: 'car'}));
   }
 
   Template.summary.rentratio = function() {
@@ -177,29 +198,46 @@ if (Meteor.isClient) {
       $("#btn__add").addClass("tab-current");
       $("#btn__current").removeClass("tab-current");
       $("#btn__stats").removeClass("tab-current");
+      $("#btn__data").removeClass("tab-current");
 
       $("#section__add").addClass("current");
       $("#section__current").removeClass("current");
       $("#section__stats").removeClass("current");
+      $("#section__data").removeClass("current");
     },
     'click #btn__current': function(e){
       //drawChart();
       $("#btn__current").addClass("tab-current");
       $("#btn__stats").removeClass("tab-current");
       $("#btn__add").removeClass("tab-current");
+      $("#btn__data").removeClass("tab-current");
 
       $("#section__add").removeClass("current");
       $("#section__current").addClass("current");
       $("#section__stats").removeClass("current");
+      $("#section__data").removeClass("current");
     },
+    'click #btn__data': function(e){
+          $("#btn__add").removeClass("tab-current");
+          $("#btn__current").removeClass("tab-current");
+          $("#btn__stats").removeClass("tab-current");
+          $("#btn__data").addClass("tab-current");
+    
+          $("#section__add").removeClass("current");
+          $("#section__current").removeClass("current");
+          $("#section__stats").removeClass("current");
+          $("#section__data").addClass("current");
+      },
     'click #btn__stats': function(e){
       $("#btn__stats").addClass("tab-current");
       $("#btn__current").removeClass("tab-current");
       $("#btn__add").removeClass("tab-current");
+      $("#btn__data").removeClass("tab-current");
 
       $("#section__add").removeClass("current");
       $("#section__current").removeClass("current");
       $("#section__stats").addClass("current");
+      $("#section__data").removeClass("current");
     }
   }
   Template.action.events = {

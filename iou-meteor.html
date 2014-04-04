@@ -28,8 +28,13 @@
 	  		{{> summary}}
 	  	</div>
 	  </section>
-
 	  <section id="section__stats" class="depenses">
+	  	<div class="depenses__block">
+	  		{{> summaryall}}
+	  	</div>
+	  </section>
+	  
+	  <section id="section__data" class="depenses">
 	  	<div class="depenses__block">
 	  		{{> depenses}}
 	  	</div>
@@ -45,6 +50,7 @@
             <li id="btn__add" class="tab-current"><a class="btn__add icon-plus"><span>Add</span></a></li>
             <li id="btn__current"><a class="icon-graph"><span>Current</span></a></li>
             <li id="btn__stats"><a class="icon-todolist"><span>Stats</span></a></li>
+            <li id="btn__data"><a class="icon-todolist"><span>Data</span></a></li>
         </ul>
     </nav>
 </template>
@@ -79,6 +85,7 @@
 	<tr>
 	  <th>Amount</th>
 	  <th>Category</th> 
+	  <th class="not-small">Payeur</th>
 	  <th>Date</th>
 	  <th>X</th>
 	</tr>
@@ -86,6 +93,7 @@
 	<tr>
 		<td>$ {{amount}}</td>
 		<td>{{category}}</td>
+		<td class="not-small">{{payeur}}</td>
 		<td>{{timestamp}}</td>
 		<td><button type="button" class="btn remove">X</button></td>
 	</tr>
@@ -105,6 +113,53 @@
 <template name="summary">
 <div class="chartdonut">
 	<canvas id="myChart" width="180px" height="180px"></canvas>
+</div>
+<!-- <canvas id="pieChart" width="400" height="400"></canvas>
+
+  <div class="d3board" height="150px" width="600px">
+    <svg id="d3vis"></svg>
+  </div>
+  	<span class="summary__bar class__rent" style="width: {{rentratio}}%"></span><span class="summary__bar class__bills" style="width: {{billsratio}}%"></span><span class="summary__bar class__food" style="width: {{foodratio}}%"></span><span class="summary__bar class__shopping" style="width: {{shoppingratio}}%"></span><span class="summary__bar class__activity" style="width: {{activityratio}}%"></span><span class="summary__bar class__car" style="width: {{carratio}}%"></span>
+  	 -->
+
+
+	<table class="summary__table">
+	<tr class="table__total">
+		<td class="icon-list">Total: </td>
+		<td>$ {{totalAmount}}</td>
+		<td>$ {{totalAmountmean}}</td>
+	</tr>
+	<tr class="table__rent">
+		<td class="icon-home">Rent: </td>
+		<td>$ {{rentAmount}}</td>
+		<td>$ {{rentAmountmean}}</td>
+	</tr>
+	<tr class="table__bills">
+		<td class="icon-setting-1">Bills: </td>
+		<td>$ {{billsAmount}}</td>
+	</tr>
+	<tr class="table__food">
+		<td class="icon-fast-food">Food: </td>
+		<td>$ {{foodAmount}}</td>
+	</tr>
+	<tr class="table__shopping">
+		<td class="icon-shopping-cart">Shopping: </td>
+		<td>$ {{shoppingAmount}}</td>
+	</tr>
+	<tr class="table__activity">
+		<td class="icon-ticket">Activity: </td>
+		<td>$ {{activityAmount}}</td>
+	</tr>
+	<tr class="table__car">
+		<td class="icon-boat">Car: </td>
+		<td>$ {{carAmount}}</td>
+	</tr>
+	</table>
+</template>
+
+<template name="summaryall">
+<div class="chartdonut">
+	<canvas id="myChartall" width="180px" height="180px"></canvas>
 </div>
 <!-- <canvas id="pieChart" width="400" height="400"></canvas>
 
