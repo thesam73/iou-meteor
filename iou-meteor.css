@@ -168,6 +168,9 @@ html, button, input, textarea, select {
 .class__shopping {
 	background-color: #9b59b6;
 }
+.class__supermarket {
+	background-color: #00CCC1;
+}
 .class__activity {
 	background-color: #e67e22;
 }
@@ -186,6 +189,9 @@ html, button, input, textarea, select {
 }
 .table__shopping {
 	color: #9b59b6;
+}
+.table__supermarket {
+	color: #00CCC1;
 }
 .table__activity {
 	color: #e67e22;

@@ -84,7 +84,7 @@ function drawChart(){
         		color : "#34495e"
         	}			
         ]
-        console.log(data);
+        //console.log(data);
         //Get context with jQuery - using jQuery's .get() method.
           var ctx = $("#myChart").get(0).getContext("2d");
           //This will get the first returned node in the jQuery collection.
@@ -111,51 +111,34 @@ function groupBy(input, xCol, yCol) {
 }
 
 function drawChartMonthly(monthlyDepenses) {
-	console.log(monthlyDepenses);
 	var dataMonthly  = new Array();
-	var number = 0;
+	var DCA = new Array();
 	for (var month in monthlyDepenses) {
-		console.log("titi");
-		console.log(monthlyDepenses[month]);
 		var monthquote = "'"+month+"'";
-		console.log(monthquote);
 		var monthlySum = groupBy(monthlyDepenses[month], "category", "amount");
-//		var groups = _(monthlyDepenses[monthquote]).groupBy('category');
-//		console.log(groups);
-		//groups : Object {bills: Array[1], rent: Array[1]}
-//		var monthlySum = new Object();
-//		for (var category in groups) {
-			// groups[category] = [Object, Object, Object, Object, Object]
-//			monthlySum[category]
-//		}
 		monthlySum.Date = monthquote;
-		console.log(monthlySum);
 		dataMonthly.push(monthlySum);
-		//dataMonthly[monthquote] = monthlySum;
-		number = number + 1;
+		
+		var groups = _(monthlyDepenses[month]).groupBy('category');
+		//groups : Object {bills: Array[1], rent: Array[1]}
+		for (var category in groups) {
+			var DCA_cat = new Object();
+			DCA_cat.Date = month;
+			DCA_cat.Category = category;
+			
+			var DCASum = groupBy(groups[category], "category", "amount");
+			DCA_cat.Amount = monthlySum[category];
+			console.log('here');
+			DCA.push(DCA_cat);
+		}
 	}
-	console.log(dataMonthly);
-	var svg = dimple.newSvg("#chartMonthly", 590, 400);
-	var data = [
-	    {'Date': '01-03-2013', 'Views': 'a', 'Owner':'Alpha','Rating':'****'},
-	    {'Date': '05-03-2013', 'Views': 'b', 'Owner':'Beta','Rating':'****'},
-	    {'Date': '09-03-2013', 'Views': 'c', 'Owner':'Gamma','Rating':'**'},
-	    {'Date': '13-03-2013', 'Views': 'd', 'Owner':'Beta','Rating':'****'},
-	    {'Date': '01-04-2013', 'Views': 'a', 'Owner':'Theta','Rating':'****'},
-	    {'Date': '05-04-2013', 'Views': 'b', 'Owner':'Beta','Rating':'***'},
-	    {'Date': '09-04-2013', 'Views': 'c', 'Owner':'Theta','Rating':'**'},
-	    {'Date': '13-04-2013', 'Views': 'd', 'Owner':'Beta','Rating':'*'},
-	];
-	
-	var myChart = new dimple.chart(svg, dataMonthly);
-	      myChart.setBounds(60, 30, 510, 305);
-	      var x = myChart.addCategoryAxis("x", "Date");
-	      x.addOrderRule("Date");
-	      myChart.addMeasureAxis("y", "Amount");
-	      myChart.addSeries("Bills", dimple.plot.bar);
-	      //myChart.addLegend(60, 10, 510, 20, "right");
-	      myChart.draw();
-	
+	var svg = dimple.newSvg("#chartMonthly", 400, 400);
+	var myChart = new dimple.chart(svg, DCA);
+	var x = myChart.addCategoryAxis("x", "Date");
+	x.addOrderRule("Date");
+	myChart.addMeasureAxis("y", "Amount");
+	var mySeries = myChart.addSeries("Category", dimple.plot.bar);
+	myChart.draw();
 }
 if (Meteor.isClient) {
 
@@ -191,6 +174,9 @@ if (Meteor.isClient) {
   }
   Template.summary.shoppingAmount = function() {
     return totalCat(Depenses.find({category: 'shopping'}));
+  }
+  Template.summary.supermarketAmount = function() {
+    return totalCat(Depenses.find({category: 'supermarket'}));
   }
   Template.summary.activityAmount = function() {
     return totalCat(Depenses.find({category: 'activity'}));
