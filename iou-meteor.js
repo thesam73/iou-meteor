@@ -84,24 +84,92 @@ function drawChart(){
         		color : "#34495e"
         	}			
         ]
+        console.log(data);
         //Get context with jQuery - using jQuery's .get() method.
           var ctx = $("#myChart").get(0).getContext("2d");
           //This will get the first returned node in the jQuery collection.
           var myNewChart = new Chart(ctx);
-        
           new Chart(ctx).Doughnut(data);
           
 }
+function groupBy(input, xCol, yCol) {
+
+    var output = {};
+
+    // This function can be easily changed to do max, min, avg, sum.
+    var sum = function(row, idx) {
+        if (!(row[xCol] in output)) {
+            output[row[xCol]] = +row[yCol];
+        }
+        else {
+            output[row[xCol]] += +row[yCol];         
+        }
+    };
+    _.each(input, sum);
+
+    return output;
+}
+
+function drawChartMonthly(monthlyDepenses) {
+	console.log(monthlyDepenses);
+	var dataMonthly  = new Array();
+	var number = 0;
+	for (var month in monthlyDepenses) {
+		console.log("titi");
+		console.log(monthlyDepenses[month]);
+		var monthquote = "'"+month+"'";
+		console.log(monthquote);
+		var monthlySum = groupBy(monthlyDepenses[month], "category", "amount");
+//		var groups = _(monthlyDepenses[monthquote]).groupBy('category');
+//		console.log(groups);
+		//groups : Object {bills: Array[1], rent: Array[1]}
+//		var monthlySum = new Object();
+//		for (var category in groups) {
+			// groups[category] = [Object, Object, Object, Object, Object]
+//			monthlySum[category]
+//		}
+		monthlySum.Date = monthquote;
+		console.log(monthlySum);
+		dataMonthly.push(monthlySum);
+		//dataMonthly[monthquote] = monthlySum;
+		number = number + 1;
+	}
+	console.log(dataMonthly);
+	var svg = dimple.newSvg("#chartMonthly", 590, 400);
+	var data = [
+	    {'Date': '01-03-2013', 'Views': 'a', 'Owner':'Alpha','Rating':'****'},
+	    {'Date': '05-03-2013', 'Views': 'b', 'Owner':'Beta','Rating':'****'},
+	    {'Date': '09-03-2013', 'Views': 'c', 'Owner':'Gamma','Rating':'**'},
+	    {'Date': '13-03-2013', 'Views': 'd', 'Owner':'Beta','Rating':'****'},
+	    {'Date': '01-04-2013', 'Views': 'a', 'Owner':'Theta','Rating':'****'},
+	    {'Date': '05-04-2013', 'Views': 'b', 'Owner':'Beta','Rating':'***'},
+	    {'Date': '09-04-2013', 'Views': 'c', 'Owner':'Theta','Rating':'**'},
+	    {'Date': '13-04-2013', 'Views': 'd', 'Owner':'Beta','Rating':'*'},
+	];
+	
+	var myChart = new dimple.chart(svg, dataMonthly);
+	      myChart.setBounds(60, 30, 510, 305);
+	      var x = myChart.addCategoryAxis("x", "Date");
+	      x.addOrderRule("Date");
+	      myChart.addMeasureAxis("y", "Amount");
+	      myChart.addSeries("Bills", dimple.plot.bar);
+	      //myChart.addLegend(60, 10, 510, 20, "right");
+	      myChart.draw();
+	
+}
 if (Meteor.isClient) {
-  Session.set('show_dialog', false);
 
   Template.depenses.depenses = function() {
     return Depenses.find({}, {sort: {timestamp: -1}});
+  }
+  Template.submitmessage.message = function () {
+  	return "All good keep spending!";
   }
   Template.summary.rendered = function () {
   	drawChart();
   }
   Template.summary.totalAmount = function() {
+  
   var ds = new Date();
   var curr_dates = ds.getDate();
   var curr_months = ds.getMonth() + 1; //Months are zero based
@@ -109,27 +177,42 @@ if (Meteor.isClient) {
   var dates = '' + curr_years + ', ' + (curr_months<=9 ? '0' + curr_months : curr_months) + ', ' + '00';
   
   //Items.find({timestamp: { $lt: new Date(), $gt: new Date(curr_date+','+curr_month) }});
-    return totalmonthCat(Depenses.find({timestamp: { $lt: new Date(), $gte: new Date(curr_years, curr_months, 0) }}));
-  }
+//    return totalmonthCat(Depenses.find({timestamp: { $lt: new Date(), $gte: new Date(curr_years, curr_months, 0) }}));
+	return totalCat(Depenses.find({}));
+  } 
   Template.summary.rentAmount = function() {
-    return totalmonthCat(Depenses.find({category: 'rent'}));
+    return totalCat(Depenses.find({category: 'rent'}));
   }
   Template.summary.billsAmount = function() {
-    return totalmonthCat(Depenses.find({category: 'bills'}));
+    return totalCat(Depenses.find({category: 'bills'}));
   }
   Template.summary.foodAmount = function() {
-    return totalmonthCat(Depenses.find({category: 'food'}));
+    return totalCat(Depenses.find({category: 'food'}));
   }
   Template.summary.shoppingAmount = function() {
-    return totalmonthCat(Depenses.find({category: 'shopping'}));
+    return totalCat(Depenses.find({category: 'shopping'}));
   }
   Template.summary.activityAmount = function() {
-    return totalmonthCat(Depenses.find({category: 'activity'}));
+    return totalCat(Depenses.find({category: 'activity'}));
   }
   Template.summary.carAmount = function() {
-    return totalmonthCat(Depenses.find({category: 'car'}));
+    return totalCat(Depenses.find({category: 'car'}));
   }
-
+  
+  Template.summaryall.rendered = function() {
+    var depenses = Depenses.find().fetch();
+//    var groupedDates = _.groupBy(_.pluck(customers, 'timestamp'), function (date) {return date.split("-",2);});
+	var monthlyDepenses = _.groupBy(depenses, function(depense) {
+		return depense.timestamp.split("-",2);
+		});
+	
+    _.each(_.values(monthlyDepenses), function(dates) {
+      console.log(dates);
+    });
+    console.log(depenses);
+    drawChartMonthly(monthlyDepenses);
+    }
+   
   Template.summary.rentratio = function() {
     return ratioCat(Depenses.find(), Depenses.find({category: 'rent'}));
   }
@@ -289,6 +372,7 @@ if (Meteor.isClient) {
             timestamp: date,
             time: Date()
           });
+          $("#confirm").show().delay(1000).fadeOut();
           amount.value = '';
           //category.value = '';
         };

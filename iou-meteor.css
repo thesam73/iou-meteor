@@ -54,7 +54,7 @@ html, button, input, textarea, select {
 	width: 100%;
 }
 .submit__form {
-	margin:0px auto;
+	margin:20px auto;
 	text-align:center;
 	width: 85%;
 }
@@ -62,9 +62,36 @@ html, button, input, textarea, select {
 
 }
 
+#confirm {
+	display: none;
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background: rgba(0,0,0,0.5);
+	-webkit-transition: opacity 400ms ease-in;
+	-moz-transition: opacity 400ms ease-in;
+	transition: opacity 400ms ease-in;
+	pointer-events: none;
+}
+#confirm > div {
+	width: 70%;
+	position: relative;
+	margin: 8em auto;
+	padding: 25px 20px 30px 20px;
+	border-radius: 10px;
+	background-color: #DDD;
+}
+.confirm__box{
+	color: #444;
+	font-size: 1.3em;
+	text-align: center;
+}
+
 .action{
 	background-color: #FFF;
-	margin-top: 20px;
+	margin-bottom: 20px;
 	width: 100%;
 	border-top: 1px solid #BEBEBE;
 	border-bottom: 1px solid #BEBEBE;

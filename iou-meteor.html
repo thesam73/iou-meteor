@@ -6,20 +6,21 @@
   <link href='http://fonts.googleapis.com/css?family=Source+Code+Pro:300,400,700' rel='stylesheet' type='text/css'>
   <script src="http://d3js.org/d3.v3.min.js"></script>
   <script src="/js/Chart.js"></script>
+    <script src="http://dimplejs.org/dist/dimple.v1.1.5.min.js"></script>
 </head>
 
 <body>
 	<div id="tabs" class="tabs">
 	 	{{> navmenu}}
     <div class="content">
-
 	  <section id="section__add" class="submit current">
+	  	<div class="action">
+	  		<div class="action__block">
+	  			{{> action}}
+	  		</div>
+	  	</div>
 	  	<div class="submit__form">
 	  		{{> entryfield}}
-	  	</div>
-	  	<div class="action">
-	  	<div class="action__block">
-	  		{{> action}}
 	  	</div>
 	  </section>
 
@@ -32,17 +33,24 @@
 	  	<div class="depenses__block">
 	  		{{> summaryall}}
 	  	</div>
-	  </section>
-	  
+	  </section>  
 	  <section id="section__data" class="depenses">
 	  	<div class="depenses__block">
 	  		{{> depenses}}
 	  	</div>
 	  </section>
-
+	  <div id="confirm">
+	  	<div class="confirm__box">
+	  		{{> submitmessage }}
+	  	</div>
+	  </div>
 	 </div>
 	</div>
 </body>
+
+<template name="submitmessage">
+{{message}}
+</template>
 
 <template name="navmenu">
 	<nav>
@@ -121,18 +129,14 @@
   </div>
   	<span class="summary__bar class__rent" style="width: {{rentratio}}%"></span><span class="summary__bar class__bills" style="width: {{billsratio}}%"></span><span class="summary__bar class__food" style="width: {{foodratio}}%"></span><span class="summary__bar class__shopping" style="width: {{shoppingratio}}%"></span><span class="summary__bar class__activity" style="width: {{activityratio}}%"></span><span class="summary__bar class__car" style="width: {{carratio}}%"></span>
   	 -->
-
-
 	<table class="summary__table">
 	<tr class="table__total">
 		<td class="icon-list">Total: </td>
 		<td>$ {{totalAmount}}</td>
-		<td>$ {{totalAmountmean}}</td>
 	</tr>
 	<tr class="table__rent">
 		<td class="icon-home">Rent: </td>
 		<td>$ {{rentAmount}}</td>
-		<td>$ {{rentAmountmean}}</td>
 	</tr>
 	<tr class="table__bills">
 		<td class="icon-setting-1">Bills: </td>
@@ -158,19 +162,9 @@
 </template>
 
 <template name="summaryall">
-<div class="chartdonut">
-	<canvas id="myChartall" width="180px" height="180px"></canvas>
-</div>
-<!-- <canvas id="pieChart" width="400" height="400"></canvas>
-
-  <div class="d3board" height="150px" width="600px">
-    <svg id="d3vis"></svg>
-  </div>
-  	<span class="summary__bar class__rent" style="width: {{rentratio}}%"></span><span class="summary__bar class__bills" style="width: {{billsratio}}%"></span><span class="summary__bar class__food" style="width: {{foodratio}}%"></span><span class="summary__bar class__shopping" style="width: {{shoppingratio}}%"></span><span class="summary__bar class__activity" style="width: {{activityratio}}%"></span><span class="summary__bar class__car" style="width: {{carratio}}%"></span>
-  	 -->
-
-
-	<table class="summary__table">
+	<div id="chartMonthly">
+	</div>
+<!--	<table class="summary__table">
 	<tr class="table__total">
 		<td class="icon-list">Total: </td>
 		<td>$ {{totalAmount}}</td>
@@ -199,7 +193,7 @@
 		<td class="icon-boat">Car: </td>
 		<td>$ {{carAmount}}</td>
 	</tr>
-	</table>
+	</table>-->
 </template>
 
 <template name="entrydetail">
