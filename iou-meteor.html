@@ -2,11 +2,16 @@
   <title>IOU</title>
   <meta name="viewport" content="initial-scale=1.0" />
   <link rel="stylesheet" href="/css/font-outline.css">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="icon" sizes="196x196" href="img/icon-196.png"> 
+  <link rel="icon" sizes="128x128" href="mg/icon-128.png">
+  <link rel="apple-touch-icon" sizes="128x128" href="mg/icon-128.png">
+  <link rel="apple-touch-icon-precomposed" sizes="128x128" href="mg/icon-128.png">
   <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700' rel='stylesheet' type='text/css'>
   <link href='http://fonts.googleapis.com/css?family=Source+Code+Pro:300,400,700' rel='stylesheet' type='text/css'>
   <script src="http://d3js.org/d3.v3.min.js"></script>
   <script src="/js/Chart.js"></script>
-    <script src="http://dimplejs.org/dist/dimple.v1.1.5.min.js"></script>
+   <script src="http://dimplejs.org/dist/dimple.v1.1.5.min.js"></script>
 </head>
 
 <body>
@@ -120,7 +125,7 @@
 
 <template name="summary">
 <div class="chartdonut">
-	<canvas id="myChart" width="250px" height="250px"></canvas>
+	<canvas id="myChart" width="200px" height="200px"></canvas>
 </div>
 	<table class="summary__table">
 	<tr class="table__total">
@@ -160,7 +165,7 @@
 
 <template name="summaryall">
 <div class="chartdonut">
-	<canvas id="chartCurrent" width="350px" height="400px"></canvas>
+	<canvas id="chartCurrent" width="200px" height="300px"></canvas>
 </div>
 <tr class="table__total">
 		<td class="icon-list">Current Month</td>
