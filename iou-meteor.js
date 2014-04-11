@@ -92,7 +92,8 @@ function drawChart(){
           new Chart(ctx).Doughnut(data);
           
 }
-function groupBy(input, xCol, yCol) {
+
+  function groupBy(input, xCol, yCol) {
 
     var output = {};
 
@@ -111,35 +112,72 @@ function groupBy(input, xCol, yCol) {
 }
 
 function drawChartMonthly(monthlyDepenses) {
-	var dataMonthly  = new Array();
-	var DCA = new Array();
-	for (var month in monthlyDepenses) {
-		var monthquote = "'"+month+"'";
-		var monthlySum = groupBy(monthlyDepenses[month], "category", "amount");
-		monthlySum.Date = monthquote;
-		dataMonthly.push(monthlySum);
-		
-		var groups = _(monthlyDepenses[month]).groupBy('category');
-		//groups : Object {bills: Array[1], rent: Array[1]}
-		for (var category in groups) {
-			var DCA_cat = new Object();
-			DCA_cat.Date = month;
-			DCA_cat.Category = category;
-			
-			var DCASum = groupBy(groups[category], "category", "amount");
-			DCA_cat.Amount = monthlySum[category];
-			console.log('here');
-			DCA.push(DCA_cat);
-		}
-	}
-	var svg = dimple.newSvg("#chartMonthly", 400, 400);
-	var myChart = new dimple.chart(svg, DCA);
-	var x = myChart.addCategoryAxis("x", "Date");
-	x.addOrderRule("Date");
-	myChart.addMeasureAxis("y", "Amount");
-	var mySeries = myChart.addSeries("Category", dimple.plot.bar);
-	myChart.draw();
+  var dataMonthly  = new Array();
+  var DCA = new Array();
+  for (var month in monthlyDepenses) {
+    var monthquote = "'"+month+"'";
+    var monthlySum = groupBy(monthlyDepenses[month], "category", "amount");
+    monthlySum.Date = monthquote;
+    dataMonthly.push(monthlySum);
+    
+    var groups = _(monthlyDepenses[month]).groupBy('category');
+    //groups : Object {bills: Array[1], rent: Array[1]}
+    for (var category in groups) {
+      var DCA_cat = new Object();
+      DCA_cat.Date = month;
+      DCA_cat.Category = category;
+      
+      var DCASum = groupBy(groups[category], "category", "amount");
+      DCA_cat.Amount = monthlySum[category];
+      //console.log('here');
+      DCA.push(DCA_cat);
+    }
+  }
+
+
+   var d = new Date();
+   var curr_month = d.getMonth() + 1; //Months are zero based
+   var curr_year = d.getFullYear();
+   var curr_date = curr_year + ',' + (curr_month<=9 ? '0' + curr_month : curr_month);
+   var DCA_without_current = _.filter(DCA, function(item) {
+     return item.Date !== curr_date
+   });
+   var DCA_only_current = _.filter(DCA, function(item) {
+     return item.Date == curr_date
+   });
+   var DCA_monthgroup = _(DCA_without_current).groupBy('Date');
+  //console.log(DCA_catgroup);
+  //DCA_catgroup = _.filter(DCA_catgroup, function(item) {
+  //   return item.Date !== '2014,02'
+  //});
+  //console.log(DCA_catgroup);
+  var DCA_average = _.chain(DCA_monthgroup)
+  .flatten()
+  .groupBy(function(value) { return value.Category; })
+  .map(function(value, key) {
+    var sum = _.reduce(value, function(memo, val) { return memo + val.Amount; }, 0);
+    return {Category: key, Amount: sum / value.length};
+  })
+  .value();
+  console.log(DCA_only_current);
+  var svgC = dimple.newSvg("#chartCurrentMonth", 400, 400);
+  var myChartC = new dimple.chart(svgC, DCA_only_current);
+  var xC = myChartC.addCategoryAxis("x", "Amount");
+  xC.addOrderRule("Amount");
+  myChartC.addMeasureAxis("y", "Category");
+  //var mySeriesC = myChartC.addSeries("Category", dimple.plot.bar);
+  myChartC.draw();
+
+
+  var svg = dimple.newSvg("#chartMonthly", 400, 400);
+  var myChart = new dimple.chart(svg, DCA);
+  var x = myChart.addCategoryAxis("x", "Date");
+  x.addOrderRule("Date");
+  myChart.addMeasureAxis("y", "Amount");
+  var mySeries = myChart.addSeries("Category", dimple.plot.bar);
+  myChart.draw();
 }
+
 if (Meteor.isClient) {
 
   Template.depenses.depenses = function() {
@@ -192,10 +230,10 @@ if (Meteor.isClient) {
 		return depense.timestamp.split("-",2);
 		});
 	
-    _.each(_.values(monthlyDepenses), function(dates) {
-      console.log(dates);
-    });
-    console.log(depenses);
+    //_.each(_.values(monthlyDepenses), function(dates) {
+    //  console.log(dates);
+    //});
+    //console.log(depenses);
     drawChartMonthly(monthlyDepenses);
     }
    
@@ -358,7 +396,7 @@ if (Meteor.isClient) {
             timestamp: date,
             time: Date()
           });
-          $("#confirm").show().delay(1000).fadeOut();
+          $("#confirm").show().delay(700).fadeOut();
           amount.value = '';
           //category.value = '';
         };

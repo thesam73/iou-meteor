@@ -131,10 +131,10 @@ html, button, input, textarea, select {
 	margin: 5px 10px;
 }
 .summary__table th {
-	padding: 10px 25px;
+	padding: 10px 10px;
 }
 .summary__table td {
-	padding: 4px 25px;
+	padding: 4px 10px;
 }
 .summary__bar {
 	display: inline-block;
