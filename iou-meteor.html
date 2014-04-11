@@ -23,7 +23,6 @@
 	  		{{> entryfield}}
 	  	</div>
 	  </section>
-
 	  <section id="section__current" class="summary">
 	  	<div class="summary__block">
 	  		{{> summary}}
@@ -123,13 +122,6 @@
 <div class="chartdonut">
 	<canvas id="myChart" width="250px" height="250px"></canvas>
 </div>
-<!-- <canvas id="pieChart" width="400" height="400"></canvas>
-
-  <div class="d3board" height="150px" width="600px">
-    <svg id="d3vis"></svg>
-  </div>
-  	<span class="summary__bar class__rent" style="width: {{rentratio}}%"></span><span class="summary__bar class__bills" style="width: {{billsratio}}%"></span><span class="summary__bar class__food" style="width: {{foodratio}}%"></span><span class="summary__bar class__shopping" style="width: {{shoppingratio}}%"></span><span class="summary__bar class__activity" style="width: {{activityratio}}%"></span><span class="summary__bar class__car" style="width: {{carratio}}%"></span>
-  	 -->
 	<table class="summary__table">
 	<tr class="table__total">
 		<td class="icon-list">Total: </td>
@@ -167,8 +159,14 @@
 </template>
 
 <template name="summaryall">
-	<div id="chartCurrentMonth"></div>
-	<div id="chartMonthly"></div>
+<div class="chartdonut">
+	<canvas id="chartCurrent" width="350px" height="400px"></canvas>
+</div>
+<tr class="table__total">
+		<td class="icon-list">Current Month</td>
+	</tr>
+	<!-- <div id="chartCurrentMonth"></div>
+	<div id="chartMonthly"></div> -->
 <!--	<table class="summary__table">
 	<tr class="table__total">
 		<td class="icon-list">Total: </td>

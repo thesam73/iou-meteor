@@ -4,38 +4,23 @@ function totalmonthCat(Items) {
 	var ds = new Date();
 	var curr_date = ds.getFullYear();
 	var curr_month = ds.getMonth() + 1; //Months are zero based
-	
+	var curr_date = curr_year + ',' + (curr_month<=9 ? '0' + curr_month : curr_month);
+
 	//Items.find({timestamp: { $lt: new Date(), $gt: new Date(curr_date+','+curr_month) }});
-	//created: { $lt: new Date(), $gt: new Date(year+','+month) } // Get results from start of current month to current time.
 	
-    var total = 0;
-    Items.forEach(function(item){
-          total += Math.round(item.amount);
-    });
-    return total;
-}
-function totalCat(Items) {
-    var total = 0;
-    Items.forEach(function(item){
-          total += Math.round(item.amount);
-    });
-    return total;
-}
-function ratioCat(allItems, selectedItems) {
-  var ratio = 0; 
-  var totalForCat = 0;
   var total = 0;
-  allItems.forEach(function(item){
-          total += Math.round(item.amount);
+  Items.forEach(function(item){
+    total += Math.round(item.amount);
   });
-  selectedItems.forEach(function(item){
-          totalForCat += Math.round(item.amount);
+  return total;
+}
+
+function totalCat(Items) {
+  var total = 0;
+  Items.forEach(function(item){
+    total += Math.round(item.amount);
   });
-  if (totalForCat == 0) {return 0;}
-  else if (total != 0) {
-    var ratio = totalForCat / total * 100;
-    return ratio;
-  }
+  return total;
 }
 
 //.class__rent {
@@ -56,71 +41,167 @@ function ratioCat(allItems, selectedItems) {
 //.class__car {
 //	background-color: #34495e;
 //}
-function drawChart(){        
-        var data = [
-        	{
-        		value: totalCat(Depenses.find({category: 'rent'})),
-        		color:"#7f8c8d"
-        	},
-        	{
-        		value : totalCat(Depenses.find({category: 'bills'})),
-        		color : "#2ecc71"
-        	},
-        	{
-        		value : totalCat(Depenses.find({category: 'food'})),
-        		color : "#3498db"
-        	},
-        	{
-        		value : totalCat(Depenses.find({category: 'shopping'})),
-        		color : "#9b59b6"
-        	},
-        	{
-        		value : totalCat(Depenses.find({category: 'activity'})),
-        		color : "#e67e22"
-        	}
-        	,
-        	{
-        		value : totalCat(Depenses.find({category: 'car'})),
-        		color : "#34495e"
-        	}			
+function drawChartCurrent(){
+  var d = new Date();
+  var curr_month = d.getMonth() + 1; //Months are zero based
+  var curr_year = d.getFullYear();
+  var startmonth = curr_year + '-' + (curr_month<=9 ? '0' + curr_month : curr_month) + '-01';
+  var endmonth = curr_year + '-' + (curr_month<=9 ? '0' + curr_month : curr_month) + '-31';
+  curr_month = curr_month - 1;
+  var startlastmonth = curr_year + '-' + (curr_month<=9 ? '0' + curr_month : curr_month) + '-01';
+
+  var data = {
+    labels : ["Rent", "Bills", "Food", "SuperMarket", "Shopping", "Activity", "Car"],
+    datasets : [
+    {
+      fillColor : "#9b59b6",
+      strokeColor : "#7f8c8d",
+      data: [
+        totalCat(Depenses.find({
+          category: 'rent',
+          timestamp: {$gte: startmonth, $lte: endmonth}
+        })),
+        totalCat(Depenses.find({
+          category: 'bills',
+          timestamp: {$gte: startmonth, $lte: endmonth}
+        })),
+        totalCat(Depenses.find({
+          category: 'food',
+          timestamp: {$gte: startmonth, $lte: endmonth}
+        })),
+        totalCat(Depenses.find({
+          category: 'supermarket',
+          timestamp: {$gte: startmonth, $lte: endmonth}
+        })),
+        totalCat(Depenses.find({
+          category: 'shopping',
+          timestamp: {$gte: startmonth, $lte: endmonth}
+        })),
+        totalCat(Depenses.find({
+          category: 'activity',
+          timestamp: {$gte: startmonth, $lte: endmonth}
+        })),
+        totalCat(Depenses.find({
+          category: 'car',
+          timestamp: {$gte: startmonth, $lte: endmonth}
+        }))
         ]
+    },
+    {
+      fillColor : "#2ecc71",
+      strokeColor : "#7f8c8d",
+      data: [
+        totalCat(Depenses.find({
+          category: 'rent',
+          timestamp: {$gte: startlastmonth, $lte: startmonth}
+        })),
+        totalCat(Depenses.find({
+          category: 'bills',
+          timestamp: {$gte: startlastmonth, $lte: startmonth}
+        })),
+        totalCat(Depenses.find({
+          category: 'food',
+          timestamp: {$gte: startlastmonth, $lte: startmonth}
+        })),
+        totalCat(Depenses.find({
+          category: 'supermarket',
+          timestamp: {$gte: startlastmonth, $lte: startmonth}
+        })),
+        totalCat(Depenses.find({
+          category: 'shopping',
+          timestamp: {$gte: startlastmonth, $lte: startmonth}
+        })),
+        totalCat(Depenses.find({
+          category: 'activity',
+          timestamp: {$gte: startlastmonth, $lte: startmonth}
+        })),
+        totalCat(Depenses.find({
+          category: 'car',
+          timestamp: {$gte: startlastmonth, $lte: startmonth}
+        }))
+        ]
+    }
+    ]
+  };
+  var ctx = $("#chartCurrent").get(0).getContext("2d");
+  var myNewChart = new Chart(ctx);
+  new Chart(ctx).Bar(data);
+}
+
+function drawChart(){        
+  var data = [
+  {
+    value: totalCat(Depenses.find({category: 'rent'})),
+    color:"#7f8c8d"
+  },
+  {
+    value : totalCat(Depenses.find({category: 'bills'})),
+    color : "#2ecc71"
+  },
+  {
+    value : totalCat(Depenses.find({category: 'food'})),
+    color : "#3498db"
+  },
+  {
+    value : totalCat(Depenses.find({category: 'supermarket'})),
+    color : "#00CCC1"
+  },
+  {
+    value : totalCat(Depenses.find({category: 'shopping'})),
+    color : "#9b59b6"
+  },
+  {
+    value : totalCat(Depenses.find({category: 'activity'})),
+    color : "#e67e22"
+  }
+  ,
+  {
+    value : totalCat(Depenses.find({category: 'car'})),
+    color : "#34495e"
+  }     
+  ]
         //console.log(data);
         //Get context with jQuery - using jQuery's .get() method.
-          var ctx = $("#myChart").get(0).getContext("2d");
+        var ctx = $("#myChart").get(0).getContext("2d");
           //This will get the first returned node in the jQuery collection.
           var myNewChart = new Chart(ctx);
           new Chart(ctx).Doughnut(data);
           
-}
+        }
+        function groupBy(input, xCol, yCol) {
 
-  function groupBy(input, xCol, yCol) {
-
-    var output = {};
+          var output = {};
 
     // This function can be easily changed to do max, min, avg, sum.
     var sum = function(row, idx) {
-        if (!(row[xCol] in output)) {
-            output[row[xCol]] = +row[yCol];
-        }
-        else {
-            output[row[xCol]] += +row[yCol];         
-        }
+      if (!(row[xCol] in output)) {
+        output[row[xCol]] = +row[yCol];
+      }
+      else {
+        output[row[xCol]] += +row[yCol];         
+      }
     };
     _.each(input, sum);
 
     return output;
-}
+  }
 
-function drawChartMonthly(monthlyDepenses) {
-  var dataMonthly  = new Array();
-  var DCA = new Array();
-  for (var month in monthlyDepenses) {
-    var monthquote = "'"+month+"'";
-    var monthlySum = groupBy(monthlyDepenses[month], "category", "amount");
-    monthlySum.Date = monthquote;
-    dataMonthly.push(monthlySum);
-    
-    var groups = _(monthlyDepenses[month]).groupBy('category');
+  function drawChartMonthly() {
+    var depenses = Depenses.find().fetch();
+//    var groupedDates = _.groupBy(_.pluck(customers, 'timestamp'), function (date) {return date.split("-",2);});
+var monthlyDepenses = _.groupBy(depenses, function(depense) {
+  return depense.timestamp.split("-",2);
+});
+
+var dataMonthly  = new Array();
+var DCA = new Array();
+for (var month in monthlyDepenses) {
+  var monthquote = "'"+month+"'";
+  var monthlySum = groupBy(monthlyDepenses[month], "category", "amount");
+  monthlySum.Date = monthquote;
+  dataMonthly.push(monthlySum);
+
+  var groups = _(monthlyDepenses[month]).groupBy('category');
     //groups : Object {bills: Array[1], rent: Array[1]}
     for (var category in groups) {
       var DCA_cat = new Object();
@@ -135,7 +216,7 @@ function drawChartMonthly(monthlyDepenses) {
   }
 
 
-   var d = new Date();
+  var d = new Date();
    var curr_month = d.getMonth() + 1; //Months are zero based
    var curr_year = d.getFullYear();
    var curr_date = curr_year + ',' + (curr_month<=9 ? '0' + curr_month : curr_month);
@@ -147,10 +228,6 @@ function drawChartMonthly(monthlyDepenses) {
    });
    var DCA_monthgroup = _(DCA_without_current).groupBy('Date');
   //console.log(DCA_catgroup);
-  //DCA_catgroup = _.filter(DCA_catgroup, function(item) {
-  //   return item.Date !== '2014,02'
-  //});
-  //console.log(DCA_catgroup);
   var DCA_average = _.chain(DCA_monthgroup)
   .flatten()
   .groupBy(function(value) { return value.Category; })
@@ -160,11 +237,12 @@ function drawChartMonthly(monthlyDepenses) {
   })
   .value();
   console.log(DCA_only_current);
+
   var svgC = dimple.newSvg("#chartCurrentMonth", 400, 400);
   var myChartC = new dimple.chart(svgC, DCA_only_current);
-  var xC = myChartC.addCategoryAxis("x", "Amount");
-  xC.addOrderRule("Amount");
-  myChartC.addMeasureAxis("y", "Category");
+  myChartC.addMeasureAxis("x", "Amount");
+  myChartC.addCategoryAxis("y", "Category");
+  myChartC.addSeries(null, dimple.plot.bar);
   //var mySeriesC = myChartC.addSeries("Category", dimple.plot.bar);
   myChartC.draw();
 
@@ -190,129 +268,95 @@ if (Meteor.isClient) {
   	drawChart();
   }
   Template.summary.totalAmount = function() {
-  
-  var ds = new Date();
-  var curr_dates = ds.getDate();
+
+    var ds = new Date();
+    var curr_dates = ds.getDate();
   var curr_months = ds.getMonth() + 1; //Months are zero based
   var curr_years = ds.getFullYear();
   var dates = '' + curr_years + ', ' + (curr_months<=9 ? '0' + curr_months : curr_months) + ', ' + '00';
   
   //Items.find({timestamp: { $lt: new Date(), $gt: new Date(curr_date+','+curr_month) }});
 //    return totalmonthCat(Depenses.find({timestamp: { $lt: new Date(), $gte: new Date(curr_years, curr_months, 0) }}));
-	return totalCat(Depenses.find({}));
-  } 
-  Template.summary.rentAmount = function() {
-    return totalCat(Depenses.find({category: 'rent'}));
-  }
-  Template.summary.billsAmount = function() {
-    return totalCat(Depenses.find({category: 'bills'}));
-  }
-  Template.summary.foodAmount = function() {
-    return totalCat(Depenses.find({category: 'food'}));
-  }
-  Template.summary.shoppingAmount = function() {
-    return totalCat(Depenses.find({category: 'shopping'}));
-  }
-  Template.summary.supermarketAmount = function() {
-    return totalCat(Depenses.find({category: 'supermarket'}));
-  }
-  Template.summary.activityAmount = function() {
-    return totalCat(Depenses.find({category: 'activity'}));
-  }
-  Template.summary.carAmount = function() {
-    return totalCat(Depenses.find({category: 'car'}));
-  }
-  
-  Template.summaryall.rendered = function() {
-    var depenses = Depenses.find().fetch();
-//    var groupedDates = _.groupBy(_.pluck(customers, 'timestamp'), function (date) {return date.split("-",2);});
-	var monthlyDepenses = _.groupBy(depenses, function(depense) {
-		return depense.timestamp.split("-",2);
-		});
-	
-    //_.each(_.values(monthlyDepenses), function(dates) {
-    //  console.log(dates);
-    //});
-    //console.log(depenses);
-    drawChartMonthly(monthlyDepenses);
-    }
-   
-  Template.summary.rentratio = function() {
-    return ratioCat(Depenses.find(), Depenses.find({category: 'rent'}));
-  }
-  
-  Template.summary.billsratio = function() {
-    return ratioCat(Depenses.find(), Depenses.find({category: 'bills'}));
-  }
-  
-  Template.summary.foodratio = function() {
-    return ratioCat(Depenses.find(), Depenses.find({category: 'food'}));
-  }
+return totalCat(Depenses.find({}));
+} 
+Template.summary.rentAmount = function() {
+  return totalCat(Depenses.find({category: 'rent'}));
+}
+Template.summary.billsAmount = function() {
+  return totalCat(Depenses.find({category: 'bills'}));
+}
+Template.summary.foodAmount = function() {
+  return totalCat(Depenses.find({category: 'food'}));
+}
+Template.summary.shoppingAmount = function() {
+  return totalCat(Depenses.find({category: 'shopping'}));
+}
+Template.summary.supermarketAmount = function() {
+  return totalCat(Depenses.find({category: 'supermarket'}));
+}
+Template.summary.activityAmount = function() {
+  return totalCat(Depenses.find({category: 'activity'}));
+}
+Template.summary.carAmount = function() {
+  return totalCat(Depenses.find({category: 'car'}));
+}
 
-  Template.summary.shoppingratio = function() {
-    return ratioCat(Depenses.find(), Depenses.find({category: 'shopping'}));
-  }
-  
-  Template.summary.activityratio = function() {
-    return ratioCat(Depenses.find(), Depenses.find({category: 'activity'}));
-  }
+Template.summaryall.rendered = function() {
+  drawChartCurrent();
+}
 
-  Template.summary.carratio = function() {
-    return ratioCat(Depenses.find(), Depenses.find({category: 'car'}));
+Template.action.amountDebt = function(){
+  var samItems = Depenses.find({payeur: 'sam'});
+  var samSum = 0;
+  samItems.forEach(function(item){
+    samSum += Math.round(item.amount);
+  })
+  var marionItems = Depenses.find({payeur: 'marion'});
+  var marionSum = 0;
+  marionItems.forEach(function(item){
+    marionSum += Math.round(item.amount);
+  })
+  var sum = marionSum-samSum;
+  if (sum < 0){
+    return -sum/2;
   }
-  
-  Template.action.amountDebt = function(){
-    var samItems = Depenses.find({payeur: 'sam'});
-    var samSum = 0;
-    samItems.forEach(function(item){
-      samSum += Math.round(item.amount);
-    })
-    var marionItems = Depenses.find({payeur: 'marion'});
-    var marionSum = 0;
-    marionItems.forEach(function(item){
-      marionSum += Math.round(item.amount);
-    })
-    var sum = marionSum-samSum;
-    if (sum < 0){
-      return -sum/2;
-    }
-    else {
-      return sum/2;
-    }
+  else {
+    return sum/2;
   }
-  Template.action.nameDebt = function(){
-    var samItems = Depenses.find({payeur: 'sam'});
-    var samSum = 0;
-    samItems.forEach(function(item){
-      samSum += Math.round(item.amount);
-    })
-    var marionItems = Depenses.find({payeur: 'marion'});
-    var marionSum = 0;
-    marionItems.forEach(function(item){
-      marionSum += Math.round(item.amount);
-    })
-    var sum = marionSum-samSum;
-    if (sum < 0){
-      return "Marion";
-    }
-    else {
-      return "Sam";
-    }
+}
+Template.action.nameDebt = function(){
+  var samItems = Depenses.find({payeur: 'sam'});
+  var samSum = 0;
+  samItems.forEach(function(item){
+    samSum += Math.round(item.amount);
+  })
+  var marionItems = Depenses.find({payeur: 'marion'});
+  var marionSum = 0;
+  marionItems.forEach(function(item){
+    marionSum += Math.round(item.amount);
+  })
+  var sum = marionSum-samSum;
+  if (sum < 0){
+    return "Marion";
   }
+  else {
+    return "Sam";
+  }
+}
 
-  Template.navmenu.events = {
-    'click #btn__add': function(e){
-      $("#btn__add").addClass("tab-current");
-      $("#btn__current").removeClass("tab-current");
-      $("#btn__stats").removeClass("tab-current");
-      $("#btn__data").removeClass("tab-current");
+Template.navmenu.events = {
+  'click #btn__add': function(e){
+    $("#btn__add").addClass("tab-current");
+    $("#btn__current").removeClass("tab-current");
+    $("#btn__stats").removeClass("tab-current");
+    $("#btn__data").removeClass("tab-current");
 
-      $("#section__add").addClass("current");
-      $("#section__current").removeClass("current");
-      $("#section__stats").removeClass("current");
-      $("#section__data").removeClass("current");
-    },
-    'click #btn__current': function(e){
+    $("#section__add").addClass("current");
+    $("#section__current").removeClass("current");
+    $("#section__stats").removeClass("current");
+    $("#section__data").removeClass("current");
+  },
+  'click #btn__current': function(e){
       //drawChart();
       $("#btn__current").addClass("tab-current");
       $("#btn__stats").removeClass("tab-current");
@@ -325,16 +369,16 @@ if (Meteor.isClient) {
       $("#section__data").removeClass("current");
     },
     'click #btn__data': function(e){
-          $("#btn__add").removeClass("tab-current");
-          $("#btn__current").removeClass("tab-current");
-          $("#btn__stats").removeClass("tab-current");
-          $("#btn__data").addClass("tab-current");
-    
-          $("#section__add").removeClass("current");
-          $("#section__current").removeClass("current");
-          $("#section__stats").removeClass("current");
-          $("#section__data").addClass("current");
-      },
+      $("#btn__add").removeClass("tab-current");
+      $("#btn__current").removeClass("tab-current");
+      $("#btn__stats").removeClass("tab-current");
+      $("#btn__data").addClass("tab-current");
+
+      $("#section__add").removeClass("current");
+      $("#section__current").removeClass("current");
+      $("#section__stats").removeClass("current");
+      $("#section__data").addClass("current");
+    },
     'click #btn__stats': function(e){
       $("#btn__stats").addClass("tab-current");
       $("#btn__current").removeClass("tab-current");
@@ -361,9 +405,9 @@ if (Meteor.isClient) {
   Template.depenses.events = {
     'click button.remove': function(){
       var c = confirm("Delete depense?");
-        if (c == true) {
-          Depenses.remove(this._id);
-        };
+      if (c == true) {
+        Depenses.remove(this._id);
+      };
     }
   }
   
@@ -401,12 +445,12 @@ if (Meteor.isClient) {
           //category.value = '';
         };
       }
+    }
+
   }
 
-}
-
-if (Meteor.isServer) {
-  Meteor.startup(function () {
+  if (Meteor.isServer) {
+    Meteor.startup(function () {
     // code to run on server at startup
   });
-}
+  }
