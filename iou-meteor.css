@@ -134,7 +134,7 @@ html, button, input, textarea, select {
 	padding: 10px 10px;
 }
 .summary__table td {
-	padding: 4px 10px;
+	padding: 4px 4px;
 }
 .summary__bar {
 	display: inline-block;

@@ -323,7 +323,7 @@ if (Meteor.isClient) {
     return monthlytotalCat('shopping');
   }
   Template.summary.supermarketAmount = function() {
-    return monthlytotalCat('supermaket');
+    return monthlytotalCat('supermarket');
   }
   Template.summary.activityAmount = function() {
     return monthlytotalCat('activity');
