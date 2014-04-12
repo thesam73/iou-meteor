@@ -23,6 +23,39 @@ function totalCat(Items) {
   return total;
 }
 
+function monthlytotalCat(cat){
+    var d = new Date();
+    var curr_month = d.getMonth() + 1; //Months are zero based
+    var curr_year = d.getFullYear();
+    var startmonth = curr_year + '-' + (curr_month<=9 ? '0' + curr_month : curr_month) + '-01';
+    var endmonth = curr_year + '-' + (curr_month<=9 ? '0' + curr_month : curr_month) + '-31';
+    curr_month = curr_month - 1;
+    var startlastmonth = curr_year + '-' + (curr_month<=9 ? '0' + curr_month : curr_month) + '-01';
+    return totalCat(Depenses.find({
+      category: cat,
+      timestamp: {$gte: startmonth, $lte: endmonth}
+    }));
+}
+function monthlyratioCat(cat){
+    var d = new Date();
+    var curr_month = d.getMonth() + 1; //Months are zero based
+    var curr_year = d.getFullYear();
+    var startmonth = curr_year + '-' + (curr_month<=9 ? '0' + curr_month : curr_month) + '-01';
+    var endmonth = curr_year + '-' + (curr_month<=9 ? '0' + curr_month : curr_month) + '-31';
+    curr_month = curr_month - 1;
+    var startlastmonth = curr_year + '-' + (curr_month<=9 ? '0' + curr_month : curr_month) + '-01';
+    var previous = totalCat(Depenses.find({
+      category: cat,
+      timestamp: {$gte: startlastmonth, $lte: startmonth}
+    }));
+    var current = totalCat(Depenses.find({
+      category: cat,
+      timestamp: {$gte: startmonth, $lte: endmonth}
+    }));
+    var ratio = Math.round(current / previous * 100);
+    if (ratio > 100) ratio = 100;
+    return ratio;
+}
 //.class__rent {
 //	background-color: #7f8c8d;
 //}
@@ -268,28 +301,35 @@ if (Meteor.isClient) {
   	drawChart();
   }
   Template.summary.totalAmount = function() {
-    return totalCat(Depenses.find({}));
+    var d = new Date();
+    var curr_month = d.getMonth() + 1; //Months are zero based
+    var curr_year = d.getFullYear();
+    var startmonth = curr_year + '-' + (curr_month<=9 ? '0' + curr_month : curr_month) + '-01';
+    var endmonth = curr_year + '-' + (curr_month<=9 ? '0' + curr_month : curr_month) + '-31';
+    curr_month = curr_month - 1;
+    var startlastmonth = curr_year + '-' + (curr_month<=9 ? '0' + curr_month : curr_month) + '-01';
+    return totalCat(Depenses.find({timestamp: {$gte: startlastmonth, $lte: startmonth}}));
   } 
   Template.summary.rentAmount = function() {
-    return totalCat(Depenses.find({category: 'rent'}));
+    return monthlytotalCat('rent');
   }
   Template.summary.billsAmount = function() {
-    return totalCat(Depenses.find({category: 'bills'}));
+    return monthlytotalCat('bills');
   }
   Template.summary.foodAmount = function() {
-    return totalCat(Depenses.find({category: 'food'}));
+    return monthlytotalCat('food');
   }
   Template.summary.shoppingAmount = function() {
-    return totalCat(Depenses.find({category: 'shopping'}));
+    return monthlytotalCat('shopping');
   }
   Template.summary.supermarketAmount = function() {
-    return totalCat(Depenses.find({category: 'supermarket'}));
+    return monthlytotalCat('supermaket');
   }
   Template.summary.activityAmount = function() {
-    return totalCat(Depenses.find({category: 'activity'}));
+    return monthlytotalCat('activity');
   }
   Template.summary.carAmount = function() {
-    return totalCat(Depenses.find({category: 'car'}));
+    return monthlytotalCat('car');
   }
   Template.summary.totalRatio = function() {
     var d = new Date();
@@ -299,9 +339,37 @@ if (Meteor.isClient) {
     var endmonth = curr_year + '-' + (curr_month<=9 ? '0' + curr_month : curr_month) + '-31';
     curr_month = curr_month - 1;
     var startlastmonth = curr_year + '-' + (curr_month<=9 ? '0' + curr_month : curr_month) + '-01';
-    return totalCat(Depenses.find({timestamp: {$gte: startlastmonth, $lte: startmonth}}));
+    var previous = totalCat(Depenses.find({
+      timestamp: {$gte: startlastmonth, $lte: startmonth}
+    }));
+    var current = totalCat(Depenses.find({
+      timestamp: {$gte: startmonth, $lte: endmonth}
+    }));
+    var ratio = Math.round(current / previous * 100);
+    if (ratio > 100) ratio = 100;
+    return ratio;
 } 
-
+Template.summary.rentRatio = function() {
+  return monthlyratioCat('rent');
+} 
+Template.summary.billsRatio = function() {
+  return monthlyratioCat('bills');
+} 
+Template.summary.foodRatio = function() {
+  return monthlyratioCat('food');
+} 
+Template.summary.shoppingRatio = function() {
+  return monthlyratioCat('shopping');
+} 
+Template.summary.supermarketRatio = function() {
+  return monthlyratioCat('supermarket');
+} 
+Template.summary.activityRatio = function() {
+  return monthlyratioCat('activity');
+} 
+Template.summary.carRatio = function() {
+  return monthlyratioCat('car');
+} 
 Template.summaryall.rendered = function() {
   drawChartCurrent();
 }

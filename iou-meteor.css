@@ -134,8 +134,8 @@ html, button, input, textarea, select {
 	padding: 10px 10px;
 }
 .summary__table td {
-	padding: 4px 10px;
-}
+/*	padding: 4px 10px;
+*/}
 .summary__bar {
 	display: inline-block;
 	height: 3em;
@@ -151,7 +151,7 @@ html, button, input, textarea, select {
 	letter-spacing: 2px;
 	font-size: 1em;
 	line-height: 1.5;
-	width: 175px;
+	width: 130px;
 }
 
 .summary__progress__bar .progress {
@@ -161,7 +161,6 @@ html, button, input, textarea, select {
 .summary__progress__bar .progress-inner {
     position: absolute;
     left: 0;
-    width: 75%;
     height: 100%;
 }
 .summary__progress__bar{
