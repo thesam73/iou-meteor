@@ -124,6 +124,74 @@
 </template>
 
 <template name="summary">
+
+<table class="summary__table">
+	<tr class="table__total">
+		<td class="icon-list"></td>
+		<td class="money">$ {{totalAmount}} {{totalRatio}}</td>
+		<td class="summary__progress__bar">
+			<span class="content">Total</span>
+			<span class="progress"><span class="progress-inner"></span></span>
+		</td>
+	</tr>
+	<tr class="table__rent">
+		<td class="icon-home"></td>
+		<td class="money">$ {{rentAmount}}</td>
+		<td class="summary__progress__bar">
+			<span class="content">Rent</span>
+			<span class="progress"><span class="progress-inner"></span></span>
+		</td>
+	</tr>
+	<tr class="table__bills">
+		<td class="icon-setting-1"></td>
+		<td class="money">$ {{billsAmount}}</td>
+		<td class="summary__progress__bar">
+			<span class="content">Bills</span>
+			<span class="progress"><span class="progress-inner"></span></span>
+		</td>
+	</tr>
+	<tr class="table__food">
+		<td class="icon-fast-food"></td>
+		<td class="money">$ {{foodAmount}}</td>
+		<td class="summary__progress__bar">
+			<span class="content">Food</span>
+			<span class="progress"><span class="progress-inner"></span></span>
+		</td>
+	</tr>
+	<tr class="table__supermarket">
+		<td class="icon-shopping-cart"></td>
+		<td class="money">$ {{supermarketAmount}}</td>
+		<td class="summary__progress__bar">
+			<span class="content">SuperMarket</span>
+			<span class="progress"><span class="progress-inner"></span></span>
+		</td>
+	</tr>
+	<tr class="table__shopping">
+		<td class="icon-tshirt"></td>
+		<td class="money">$ {{shoppingAmount}}</td>
+		<td class="summary__progress__bar">
+			<span class="content">Shopping</span>
+			<span class="progress"><span class="progress-inner"></span></span>
+		</td>
+	</tr>
+	<tr class="table__activity">
+		<td class="icon-ticket"></td>
+		<td class="money">$ {{activityAmount}}</td>
+		<td class="summary__progress__bar">
+			<span class="content">Activity</span>
+			<span class="progress"><span class="progress-inner"></span></span>
+		</td>
+	</tr>
+	<tr class="table__car">
+		<td class="icon-boat"></td>
+		<td class="money">$ {{carAmount}}</td>
+		<td class="summary__progress__bar">
+			<span class="content">Car</span>
+			<span class="progress"><span class="progress-inner"></span></span>
+		</td>
+	</tr>
+</table>
+
 <div class="chartdonut">
 	<canvas id="myChart" width="200px" height="200px"></canvas>
 </div>

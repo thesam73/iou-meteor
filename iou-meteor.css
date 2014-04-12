@@ -122,7 +122,7 @@ html, button, input, textarea, select {
 	font-size: 1.2em;
 /*	color: #313140!important;*/
 }
-.summary__table tr td:last-child{
+.summary__table tr td:nth-child(2){
 	text-align: left;
 	font-size: 1.2em;
 	font-weight: 700;
@@ -140,6 +140,33 @@ html, button, input, textarea, select {
 	display: inline-block;
 	height: 3em;
 }
+.summary__progress__bar {
+	position: relative;
+	display: inline-block;
+	padding: 0!important;
+	outline: none;
+	border: none;
+	color: #fff;
+	text-transform: uppercase;
+	letter-spacing: 2px;
+	font-size: 1em;
+	line-height: 1.5;
+	width: 175px;
+}
+
+.summary__progress__bar .progress {
+    /*background: #148544;*/
+}
+ 
+.summary__progress__bar .progress-inner {
+    position: absolute;
+    left: 0;
+    width: 75%;
+    height: 100%;
+}
+.summary__progress__bar{
+	background-color: #bababa;
+}
 .depenses{
 	width: 100%;
 /*	background-color: #FFF;
@@ -156,25 +183,29 @@ html, button, input, textarea, select {
 	text-align:center;
 	width: 95%;
 }
-.class__rent {
+
+.class__total, .table__total .summary__progress__bar .progress-inner {
+	background-color: #313140;
+}
+.class__rent, .table__rent .summary__progress__bar .progress-inner {
 	background-color: #7f8c8d;
 }
-.class__bills {
+.class__bills, .table__bills .summary__progress__bar .progress-inner {
 	background-color: #2ecc71;
 }
-.class__food {
+.class__food, .table__food .summary__progress__bar .progress-inner {
 	background-color: #3498db;
 }
-.class__shopping {
+.class__shopping, .table__shopping .summary__progress__bar .progress-inner {
 	background-color: #9b59b6;
 }
-.class__supermarket {
+.class__supermarket, .table__supermarket .summary__progress__bar .progress-inner {
 	background-color: #00CCC1;
 }
-.class__activity {
+.class__activity, .table__activity .summary__progress__bar .progress-inner {
 	background-color: #e67e22;
 }
-.class__car {
+.class__car, .table__car .summary__progress__bar .progress-inner {
 	background-color: #34495e;
 }
 
