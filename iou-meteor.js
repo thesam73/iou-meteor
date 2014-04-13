@@ -297,6 +297,24 @@ if (Meteor.isClient) {
   Template.submitmessage.message = function () {
   	return "All good keep spending!";
   }
+  Template.monthly__sal.monthlyRatio = function() {
+    var d = new Date();
+    var curr_month = d.getMonth() + 1; //Months are zero based
+    var curr_year = d.getFullYear();
+    var startmonth = curr_year + '-' + (curr_month<=9 ? '0' + curr_month : curr_month) + '-01';
+    var endmonth = curr_year + '-' + (curr_month<=9 ? '0' + curr_month : curr_month) + '-31';
+    curr_month = curr_month - 1;
+    var startlastmonth = curr_year + '-' + (curr_month<=9 ? '0' + curr_month : curr_month) + '-01';
+    var previous = totalCat(Depenses.find({
+      timestamp: {$gte: startlastmonth, $lte: startmonth}
+    }));
+    var current = totalCat(Depenses.find({
+      timestamp: {$gte: startmonth, $lte: endmonth}
+    }));
+    var ratio = Math.round(current / 4300 * 100);
+    if (ratio > 100) ratio = 100;
+    return ratio;
+} 
   Template.summary.rendered = function () {
   	drawChart();
   }

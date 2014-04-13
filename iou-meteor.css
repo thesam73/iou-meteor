@@ -53,7 +53,7 @@ html, button, input, textarea, select {
 	margin-top: 20px;
 	width: 100%;
 }
-.submit__form {
+.submit__form, .monthly__sal {
 	margin:20px auto;
 	text-align:center;
 	width: 85%;
@@ -153,7 +153,13 @@ html, button, input, textarea, select {
 	line-height: 1.5;
 	width: 150px;
 }
-
+.monthly__bar{
+	width: 100%;
+	font-size: 1.3em;
+	line-height: 2;
+	text-transform: lowercase;
+	border-radius: 70px;
+}
 .summary__progress__bar .progress {
     /*background: #148544;*/
 }
@@ -181,6 +187,11 @@ html, button, input, textarea, select {
 	margin: 1.5em auto;
 	text-align:center;
 	width: 95%;
+}
+
+.monthly__bar .progress-inner {
+	background-color: #78C0C0;
+	border-radius: 70px;
 }
 
 .class__total, .table__total .summary__progress__bar .progress-inner {
@@ -268,7 +279,7 @@ a.btn {
 	line-height: 1.5em !important;
 	padding: .375em .75em;
 	font-weight: 600;
-	border-radius: 3px;
+	border-radius: 70px;
 	display: inline-block;
 	position: relative;
 	text-align: center;
@@ -425,7 +436,7 @@ vertical-align: bottom;
   position: fixed;
   top: 50%;
   left: 50%;
-  margin-top: -10em;
+  margin-top: -12em;
   margin-left: -50%;
 }
 #section__current, #section__stats {

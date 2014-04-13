@@ -19,6 +19,9 @@
 	 	{{> navmenu}}
     <div class="content">
 	  <section id="section__add" class="submit current">
+	  <div class="monthly__sal">
+	  			{{> monthly__sal}}
+	  		</div>
 	  	<div class="action">
 	  		<div class="action__block">
 	  			{{> action}}
@@ -55,6 +58,14 @@
 <template name="submitmessage">
 {{message}}
 </template>
+
+<template name="monthly__sal">
+	<div class="summary__progress__bar monthly__bar">
+		<span class="content">have a nice day</span>
+		<span class="progress"><span class="progress-inner" style="width: {{monthlyRatio}}%;"></span></span>
+	</div>
+</template>
+
 
 <template name="navmenu">
 	<nav>
