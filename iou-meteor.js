@@ -348,7 +348,7 @@ if (Meteor.isClient) {
     return ratio;
 } 
   Template.summary.rendered = function () {
-  	drawChart();
+  	//drawChart();
   }
   Template.summary.totalAmount = function() {
     var d = new Date();
@@ -443,7 +443,7 @@ Template.summary.carMRatio = function() {
   return monthlyMratioCat('car');
 } 
 Template.summaryall.rendered = function() {
-  drawChartCurrent();
+  //drawChartCurrent();
 }
 
 Template.action.amountDebt = function(){
@@ -559,11 +559,12 @@ Template.navmenu.events = {
         var amount = document.getElementById('amount');
         var category = document.getElementById('category');
         //var payeur = document.getElementById('payeur');
-        var sam = document.getElementById('payeur__sam');
-        var marion = document.getElementById('payeur__marion');
+        var sam = document.getElementById('payeur_sam').checked;
+        var marion = document.getElementById('payeur_marion').checked;
         var payeur = 'both';
         if (sam == true && marion == false) payeur = 'sam';
         if (sam == false && marion == true) payeur = 'marion';
+        console.log
         var date_html = document.getElementById('timestamp');
         var d = new Date();
         var curr_date = d.getDate();
@@ -580,7 +581,7 @@ Template.navmenu.events = {
             category: category.value,
             //sam: sam.checked,
             //marion: marion.checked,
-            payeur: payeur.value,
+            payeur: payeur,
             timestamp: date,
             time: Date()
           });
