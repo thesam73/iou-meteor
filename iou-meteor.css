@@ -56,8 +56,8 @@ html, button, input, textarea, select {
 .submit__form, .monthly__sal {
 	margin:20px auto;
 	text-align:center;
-	width: 85%;
-}
+/*	width: 85%;
+*/}
 .submit__form__row {
 
 }
@@ -102,6 +102,21 @@ html, button, input, textarea, select {
 }
 .action--amount {
 	font-size: 3em
+}
+.action__table {
+	margin: 0.5em auto;
+	text-align:center;
+	font-size: 2em;
+	text-transform: lowercase;
+}
+
+.debt__name {
+	text-align: center;
+	width: 40%;
+}
+.debt__amount {
+	text-align: left;
+	width: 60%;
 }
 .summary{
 /*	margin-top: 20px;*/
@@ -152,22 +167,37 @@ html, button, input, textarea, select {
 	font-size: 1em;
 	line-height: 1.5;
 	width: 150px;
+	border-radius: 3px;
 }
 .monthly__bar{
-	width: 100%;
+	width: 90%;
 	font-size: 1.3em;
 	line-height: 2;
 	text-transform: lowercase;
-	border-radius: 70px;
+	border-radius: 3px;
 }
 .summary__progress__bar .progress {
     /*background: #148544;*/
 }
  
+ .hbar__stacked {
+ 	height: 27px;
+	width: 98%;
+	border-spacing: 0;
+	margin: 10px auto;
+	text-align: center;
+ }
+.progress-inner__stacked {
+    position: absolute;
+    left: 0;
+    height: 100%;
+    border-radius: 3px;
+}
 .summary__progress__bar .progress-inner {
     position: absolute;
     left: 0;
     height: 100%;
+    border-radius: 3px;
 }
 .summary__progress__bar{
 	background-color: #bababa;
@@ -189,11 +219,20 @@ html, button, input, textarea, select {
 	width: 95%;
 }
 
+.table__total .monthly__bar {
+	text-transform: uppercase;
+	font-size: 1em;
+	line-height: 1.5;
+	width: 98%;
+}
 .monthly__bar .progress-inner {
 	background-color: #78C0C0;
-	border-radius: 70px;
+	border-radius: 3px;
 }
-
+.summary__progress__bar .content {
+	z-index: 10;
+	position: relative;
+}
 .class__total, .table__total .summary__progress__bar .progress-inner {
 	background-color: #313140;
 }
@@ -292,12 +331,18 @@ a.btn {
 	-o-transition: box-shadow 100ms ease-in-out, color 300ms ease-in;
 	transition: box-shadow 100ms ease-in-out, color 300ms ease-in;
 }
-a#submit {
+
+.btn__wide {
+	width: 80%;
+}
+.btn__margin {
+	margin-top: 0.5em;
+}
+/*a#submit {
 	margin-top: 5px;
 	padding: .375em 39%;
-}
-a#updatedebt {
-	/*padding: 1em 6em;*/
+}*/
+/*a#updatedebt {
 	width: 85%;
 }
 a#updatedebt {
@@ -307,7 +352,7 @@ a#updatedebt {
 a#updatedebt:active {
 	box-shadow: #6064AD 0 0 0 1px inset;
 	color: #6064AD;
-}
+}*/
 input, select {
 	border: none;
 }
@@ -323,12 +368,29 @@ input, select {
 	border: 1px solid #95a5a6;
 }
 
-.input__amount, .input__date {
-	width: 18%;
-}
-.select__category, .select__payeur {
-	width: 27%;
+.select__payeur {
+	width: 66%;
+	display: inline-flex;
+	text-align:center; 
+	height: 2em;
+	margin: 0.1em 0;
+	padding: 0;
+	background-image: none;
+	vertical-align: bottom;
+	color: black;
+	background-color: white;
+	border: 1px solid #95a5a6;
+/*	height: 2.1em!important;
+*/}
+.select__category {
+	width: 52%;
 	height: 2.1em!important;
+}
+.input__amount {
+	width: 30%;
+}
+.input__date {
+	width: 45%;
 }
 
 .money {
@@ -356,6 +418,7 @@ h2 {
     position: fixed;
     bottom: 0;
     width: 100%;
+    z-index: 500;
 }
  
 .tabs nav ul {
@@ -433,15 +496,61 @@ vertical-align: bottom;
  }
 
 #section__add {
-  position: fixed;
+  margin-top: 5%;
+/*  position: fixed;
   top: 50%;
   left: 50%;
   margin-top: -12em;
-  margin-left: -50%;
+  margin-left: -50%;*/
 }
 #section__current, #section__stats {
   	margin-bottom: 80px;
 }
+
+/*
+  Hide radio button (the round disc)
+  we will use just the label to create pushbutton effect
+*/
+input[type=checkbox] {
+    display:none; 
+    margin:10px;
+}
+ 
+/*
+  Change the look'n'feel of labels (which are adjacent to radiobuttons).
+  Add some margin, padding to label
+*/
+input[type=checkbox] + label {
+    display: inline-block;
+	margin: 0 0;
+	padding: 0 0;
+	width: 50%;
+	line-height: 2em;
+}
+.border__right {
+	border-right: 1px solid #95a5a6;
+}
+/*
+ Change background color for label next to checked radio button
+ to make it look like highlighted button
+*/
+input[type=checkbox]:checked + label { 
+   background-image: none;
+    background-color: #DDD;
+}
+input[type=checkbox]:checked + label:before { 
+   content: "\e091";
+   font-family: "outlined-iconset" !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  position: absolute;
+	margin: 0 -6%;
+}
+
+
 @media screen and (max-width: 52.375em) {
 	.tabs nav a span {
 	display: none;

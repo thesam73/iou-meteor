@@ -1,67 +1,69 @@
 <head>
-  <title>IOU</title>
-  <meta name="viewport" content="initial-scale=1.0" />
-  <link rel="stylesheet" href="/css/font-outline.css">
-  <meta name="mobile-web-app-capable" content="yes">
-  <link rel="icon" sizes="196x196" href="img/icon-196.png"> 
-  <link rel="icon" sizes="128x128" href="mg/icon-128.png">
-  <link rel="apple-touch-icon" sizes="128x128" href="mg/icon-128.png">
-  <link rel="apple-touch-icon-precomposed" sizes="128x128" href="mg/icon-128.png">
-  <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700' rel='stylesheet' type='text/css'>
-  <link href='http://fonts.googleapis.com/css?family=Source+Code+Pro:300,400,700' rel='stylesheet' type='text/css'>
-  <script src="http://d3js.org/d3.v3.min.js"></script>
-  <script src="/js/Chart.js"></script>
-   <script src="http://dimplejs.org/dist/dimple.v1.1.5.min.js"></script>
+	<title>IOU</title>
+	<meta name="viewport" content="initial-scale=1.0" />
+	<link rel="stylesheet" href="/css/font-outline.css">
+	<meta name="mobile-web-app-capable" content="yes">
+	<link rel="icon" sizes="196x196" href="img/icon-196.png"> 
+	<link rel="icon" sizes="128x128" href="mg/icon-128.png">
+	<link rel="apple-touch-icon" sizes="128x128" href="mg/icon-128.png">
+	<link rel="apple-touch-icon-precomposed" sizes="128x128" href="mg/icon-128.png">
+	<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Source+Code+Pro:300,400,700' rel='stylesheet' type='text/css'>
+	<script src="http://d3js.org/d3.v3.min.js"></script>
+	<script src="/js/Chart.js"></script>
+	<script src="http://dimplejs.org/dist/dimple.v1.1.5.min.js"></script>
 </head>
 
 <body>
 	<div id="tabs" class="tabs">
-	 	{{> navmenu}}
-    <div class="content">
-	  <section id="section__add" class="submit current">
-	  <div class="monthly__sal">
-	  			{{> monthly__sal}}
-	  		</div>
-	  	<div class="action">
-	  		<div class="action__block">
-	  			{{> action}}
-	  		</div>
-	  	</div>
-	  	<div class="submit__form">
-	  		{{> entryfield}}
-	  	</div>
-	  </section>
-	  <section id="section__current" class="summary">
-	  	<div class="summary__block">
-	  		{{> summary}}
-	  	</div>
-	  </section>
-	  <section id="section__stats" class="depenses">
-	  	<div class="depenses__block">
-	  		{{> summaryall}}
-	  	</div>
-	  </section>  
-	  <section id="section__data" class="depenses">
-	  	<div class="depenses__block">
-	  		{{> depenses}}
-	  	</div>
-	  </section>
-	  <div id="confirm">
-	  	<div class="confirm__box">
-	  		{{> submitmessage }}
-	  	</div>
-	  </div>
-	 </div>
+		{{> navmenu}}
+		<div class="content">
+			<section id="section__add" class="submit current">
+				<div class="action">
+					<div class="action__block">
+						{{> action}}
+					</div>
+				</div>
+				<div class="submit__form">
+					{{> entryfield}}
+				</div>
+				<div class="action">
+					<div class="monthly__sal">
+						{{> monthly__sal}}
+					</div>
+				</div>
+			</section>
+			<section id="section__current" class="summary">
+				<div class="summary__block">
+					{{> summary}}
+				</div>
+			</section>
+			<section id="section__stats" class="depenses">
+				<div class="depenses__block">
+					{{> summaryall}}
+				</div>
+			</section>  
+			<section id="section__data" class="depenses">
+				<div class="depenses__block">
+					{{> depenses}}
+				</div>
+			</section>
+			<div id="confirm">
+				<div class="confirm__box">
+					{{> submitmessage }}
+				</div>
+			</div>
+		</div>
 	</div>
 </body>
 
 <template name="submitmessage">
-{{message}}
+	{{message}}
 </template>
 
 <template name="monthly__sal">
 	<div class="summary__progress__bar monthly__bar">
-		<span class="content">have a nice day</span>
+		<span class="content">this month: ${{monthlyTotal}}</span>
 		<span class="progress"><span class="progress-inner" style="width: {{monthlyRatio}}%;"></span></span>
 	</div>
 </template>
@@ -69,82 +71,89 @@
 
 <template name="navmenu">
 	<nav>
-        <ul>
-            <li id="btn__add" class="tab-current"><a class="btn__add icon-dialogue-add"><span>Add</span></a></li>
-            <li id="btn__current"><a class="icon-life-buoy"><span>Stats</span></a></li>
-            <li id="btn__stats"><a class="icon-graph"><span>Graphs</span></a></li>
-            <li id="btn__data"><a class="icon-todolist"><span>Data</span></a></li>
-        </ul>
-    </nav>
+		<ul>
+			<li id="btn__add" class="tab-current"><a class="btn__add icon-dialogue-add"><span>Add</span></a></li>
+			<li id="btn__current"><a class="icon-life-buoy"><span>Stats</span></a></li>
+			<li id="btn__stats"><a class="icon-graph"><span>Graphs</span></a></li>
+			<li id="btn__data"><a class="icon-todolist"><span>Data</span></a></li>
+		</ul>
+	</nav>
 </template>
 
 <template name="entryfield">
 	<form id="new_entry">
 		<div class="submit__form__row">
 			<input class="input__amount" type="number" id="amount" placeholder="$"/>
+			<span class="select__payeur">
+				<input type="checkbox" id="payeur_marion" name="radios" value="false">
+				<label class="border__right" for="payeur_marion">Marion</label>
+				<input type="checkbox" id="payeur_sam" name="radios"value="false">
+				<label for="payeur_sam">Sam</label>
+			</span>
+			<!-- <select class="select__payeur" id="payeur" name="payeur" >
+				<option value="marion">Marion</option>
+				<option value="sam">Sam</option>
+				<option value="both">Both</option>
+			</select> -->
+		</div>
+		<div class="submit__form__row">
 			<select class="select__category" id="category" name="category" >
-			  <option value="rent">Rent</option>
-			  <option value="bills">Bills</option>
-			  <option value="food">Food</option>
-			  <option value="supermarket">SuperMarket</option>
-			  <option value="shopping">Shopping</option>
-			  <option value="activity">Activity</option>
-			  <option value="car">Car</option>
-			</select>
-			<select class="select__payeur" id="payeur" name="payeur" >
-			  <option value="marion">Marion</option>
-			  <option value="sam">Sam</option>
-			  <option value="both">Both</option>
+				<option value="rent">Rent</option>
+				<option value="bills">Bills</option>
+				<option value="food">Food</option>
+				<option value="supermarket">SuperMarket</option>
+				<option value="shopping">Shopping</option>
+				<option value="activity">Activity</option>
+				<option value="car">Car</option>
 			</select>
 			<input class="input__date" type="date" id="timestamp">
 		</div>
-		<div class="submit__form__row">
-			<a id="submit" class="btn" href="#">Submit</a>
-		</div>
-	</form>
+	</div>
+	<div class="submit__form__row">
+		<a id="submit" class="btn btn__wide btn__margin">Submit</a>
+	</div>
+</form>
 </template>
 
 <template name="depenses">
 	<table class="depenses__table">
-	<tr>
-	  <th>Amount</th>
-	  <th>Category</th> 
-	  <th class="not-small">Payeur</th>
-	  <th>Date</th>
-	  <th>X</th>
-	</tr>
-	{{#each depenses}}
-	<tr>
-		<td>$ {{amount}}</td>
-		<td>{{category}}</td>
-		<td class="not-small">{{payeur}}</td>
-		<td>{{timestamp}}</td>
-		<td><button type="button" class="btn remove">X</button></td>
-	</tr>
-	{{/each}}
+		<tr>
+			<th>Amount</th>
+			<th>Category</th> 
+			<th class="not-small">Payeur</th>
+			<th>Date</th>
+			<th>X</th>
+		</tr>
+		{{#each depenses}}
+		<tr>
+			<td>$ {{amount}}</td>
+			<td>{{category}}</td>
+			<td class="not-small">{{payeur}}</td>
+			<td>{{timestamp}}</td>
+			<td><button type="button" class="btn remove">X</button></td>
+		</tr>
+		{{/each}}
 	</table>
 </template>
 
 
 
 <template name="action">
-	<a id="updatedebt" class="btn">
-		<h2>{{nameDebt}}</h2>
-		<span class="action--amount money">$ {{amountDebt}}</span>
-	</a>
+	<table class="action__table"><tr>
+		<td class="debt__name">{{nameDebt}}:</td>
+		<td class="money debt__amount">${{amountDebt}}</td>
+	</tr></table>
+	<a id="updatedebt" class="btn btn__wide">reset</a>
 </template>
 
 <template name="summary">
-
-<table class="summary__table">
-	<tr class="table__total">
-		<td class="icon-list"></td>
-		<td class="money">$ {{totalAmount}}</td>
-		<td class="summary__progress__bar">
-			<span class="content">Total</span>
+	<div class="table__total">
+		<div class="summary__progress__bar monthly__bar">
+			<span class="content">this month: ${{totalAmount}}</span>
 			<span class="progress"><span class="progress-inner" style="width: {{totalRatio}}%;"></span></span>
-		</td>
-	</tr>
+		</div>
+	</div>
+<table class="summary__table">
 	<tr class="table__rent">
 		<td class="icon-home"></td>
 		<td class="money">$ {{rentAmount}}</td>
@@ -202,10 +211,20 @@
 		</td>
 	</tr>
 </table>
-
-<div class="chartdonut">
+<div class="table__total">
+		<table class="hbar__stacked"><tr>
+			<td class="class__rent" style="width: {{rentMRatio}}%;"></td>
+			<td class="class__bills" style="width: {{billsMRatio}}%;"></td>
+			<td class="class__food" style="width: {{foodMRatio}}%;"></td>
+			<td class="class__supermarket" style="width: {{supermarketMRatio}}%;"></td>
+			<td class="class__shopping" style="width: {{shoppingMRatio}}%;"></td>
+			<td class="class__activity" style="width: {{activityMRatio}}%;"></td>
+			<td class="class__car" style="width: {{carMRatio}}%;"></td>
+		</tr></table>
+	</div>
+<!-- <div class="chartdonut">
 	<canvas id="myChart" width="200px" height="200px"></canvas>
-</div>
+</div> -->
 <!-- 	<table class="summary__table">
 	<tr class="table__total">
 		<td class="icon-list">Total: </td>
@@ -239,14 +258,14 @@
 		<td class="icon-boat">Car: </td>
 		<td>$ {{carAmount}}</td>
 	</tr>
-	</table> -->
+</table> -->
 </template>
 
 <template name="summaryall">
-<div class="chartdonut">
-	<canvas id="chartCurrent" width="200px" height="300px"></canvas>
-</div>
-<tr class="table__total">
+	<div class="chartdonut">
+		<canvas id="chartCurrent" width="200px" height="300px"></canvas>
+	</div>
+	<tr class="table__total">
 		<td class="icon-list">Current Month</td>
 	</tr>
 	<!-- <div id="chartCurrentMonth"></div>
@@ -280,18 +299,18 @@
 		<td class="icon-boat">Car: </td>
 		<td>$ {{carAmount}}</td>
 	</tr>
-	</table>-->
+</table>-->
 </template>
 
 <template name="entrydetail">
- {{#if isVisible}}
- <form class="form-inline" id="update_entry">
+	{{#if isVisible}}
+	<form class="form-inline" id="update_entry">
 		<input type="text" id="update_amount" placeholder="Amout"/>{{update_amount}}
 		<input type="text" id="update_category" placeholder="Category"/>
 		<input type="checkbox" id="update_sam" name="sam" value="Sam">Sam
 		<input type="checkbox" id="update_marion" name="marion" value="Marion">Marion
 		<button type="button" id="update_submit" class="btn">Update</button>
 		<button type="button" id="update_remove" class="btn">Remove</button>
-</form>
- {{/if}}
+	</form>
+	{{/if}}
 </template>

@@ -56,6 +56,25 @@ function monthlyratioCat(cat){
     if (ratio > 100) ratio = 100;
     return ratio;
 }
+function monthlyMratioCat(cat){
+    var d = new Date();
+    var curr_month = d.getMonth() + 1; //Months are zero based
+    var curr_year = d.getFullYear();
+    var startmonth = curr_year + '-' + (curr_month<=9 ? '0' + curr_month : curr_month) + '-01';
+    var endmonth = curr_year + '-' + (curr_month<=9 ? '0' + curr_month : curr_month) + '-31';
+    curr_month = curr_month - 1;
+    var startlastmonth = curr_year + '-' + (curr_month<=9 ? '0' + curr_month : curr_month) + '-01';
+    var current = totalCat(Depenses.find({
+      category: cat,
+      timestamp: {$gte: startmonth, $lte: endmonth}
+    }));
+    var total = totalCat(Depenses.find({
+      timestamp: {$gte: startmonth, $lte: endmonth}
+    }));
+    var ratio = Math.round(current / total * 100);
+    if (ratio > 100) ratio = 100;
+    return ratio;
+}
 //.class__rent {
 //	background-color: #7f8c8d;
 //}
@@ -297,6 +316,19 @@ if (Meteor.isClient) {
   Template.submitmessage.message = function () {
   	return "All good keep spending!";
   }
+  Template.monthly__sal.monthlyTotal = function() {
+    var d = new Date();
+    var curr_month = d.getMonth() + 1; //Months are zero based
+    var curr_year = d.getFullYear();
+    var startmonth = curr_year + '-' + (curr_month<=9 ? '0' + curr_month : curr_month) + '-01';
+    var endmonth = curr_year + '-' + (curr_month<=9 ? '0' + curr_month : curr_month) + '-31';
+    curr_month = curr_month - 1;
+    var startlastmonth = curr_year + '-' + (curr_month<=9 ? '0' + curr_month : curr_month) + '-01';
+    var current = totalCat(Depenses.find({
+      timestamp: {$gte: startmonth, $lte: endmonth}
+    }));
+    return current;
+} 
   Template.monthly__sal.monthlyRatio = function() {
     var d = new Date();
     var curr_month = d.getMonth() + 1; //Months are zero based
@@ -326,7 +358,7 @@ if (Meteor.isClient) {
     var endmonth = curr_year + '-' + (curr_month<=9 ? '0' + curr_month : curr_month) + '-31';
     curr_month = curr_month - 1;
     var startlastmonth = curr_year + '-' + (curr_month<=9 ? '0' + curr_month : curr_month) + '-01';
-    return totalCat(Depenses.find({timestamp: {$gte: startlastmonth, $lte: startmonth}}));
+    return totalCat(Depenses.find({timestamp: {$gte: startmonth, $lte: endmonth}}));
   } 
   Template.summary.rentAmount = function() {
     return monthlytotalCat('rent');
@@ -387,6 +419,28 @@ Template.summary.activityRatio = function() {
 } 
 Template.summary.carRatio = function() {
   return monthlyratioCat('car');
+} 
+
+Template.summary.rentMRatio = function() {
+  return monthlyMratioCat('rent');
+} 
+Template.summary.billsMRatio = function() {
+  return monthlyMratioCat('bills');
+} 
+Template.summary.foodMRatio = function() {
+  return monthlyMratioCat('food');
+} 
+Template.summary.shoppingMRatio = function() {
+  return monthlyMratioCat('shopping');
+} 
+Template.summary.supermarketMRatio = function() {
+  return monthlyMratioCat('supermarket');
+} 
+Template.summary.activityMRatio = function() {
+  return monthlyMratioCat('activity');
+} 
+Template.summary.carMRatio = function() {
+  return monthlyMratioCat('car');
 } 
 Template.summaryall.rendered = function() {
   drawChartCurrent();
@@ -504,9 +558,12 @@ Template.navmenu.events = {
         //submit the form
         var amount = document.getElementById('amount');
         var category = document.getElementById('category');
-        var payeur = document.getElementById('payeur');
-        //var sam = document.getElementById('sam');
-        //var marion = document.getElementById('marion');
+        //var payeur = document.getElementById('payeur');
+        var sam = document.getElementById('payeur__sam');
+        var marion = document.getElementById('payeur__marion');
+        var payeur = 'both';
+        if (sam == true && marion == false) payeur = 'sam';
+        if (sam == false && marion == true) payeur = 'marion';
         var date_html = document.getElementById('timestamp');
         var d = new Date();
         var curr_date = d.getDate();
