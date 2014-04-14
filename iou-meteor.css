@@ -225,10 +225,10 @@ html, button, input, textarea, select {
 }
 
 .depenses__table .marion {
-	background-color: rgba(235, 180, 217, 0.5);
+	background-color: rgba(199, 199, 199, 0.5);
 }
 .depenses__table .sam {
-	background-color: rgba(180, 202, 235, 0.5);
+	background-color: rgba(255, 255, 255, 0.5);
 }
 .table__total .monthly__bar {
 	text-transform: uppercase;
@@ -507,7 +507,7 @@ vertical-align: bottom;
  }
 
 #section__add {
-  margin-top: 1%;
+  margin-top: 2%;
 /*  position: fixed;
   top: 50%;
   left: 50%;
