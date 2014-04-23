@@ -561,7 +561,25 @@ input[type=checkbox]:checked + label:before {
 	margin: 0 -6%;
 }
 
-
+.verticalBarGraph {
+	border-bottom: 1px solid #FFF;
+	height: 200px;
+	margin: 0;
+	padding: 0;
+	position: relative;
+	}
+	
+.verticalBarGraph li {
+	border: 1px solid #555;
+	border-bottom: none;
+	bottom: 0;
+	list-style:none;
+	margin: 0;
+	padding: 0;
+	position: absolute;
+	text-align: center;
+	width: 39px;
+	}
 @media screen and (max-width: 52.375em) {
 	.tabs nav a span {
 	display: none;
@@ -575,6 +593,10 @@ input[type=checkbox]:checked + label:before {
 	display: none;
 	}
 
+}
+
+path.domain, .axis .tick line {
+	display: none;
 }
  /*
 .tabs nav li.tab-current:before,
