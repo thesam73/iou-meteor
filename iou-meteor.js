@@ -1,13 +1,13 @@
 Depenses = new Meteor.Collection('depenses');
 
 function totalmonthCat(Items) {
-	var ds = new Date();
-	var curr_date = ds.getFullYear();
-	var curr_month = ds.getMonth() + 1; //Months are zero based
-	var curr_date = curr_year + ',' + (curr_month<=9 ? '0' + curr_month : curr_month);
+  var ds = new Date();
+  var curr_date = ds.getFullYear();
+  var curr_month = ds.getMonth() + 1; //Months are zero based
+  var curr_date = curr_year + ',' + (curr_month<=9 ? '0' + curr_month : curr_month);
 
-	//Items.find({timestamp: { $lt: new Date(), $gt: new Date(curr_date+','+curr_month) }});
-	
+  //Items.find({timestamp: { $lt: new Date(), $gt: new Date(curr_date+','+curr_month) }});
+  
   var total = 0;
   Items.forEach(function(item){
     total += Math.round(item.amount);
@@ -21,6 +21,14 @@ function totalCat(Items) {
     total += Math.round(item.amount);
   });
   return total;
+}
+
+function average (arr)
+{
+  return _.reduce(arr, function(memo, num)
+  {
+    return memo + num;
+  }, 0) / arr.length;
 }
 
 function monthlytotalCat(cat){
@@ -57,17 +65,40 @@ function monthlytotalCat(cat){
     var endmonth = curr_year + '-' + (curr_month<=9 ? '0' + curr_month : curr_month) + '-31';
     curr_month = curr_month - 1;
     var startlastmonth = curr_year + '-' + (curr_month<=9 ? '0' + curr_month : curr_month) + '-01';
-    var previous = totalCat(Depenses.find({
-      category: cat,
-      timestamp: {$gte: startlastmonth, $lte: startmonth}
-    }));
-    var current = totalCat(Depenses.find({
-      category: cat,
-      timestamp: {$gte: startmonth, $lte: endmonth}
-    }));
-    var ratio = Math.round(current / previous * 100);
-    if (ratio > 100) ratio = 100;
-    return ratio;
+    //get older value en set first day of month
+    if (Depenses.find().count() > 0) {
+       var firstmonth_start = Depenses.find({},{sort: {timestamp: 1}}).fetch()[0].timestamp.slice(0,-2) + '01';
+       var firstmonth_end = Depenses.find({},{sort: {timestamp: 1}}).fetch()[0].timestamp.slice(0,-2) + '31';
+       var m_month_start = moment(firstmonth_start, "YYYY-MM-DD");
+       var m_firstmonth = moment(firstmonth_start, "YYYY-MM-DD");
+       var m_month_end = moment(firstmonth_end, "YYYY-MM-DD");
+       var lasttmonth_start = Depenses.find({},{sort: {timestamp: -1}}).fetch()[0].timestamp.slice(0,-2) + '01';
+       var m_lasttmonth = moment(lasttmonth_start, "YYYY-MM-DD");
+       var howmanymonth = m_lasttmonth.diff(m_firstmonth, 'months');
+       var monthlyPrevious = new Array();
+       for (i = 0; i < howmanymonth; i++) {
+         var month_start = m_month_start.add('M', i).format("YYYY-MM-DD");
+         var month_end = m_month_end.add('M', i).format("YYYY-MM-DD");
+         monthlyPrevious[i] = totalCat(Depenses.find({
+           category: cat,
+           timestamp: {$gte: month_start, $lte: month_end}
+         }));
+       }
+      // console.log(monthlyPrevious);
+      // var previous = totalCat(Depenses.find({
+      //   category: cat,
+      //   timestamp: {$gte: startlastmonth, $lte: startmonth}
+      // }));
+      var previous = average(monthlyPrevious);
+      //console.log(cat + ":cat,   " + previous);
+      var current = totalCat(Depenses.find({
+        category: cat,
+        timestamp: {$gte: startmonth, $lte: endmonth}
+      }));
+      var ratio = Math.round(current / previous * 100);
+      if (ratio > 100) ratio = 100;
+      return ratio;
+    }
   }
   function monthlyMratioCat(cat){
     var d = new Date();
@@ -276,7 +307,7 @@ if (Meteor.isClient) {
     return Depenses.find({}, {sort: {timestamp: -1}});
   }
   Template.submitmessage.message = function () {
-  	return "All good keep spending!";
+    return "All good keep spending!";
   }
   Template.monthly__sal.monthlyTotal = function() {
     var d = new Date();
@@ -310,7 +341,7 @@ if (Meteor.isClient) {
     return ratio;
   } 
   Template.summary.rendered = function () {
-  	//drawChart();
+    //drawChart();
   }
 
   Template.summary.totalAmount = function() {
@@ -352,15 +383,40 @@ if (Meteor.isClient) {
     var endmonth = curr_year + '-' + (curr_month<=9 ? '0' + curr_month : curr_month) + '-31';
     curr_month = curr_month - 1;
     var startlastmonth = curr_year + '-' + (curr_month<=9 ? '0' + curr_month : curr_month) + '-01';
-    var previous = totalCat(Depenses.find({
-      timestamp: {$gte: startlastmonth, $lte: startmonth}
-    }));
-    var current = totalCat(Depenses.find({
-      timestamp: {$gte: startmonth, $lte: endmonth}
-    }));
-    var ratio = Math.round(current / previous * 100);
-    if (ratio > 100) ratio = 100;
-    return ratio;
+    if (Depenses.find().count() > 0) {
+       var firstmonth_start = Depenses.find({},{sort: {timestamp: 1}}).fetch()[0].timestamp.slice(0,-2) + '01';
+       var firstmonth_end = Depenses.find({},{sort: {timestamp: 1}}).fetch()[0].timestamp.slice(0,-2) + '31';
+       var m_month_start = moment(firstmonth_start, "YYYY-MM-DD");
+       var m_firstmonth = moment(firstmonth_start, "YYYY-MM-DD");
+       var m_month_end = moment(firstmonth_end, "YYYY-MM-DD");
+       var lasttmonth_start = Depenses.find({},{sort: {timestamp: -1}}).fetch()[0].timestamp.slice(0,-2) + '01';
+       var m_lasttmonth = moment(lasttmonth_start, "YYYY-MM-DD");
+       var howmanymonth = m_lasttmonth.diff(m_firstmonth, 'months');
+       var monthlyPrevious = new Array();
+       for (i = 0; i < howmanymonth; i++) {
+         var month_start = m_month_start.add('M', i).format("YYYY-MM-DD");
+         var month_end = m_month_end.add('M', i).format("YYYY-MM-DD");
+         monthlyPrevious[i] = totalCat(Depenses.find({
+           timestamp: {$gte: month_start, $lte: month_end}
+         }));
+       }
+      var previous = average(monthlyPrevious);
+      var current = totalCat(Depenses.find({
+        timestamp: {$gte: startmonth, $lte: endmonth}
+      }));
+      var ratio = Math.round(current / previous * 100);
+      if (ratio > 100) ratio = 100;
+      return ratio;
+    }
+    // var previous = totalCat(Depenses.find({
+    //   timestamp: {$gte: startlastmonth, $lte: startmonth}
+    // }));
+    // var current = totalCat(Depenses.find({
+    //   timestamp: {$gte: startmonth, $lte: endmonth}
+    // }));
+    // var ratio = Math.round(current / previous * 100);
+    // if (ratio > 100) ratio = 100;
+    // return ratio;
   } 
   Template.summary.rentRatio = function() {
     return monthlyratioCat('rent');
@@ -409,7 +465,9 @@ if (Meteor.isClient) {
   //drawChartMonthly()
   //var depenseloaded = Depenses.find({}, {sort: {timestamp: -1}});
   //console.log(depenseloaded);
-  drawChartCurrent();
+  Deps.autorun(function () { 
+    drawChartCurrent();
+  });
 }
 Template.summaryall.Mdepenses = function() {
     //return Depenses.find({}, {sort: {timestamp: -1}});
