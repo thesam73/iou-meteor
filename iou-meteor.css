@@ -33,7 +33,10 @@ html, button, input, textarea, select {
 	line-height: 22px;
 	color: #313140;
 }
-
+g text {
+	font-family: 'Source Sans Pro', "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+	font-size: 14px!important;
+}
 .menu {
 	background-color: #FFF;
 	margin: 0;
