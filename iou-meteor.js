@@ -191,7 +191,7 @@ function drawChartCurrent() {
             month_start = m_lasttmonth_start.subtract('M', 1).format("YYYY-MM-DD");
             month_end = m_lasttmonth_end.subtract('M', 1).format("YYYY-MM-DD");
           }
-          console.log(howmanymonth +" " + month_start + " " + month_end);
+          //console.log(howmanymonth +" " + month_start + " " + month_end);
           var month = moment(month_end, "YYYY-MM-DD").format("YY-MMM");
           dataDimple.push(
             { Month: month, Category: "Rent", Amount: anymonthmonthlytotalCat('rent', month_start, month_end) },
@@ -202,7 +202,7 @@ function drawChartCurrent() {
             { Month: month, Category: "Activity", Amount:  anymonthmonthlytotalCat('activity', month_start, month_end) },
             { Month: month, Category: "Car", Amount:  anymonthmonthlytotalCat('car', month_start, month_end) });
         }
-        console.log(dataDimple);
+        //console.log(dataDimple);
 
 
         // dataDimple = [{
@@ -269,7 +269,7 @@ function drawChartCurrent() {
         var svg = dimple.newSvg("#chartContainer", 250, 500);
 
         var myChart = new dimple.chart(svg, dataDimple);
-        myChart.setBounds("30px", "20px", "200px", "300px"); 
+        myChart.setBounds("50px", "20px", "200px", "300px"); 
         myChart.defaultColors = [
             new dimple.color("#7f8c8d"),
             new dimple.color("#2ecc71"),
@@ -399,7 +399,7 @@ function drawChartMonthly() {
         return item.Date == curr_date
     });
     var DCA_monthgroup = _(DCA_without_current).groupBy('Date');
-    console.log(DCA_monthgroup);
+    //console.log(DCA_monthgroup);
     var DCA_average = _.chain(DCA_monthgroup)
         .flatten()
         .groupBy(function (value) {
@@ -415,7 +415,7 @@ function drawChartMonthly() {
             };
         })
         .value();
-    console.log(DCA_only_current);
+    //console.log(DCA_only_current);
 
     var svgC = dimple.newSvg("#chartCurrentMonth", 400, 400);
     var myChartC = new dimple.chart(svgC, DCA_only_current);
@@ -444,6 +444,15 @@ if (Meteor.isClient) {
                 timestamp: -1
             }
         });
+    }
+    Template.login__screen.events = {
+        'click #login__button': function () {
+            var pass = document.getElementById('pass');
+            if (pass.value == '7374') {
+                $('#login__fullscreen').fadeOut();
+                $('#tabs').fadeIn();
+            }
+        }
     }
     Template.submitmessage.message = function () {
         return "All good keep spending!";
@@ -646,7 +655,7 @@ if (Meteor.isClient) {
         var monthlyDepenses = _.groupBy(depenses, function (depense) {
             return depense.timestamp.split("-", 2);
         });
-        console.log(monthlyDepenses);
+        //console.log(monthlyDepenses);
     }
 
     Template.action.amountDebt = function () {
@@ -781,7 +790,6 @@ if (Meteor.isClient) {
             var payeur = 'both';
             if (sam == true && marion == false) payeur = 'sam';
             if (sam == false && marion == true) payeur = 'marion';
-            console.log
             var date_html = document.getElementById('timestamp');
             var d = new Date();
             var curr_date = d.getDate();
@@ -813,6 +821,7 @@ if (Meteor.isClient) {
 
 if (Meteor.isServer) {
     Meteor.startup(function () {
+        //$('#tabs').style.visibility = 'hidden';
         // code to run on server at startup
     });
 }
