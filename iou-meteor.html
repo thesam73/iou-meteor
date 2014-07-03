@@ -16,7 +16,8 @@
 </head>
 
 <body>
-	<div id="tabs" class="tabs">
+{{>login__screen}}
+	<div id="tabs" class="tabs" style="display: none;">
 		{{> navmenu}}
 		<div class="content">
 			<section id="section__add" class="submit current">
@@ -57,6 +58,17 @@
 		</div>
 	</div>
 </body>
+
+<template name="login__screen">
+	<div id='login__fullscreen'>
+		<form id="login">
+			<div id="login__action">
+				<input class="login_pass" type="number" id="pass" placeholder="IOU"/>
+				<a id="login__button" class="btn btn__wide btn__margin btn__inverse">let me in</a>
+			</div>
+		</form>
+	</div>
+</template>
 
 <template name="submitmessage">
 	{{message}}
