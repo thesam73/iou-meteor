@@ -192,7 +192,7 @@ function drawChartCurrent() {
             month_end = m_lasttmonth_end.subtract('M', 1).format("YYYY-MM-DD");
           }
           //console.log(howmanymonth +" " + month_start + " " + month_end);
-          var month = moment(month_end, "YYYY-MM-DD").format("YY-MMM");
+          var month = moment(month_start, "YYYY-MM-DD").format("YY-MMM");
           dataDimple.push(
             { Month: month, Category: "Rent", Amount: anymonthmonthlytotalCat('rent', month_start, month_end) },
             { Month: month, Category: "Bills", Amount: anymonthmonthlytotalCat('bills', month_start, month_end) },
