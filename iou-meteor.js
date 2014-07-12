@@ -82,7 +82,7 @@ function monthlyratioCat(cat) {
     curr_month = curr_month - 1;
     var startlastmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-01';
     //get older value en set first day of month
-    if (Depenses.find().count() > 0) {
+    Deps.autorun(function () {
         var firstmonth_start = Depenses.find({}, {
             sort: {
                 timestamp: 1
@@ -162,7 +162,7 @@ function monthlyMratioCat(cat) {
 }
 
 function drawChartCurrent() {
-    if (Depenses.find().count() > 0) {
+    //Deps.autorun(function () {
         $('#chartContainer').html('');
         // var d = new Date();
         // var curr_month = d.getMonth() + 1; //Months are zero based
@@ -292,7 +292,7 @@ function drawChartCurrent() {
         y.titleShape.remove();
         x.titleShape.remove();
         $('.dimple-legend').find('text').attr("transform", "translate(0,10)");
-    }
+    //}
 }
 
 function drawChart() {
@@ -545,7 +545,7 @@ if (Meteor.isClient) {
         var endmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-31';
         curr_month = curr_month - 1;
         var startlastmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-01';
-        if (Depenses.find().count() > 0) {
+        Deps.autorun(function () {
             var firstmonth_start = Depenses.find({}, {
                 sort: {
                     timestamp: 1
@@ -645,9 +645,9 @@ if (Meteor.isClient) {
         //drawChartMonthly()
         //var depenseloaded = Depenses.find({}, {sort: {timestamp: -1}});
         //console.log(depenseloaded);
-        //Deps.autorun(function () {
+        Deps.autorun(function () {
             drawChartCurrent();
-        //});
+        });
     }
     Template.summaryall.Mdepenses = function () {
         //return Depenses.find({}, {sort: {timestamp: -1}});
