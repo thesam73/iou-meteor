@@ -82,7 +82,7 @@ function monthlyratioCat(cat) {
     curr_month = curr_month - 1;
     var startlastmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-01';
     //get older value en set first day of month
-    Deps.autorun(function () {
+    //if (Depenses.find().count() > 0) {
         var firstmonth_start = Depenses.find({}, {
             sort: {
                 timestamp: 1
@@ -132,7 +132,7 @@ function monthlyratioCat(cat) {
         var ratio = Math.round(current / previous * 100);
         if (ratio > 100) ratio = 100;
         return ratio;
-    }
+    //}
 }
 
 function monthlyMratioCat(cat) {
@@ -162,7 +162,7 @@ function monthlyMratioCat(cat) {
 }
 
 function drawChartCurrent() {
-    //Deps.autorun(function () {
+    //if (Depenses.find().count() > 0) {
         $('#chartContainer').html('');
         // var d = new Date();
         // var curr_month = d.getMonth() + 1; //Months are zero based
@@ -545,7 +545,7 @@ if (Meteor.isClient) {
         var endmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-31';
         curr_month = curr_month - 1;
         var startlastmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-01';
-        Deps.autorun(function () {
+        //if (Depenses.find().count() > 0) {
             var firstmonth_start = Depenses.find({}, {
                 sort: {
                     timestamp: 1
@@ -587,7 +587,7 @@ if (Meteor.isClient) {
             var ratio = Math.round(current / previous * 100);
             if (ratio > 100) ratio = 100;
             return ratio;
-        }
+        //}
         // var previous = totalCat(Depenses.find({
         //   timestamp: {$gte: startlastmonth, $lte: startmonth}
         // }));
@@ -645,6 +645,7 @@ if (Meteor.isClient) {
         //drawChartMonthly()
         //var depenseloaded = Depenses.find({}, {sort: {timestamp: -1}});
         //console.log(depenseloaded);
+        //
         Deps.autorun(function () {
             drawChartCurrent();
         });
