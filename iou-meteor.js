@@ -82,7 +82,8 @@ function monthlyratioCat(cat) {
     curr_month = curr_month - 1;
     var startlastmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-01';
     //get older value en set first day of month
-    if (Depenses.find().count() > 0) {
+    //if (Depenses.find().count() > 0) {
+    if (Session.get("active")) {  
         var firstmonth_start = Depenses.find({}, {
             sort: {
                 timestamp: 1
@@ -132,6 +133,8 @@ function monthlyratioCat(cat) {
         var ratio = Math.round(current / previous * 100);
         if (ratio > 100) ratio = 100;
         return ratio;
+    } else {
+        return [];
     }
 }
 
@@ -437,6 +440,15 @@ function drawChartMonthly() {
 
 if (Meteor.isClient) {
 
+    Deps.autorun(function () {
+        Meteor.subscribe("Depenses", 
+        {
+            onReady: function() {
+                Session.set("active", true);
+            }
+        });
+    });
+
     Template.depenses.depenses = function () {
         //console.log(Depenses.find({}, {sort: {timestamp: -1}}));
         return Depenses.find({}, {
@@ -545,7 +557,8 @@ if (Meteor.isClient) {
         var endmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-31';
         curr_month = curr_month - 1;
         var startlastmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-01';
-        if (Depenses.find().count() > 0) {
+        //if (Depenses.find().count() > 0) {
+        if (Session.get("active")) { 
             var firstmonth_start = Depenses.find({}, {
                 sort: {
                     timestamp: 1
@@ -587,6 +600,9 @@ if (Meteor.isClient) {
             var ratio = Math.round(current / previous * 100);
             if (ratio > 100) ratio = 100;
             return ratio;
+        }
+        else {
+            return [];
         }
         // var previous = totalCat(Depenses.find({
         //   timestamp: {$gte: startlastmonth, $lte: startmonth}
@@ -646,9 +662,11 @@ if (Meteor.isClient) {
         //var depenseloaded = Depenses.find({}, {sort: {timestamp: -1}});
         //console.log(depenseloaded);
         //
-        Deps.autorun(function () {
-            drawChartCurrent();
-        });
+        if (Session.get("active")) { 
+            if (Depenses.find().count() > 0) {
+                drawChartCurrent();
+            }
+        };
     }
     Template.summaryall.Mdepenses = function () {
         //return Depenses.find({}, {sort: {timestamp: -1}});
