@@ -662,11 +662,11 @@ if (Meteor.isClient) {
         //var depenseloaded = Depenses.find({}, {sort: {timestamp: -1}});
         //console.log(depenseloaded);
         //
-        if (Session.get("active")) { 
-            if (Depenses.find().count() > 0) {
+        //if (Session.get("active")) { 
+        //    if (Depenses.find().count() > 0) {
                 drawChartCurrent();
-            }
-        };
+        //    }
+        //};
     }
     Template.summaryall.Mdepenses = function () {
         //return Depenses.find({}, {sort: {timestamp: -1}});
@@ -767,6 +767,8 @@ if (Meteor.isClient) {
             $("#section__current").removeClass("current");
             $("#section__stats").addClass("current");
             $("#section__data").removeClass("current");
+
+            drawChartCurrent();
         }
     }
     Template.action.events = {
