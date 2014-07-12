@@ -445,6 +445,7 @@ if (Meteor.isClient) {
         {
             onReady: function() {
                 Session.set("active", true);
+                //console.log("bouyaaaa  ");
             }
         });
     });
@@ -664,7 +665,7 @@ if (Meteor.isClient) {
         //
         //if (Session.get("active")) { 
         //    if (Depenses.find().count() > 0) {
-                drawChartCurrent();
+                //drawChartCurrent();
         //    }
         //};
     }
