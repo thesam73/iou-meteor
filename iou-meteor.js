@@ -645,9 +645,9 @@ if (Meteor.isClient) {
         //drawChartMonthly()
         //var depenseloaded = Depenses.find({}, {sort: {timestamp: -1}});
         //console.log(depenseloaded);
-        Deps.autorun(function () {
+        //Deps.autorun(function () {
             drawChartCurrent();
-        });
+        //});
     }
     Template.summaryall.Mdepenses = function () {
         //return Depenses.find({}, {sort: {timestamp: -1}});
