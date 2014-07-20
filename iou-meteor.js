@@ -83,7 +83,7 @@ function monthlyratioCat(cat) {
     var startlastmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-01';
     //get older value en set first day of month
     //if (Depenses.find().count() > 0) {
-    if (Session.get("active")) {  
+    //if (Session.get("active")) {  
         var firstmonth_start = Depenses.find({}, {
             sort: {
                 timestamp: 1
@@ -133,9 +133,9 @@ function monthlyratioCat(cat) {
         var ratio = Math.round(current / previous * 100);
         if (ratio > 100) ratio = 100;
         return ratio;
-    } else {
-        return [];
-    }
+    //} else {
+    //    return [];
+    //}
 }
 
 function monthlyMratioCat(cat) {
@@ -559,7 +559,7 @@ if (Meteor.isClient) {
         curr_month = curr_month - 1;
         var startlastmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-01';
         //if (Depenses.find().count() > 0) {
-        if (Session.get("active")) { 
+        //if (Session.get("active")) { 
             var firstmonth_start = Depenses.find({}, {
                 sort: {
                     timestamp: 1
@@ -601,10 +601,10 @@ if (Meteor.isClient) {
             var ratio = Math.round(current / previous * 100);
             if (ratio > 100) ratio = 100;
             return ratio;
-        }
-        else {
-            return [];
-        }
+        //}
+        //else {
+        //    return [];
+        //}
         // var previous = totalCat(Depenses.find({
         //   timestamp: {$gte: startlastmonth, $lte: startmonth}
         // }));
