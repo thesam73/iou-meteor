@@ -6,7 +6,7 @@ function totalmonthCat(Items) {
     var curr_month = ds.getMonth() + 1; //Months are zero based
     var curr_date = curr_year + ',' + (curr_month <= 9 ? '0' + curr_month : curr_month);
 
-    //Items.find({timestamp: { $lt: new Date(), $gt: new Date(curr_date+','+curr_month) }});
+    //Items.findFaster({timestamp: { $lt: new Date(), $gt: new Date(curr_date+','+curr_month) }});
 
     var total = 0;
     Items.forEach(function (item) {
@@ -37,7 +37,7 @@ function monthlytotalCat(cat) {
     var endmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-31';
     curr_month = curr_month - 1;
     var startlastmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-01';
-    return totalCat(Depenses.find({
+    return totalCat(Depenses.findFaster({
         category: cat,
         timestamp: {
             $gte: startmonth,
@@ -54,7 +54,7 @@ function previousmonthmonthlytotalCat(cat) {
     var endmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-31';
     curr_month = curr_month - 1;
     var startlastmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-01';
-    return totalCat(Depenses.find({
+    return totalCat(Depenses.findFaster({
         category: cat,
         timestamp: {
             $gte: startlastmonth,
@@ -64,7 +64,7 @@ function previousmonthmonthlytotalCat(cat) {
 }
 
 function anymonthmonthlytotalCat(cat, startmonth, endmonth) {
-    return totalCat(Depenses.find({
+    return totalCat(Depenses.findFaster({
         category: cat,
         timestamp: {
             $gte: startmonth,
@@ -82,14 +82,14 @@ function monthlyratioCat(cat) {
     curr_month = curr_month - 1;
     var startlastmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-01';
     //get older value en set first day of month
-    if (Depenses.find().count() > 0) {
+    if (Depenses.findFaster().count() > 0) {
     //if (Session.get("active")) {  
-        var firstmonth_start = Depenses.find({}, {
+        var firstmonth_start = Depenses.findFaster({}, {
             sort: {
                 timestamp: 1
             }
         }).fetch()[0].timestamp.slice(0, -2) + '01';
-        var firstmonth_end = Depenses.find({}, {
+        var firstmonth_end = Depenses.findFaster({}, {
             sort: {
                 timestamp: 1
             }
@@ -97,7 +97,7 @@ function monthlyratioCat(cat) {
         var m_month_start = moment(firstmonth_start, "YYYY-MM-DD");
         var m_firstmonth = moment(firstmonth_start, "YYYY-MM-DD");
         var m_month_end = moment(firstmonth_end, "YYYY-MM-DD");
-        var lasttmonth_start = Depenses.find({}, {
+        var lasttmonth_start = Depenses.findFaster({}, {
             sort: {
                 timestamp: -1
             }
@@ -108,7 +108,7 @@ function monthlyratioCat(cat) {
         for (i = 0; i < howmanymonth; i++) {
             var month_start = m_month_start.add('M', i).format("YYYY-MM-DD");
             var month_end = m_month_end.add('M', i).format("YYYY-MM-DD");
-            monthlyPrevious[i] = totalCat(Depenses.find({
+            monthlyPrevious[i] = totalCat(Depenses.findFaster({
                 category: cat,
                 timestamp: {
                     $gte: month_start,
@@ -117,13 +117,13 @@ function monthlyratioCat(cat) {
             }, {fields: {amount: 1}}));
         }
         // console.log(monthlyPrevious);
-        // var previous = totalCat(Depenses.find({
+        // var previous = totalCat(Depenses.findFaster({
         //   category: cat,
         //   timestamp: {$gte: startlastmonth, $lte: startmonth}
         // }));
         var previous = average(monthlyPrevious);
         //console.log(cat + ":cat,   " + previous);
-        var current = totalCat(Depenses.find({
+        var current = totalCat(Depenses.findFaster({
             category: cat,
             timestamp: {
                 $gte: startmonth,
@@ -147,14 +147,14 @@ function monthlyMratioCat(cat) {
     var endmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-31';
     curr_month = curr_month - 1;
     var startlastmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-01';
-    var current = totalCat(Depenses.find({
+    var current = totalCat(Depenses.findFaster({
         category: cat,
         timestamp: {
             $gte: startmonth,
             $lte: endmonth
         }
     }, {fields: {amount: 1}}));
-    var total = totalCat(Depenses.find({
+    var total = totalCat(Depenses.findFaster({
         timestamp: {
             $gte: startmonth,
             $lte: endmonth
@@ -166,7 +166,7 @@ function monthlyMratioCat(cat) {
 }
 
 function drawChartCurrent() {
-    //if (Depenses.find().count() > 0) {
+    //if (Depenses.findFaster().count() > 0) {
         $('#chartContainer').html('');
         // var d = new Date();
         // var curr_month = d.getMonth() + 1; //Months are zero based
@@ -177,9 +177,9 @@ function drawChartCurrent() {
         // var startlastmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-01';
         // var endlastmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-31';
 
-        var firstmonth_start = Depenses.find({}, {sort: {timestamp: 1}}).fetch()[0].timestamp.slice(0, -2) + '01';
-        var lasttmonth_start = Depenses.find({}, {sort: {timestamp: -1}}).fetch()[0].timestamp.slice(0, -2) + '01';
-        var lasttmonth_end = Depenses.find({}, {sort: {timestamp: -1}}).fetch()[0].timestamp.slice(0, -2) + '31';
+        var firstmonth_start = Depenses.findFaster({}, {sort: {timestamp: 1}}).fetch()[0].timestamp.slice(0, -2) + '01';
+        var lasttmonth_start = Depenses.findFaster({}, {sort: {timestamp: -1}}).fetch()[0].timestamp.slice(0, -2) + '01';
+        var lasttmonth_end = Depenses.findFaster({}, {sort: {timestamp: -1}}).fetch()[0].timestamp.slice(0, -2) + '31';
         var m_firstmonth = moment(firstmonth_start, "YYYY-MM-DD");
         var m_lasttmonth = moment(lasttmonth_start, "YYYY-MM-DD");
         var m_lasttmonth_end = moment(lasttmonth_end, "YYYY-MM-DD");
@@ -295,43 +295,43 @@ function drawChartCurrent() {
         myChart.draw();
         y.titleShape.remove();
         x.titleShape.remove();
-        //$('.dimple-legend').find('text').attr("transform", "translate(0,10)");
+        //$('.dimple-legend').findFaster('text').attr("transform", "translate(0,10)");
     //}
 }
 
 // function drawChart() {
 //     var data = [{
-//             value: totalCat(Depenses.find({
+//             value: totalCat(Depenses.findFaster({
 //                 category: 'rent'
 //             })),
 //             color: "#7f8c8d"
 //         }, {
-//             value: totalCat(Depenses.find({
+//             value: totalCat(Depenses.findFaster({
 //                 category: 'bills'
 //             })),
 //             color: "#2ecc71"
 //         }, {
-//             value: totalCat(Depenses.find({
+//             value: totalCat(Depenses.findFaster({
 //                 category: 'food'
 //             })),
 //             color: "#3498db"
 //         }, {
-//             value: totalCat(Depenses.find({
+//             value: totalCat(Depenses.findFaster({
 //                 category: 'supermarket'
 //             })),
 //             color: "#00CCC1"
 //         }, {
-//             value: totalCat(Depenses.find({
+//             value: totalCat(Depenses.findFaster({
 //                 category: 'shopping'
 //             })),
 //             color: "#9b59b6"
 //         }, {
-//             value: totalCat(Depenses.find({
+//             value: totalCat(Depenses.findFaster({
 //                 category: 'activity'
 //             })),
 //             color: "#e67e22"
 //         }, {
-//             value: totalCat(Depenses.find({
+//             value: totalCat(Depenses.findFaster({
 //                 category: 'car'
 //             })),
 //             color: "#34495e"
@@ -363,7 +363,7 @@ function groupBy(input, xCol, yCol) {
 }
 
 function drawChartMonthly() {
-    var depenses = Depenses.find().fetch();
+    var depenses = Depenses.findFasterFaster().fetch();
     //    var groupedDates = _.groupBy(_.pluck(customers, 'timestamp'), function (date) {return date.split("-",2);});
     var monthlyDepenses = _.groupBy(depenses, function (depense) {
         return depense.timestamp.split("-", 2);
@@ -452,8 +452,8 @@ if (Meteor.isClient) {
     // });
 
     Template.depenses.depenses = function () {
-        //console.log(Depenses.find({}, {sort: {timestamp: -1}}));
-        return Depenses.find({}, {
+        //console.log(Depenses.findFaster({}, {sort: {timestamp: -1}}));
+        return Depenses.findFaster({}, {
             sort: {
                 timestamp: -1
             }
@@ -479,7 +479,7 @@ if (Meteor.isClient) {
         var endmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-31';
         curr_month = curr_month - 1;
         var startlastmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-01';
-        var current = totalCat(Depenses.find({
+        var current = totalCat(Depenses.findFaster({
             timestamp: {
                 $gte: startmonth,
                 $lte: endmonth
@@ -495,13 +495,13 @@ if (Meteor.isClient) {
         var endmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-31';
         curr_month = curr_month - 1;
         var startlastmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-01';
-        var previous = totalCat(Depenses.find({
+        var previous = totalCat(Depenses.findFaster({
             timestamp: {
                 $gte: startlastmonth,
                 $lte: startmonth
             }
         }, {fields: {amount: 1}}));
-        var current = totalCat(Depenses.find({
+        var current = totalCat(Depenses.findFaster({
             timestamp: {
                 $gte: startmonth,
                 $lte: endmonth
@@ -572,7 +572,7 @@ if (Meteor.isClient) {
         var endmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-31';
         curr_month = curr_month - 1;
         var startlastmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-01';
-        return totalCat(Depenses.find({
+        return totalCat(Depenses.findFaster({
             timestamp: {
                 $gte: startmonth,
                 $lte: endmonth
@@ -609,14 +609,14 @@ if (Meteor.isClient) {
         var endmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-31';
         curr_month = curr_month - 1;
         var startlastmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-01';
-        if (Depenses.find().count() > 0) {
+        if (Depenses.findFaster().count() > 0) {
         //if (Session.get("active")) { 
-            var firstmonth_start = Depenses.find({}, {
+            var firstmonth_start = Depenses.findFaster({}, {
                 sort: {
                     timestamp: 1
                 }
             }).fetch()[0].timestamp.slice(0, -2) + '01';
-            var firstmonth_end = Depenses.find({}, {
+            var firstmonth_end = Depenses.findFaster({}, {
                 sort: {
                     timestamp: 1
                 }
@@ -624,7 +624,7 @@ if (Meteor.isClient) {
             var m_month_start = moment(firstmonth_start, "YYYY-MM-DD");
             var m_firstmonth = moment(firstmonth_start, "YYYY-MM-DD");
             var m_month_end = moment(firstmonth_end, "YYYY-MM-DD");
-            var lasttmonth_start = Depenses.find({}, {
+            var lasttmonth_start = Depenses.findFaster({}, {
                 sort: {
                     timestamp: -1
                 }
@@ -635,7 +635,7 @@ if (Meteor.isClient) {
             for (i = 0; i < howmanymonth; i++) {
                 var month_start = m_month_start.add('M', i).format("YYYY-MM-DD");
                 var month_end = m_month_end.add('M', i).format("YYYY-MM-DD");
-                monthlyPrevious[i] = totalCat(Depenses.find({
+                monthlyPrevious[i] = totalCat(Depenses.findFaster({
                     timestamp: {
                         $gte: month_start,
                         $lte: month_end
@@ -643,7 +643,7 @@ if (Meteor.isClient) {
                 }, {fields: {amount: 1}}));
             }
             var previous = average(monthlyPrevious);
-            var current = totalCat(Depenses.find({
+            var current = totalCat(Depenses.findFaster({
                 timestamp: {
                     $gte: startmonth,
                     $lte: endmonth
@@ -656,10 +656,10 @@ if (Meteor.isClient) {
         else {
             return [];
         }
-        // var previous = totalCat(Depenses.find({
+        // var previous = totalCat(Depenses.findFaster({
         //   timestamp: {$gte: startlastmonth, $lte: startmonth}
         // }));
-        // var current = totalCat(Depenses.find({
+        // var current = totalCat(Depenses.findFaster({
         //   timestamp: {$gte: startmonth, $lte: endmonth}
         // }));
         // var ratio = Math.round(current / previous * 100);
@@ -711,18 +711,18 @@ if (Meteor.isClient) {
     }
     Template.summaryall.rendered = function () {
         //drawChartMonthly()
-        //var depenseloaded = Depenses.find({}, {sort: {timestamp: -1}});
+        //var depenseloaded = Depenses.findFaster({}, {sort: {timestamp: -1}});
         //console.log(depenseloaded);
         //
         //if (Session.get("active")) { 
-        //    if (Depenses.find().count() > 0) {
+        //    if (Depenses.findFaster().count() > 0) {
                 //drawChartCurrent();
         //    }
         //};
     }
     Template.summaryall.Mdepenses = function () {
-        //return Depenses.find({}, {sort: {timestamp: -1}});
-        var depenses = Depenses.find().fetch();
+        //return Depenses.findFaster({}, {sort: {timestamp: -1}});
+        var depenses = Depenses.findFaster().fetch();
         var monthlyDepenses = _.groupBy(depenses, function (depense) {
             return depense.timestamp.split("-", 2);
         });
@@ -730,14 +730,14 @@ if (Meteor.isClient) {
     }
 
     Template.action.amountDebt = function () {
-        var samItems = Depenses.find({
+        var samItems = Depenses.findFaster({
             payeur: 'sam'
         });
         var samSum = 0;
         samItems.forEach(function (item) {
             samSum += Math.round(item.amount);
         })
-        var marionItems = Depenses.find({
+        var marionItems = Depenses.findFaster({
             payeur: 'marion'
         });
         var marionSum = 0;
@@ -752,14 +752,14 @@ if (Meteor.isClient) {
         }
     }
     Template.action.nameDebt = function () {
-        var samItems = Depenses.find({
+        var samItems = Depenses.findFaster({
             payeur: 'sam'
         });
         var samSum = 0;
         samItems.forEach(function (item) {
             samSum += Math.round(item.amount);
         })
-        var marionItems = Depenses.find({
+        var marionItems = Depenses.findFaster({
             payeur: 'marion'
         });
         var marionSum = 0;
@@ -827,7 +827,7 @@ if (Meteor.isClient) {
         'click #updatedebt': function () {
             var c = confirm("Reset debt?");
             if (c == true) {
-                var Items = Depenses.find({
+                var Items = Depenses.findFaster({
                     payeur: {
                         $ne: 'both'
                     }
