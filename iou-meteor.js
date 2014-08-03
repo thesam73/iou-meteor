@@ -440,16 +440,16 @@ function drawChartMonthly() {
 }
 
 if (Meteor.isClient) {
-
-    Deps.autorun(function () {
-        Meteor.subscribe("Depenses", 
-        {
-            onReady: function() {
-                Session.set("active", true);
-                //console.log("bouyaaaa  ");
-            }
-        });
-    });
+    Meteor.subscribe("Depenses");
+    // Deps.autorun(function () {
+    //     Meteor.subscribe("Depenses", 
+    //     {
+    //         onReady: function() {
+    //             Session.set("active", true);
+    //             //console.log("bouyaaaa  ");
+    //         }
+    //     });
+    // });
 
     Template.depenses.depenses = function () {
         //console.log(Depenses.find({}, {sort: {timestamp: -1}}));
