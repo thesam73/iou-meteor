@@ -82,7 +82,7 @@ function monthlyratioCat(cat) {
     curr_month = curr_month - 1;
     var startlastmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-01';
     //get older value en set first day of month
-    if (Depenses.find().count() > 0) {
+    //if (Depenses.find().count() > 0) {
     //if (Session.get("active")) {  
         var firstmonth_start = Depenses.find({}, {
             sort: {
@@ -133,7 +133,7 @@ function monthlyratioCat(cat) {
         var ratio = Math.round(current / previous * 100);
         if (ratio > 100) ratio = 100;
         return ratio;
-    } 
+    //} 
     // else {
     //    return [];
     //}
@@ -559,7 +559,7 @@ if (Meteor.isClient) {
         var endmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-31';
         curr_month = curr_month - 1;
         var startlastmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-01';
-        if (Depenses.find().count() > 0) {
+        //if (Depenses.find().count() > 0) {
         //if (Session.get("active")) { 
             var firstmonth_start = Depenses.find({}, {
                 sort: {
@@ -602,7 +602,7 @@ if (Meteor.isClient) {
             var ratio = Math.round(current / previous * 100);
             if (ratio > 100) ratio = 100;
             return ratio;
-        }
+        //}
         //else {
         //    return [];
         //}
