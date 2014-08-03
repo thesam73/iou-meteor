@@ -43,7 +43,7 @@ function monthlytotalCat(cat) {
             $gte: startmonth,
             $lte: endmonth
         }
-    }));
+    }, {fields: {amount: 1}}));
 }
 
 function previousmonthmonthlytotalCat(cat) {
@@ -60,7 +60,7 @@ function previousmonthmonthlytotalCat(cat) {
             $gte: startlastmonth,
             $lte: startmonth
         }
-    }));
+    }, {fields: {amount: 1}}));
 }
 
 function anymonthmonthlytotalCat(cat, startmonth, endmonth) {
@@ -70,7 +70,7 @@ function anymonthmonthlytotalCat(cat, startmonth, endmonth) {
             $gte: startmonth,
             $lte: endmonth
         }
-    }));
+    }, {fields: {amount: 1}}));
 }
 
 function monthlyratioCat(cat) {
@@ -114,7 +114,7 @@ function monthlyratioCat(cat) {
                     $gte: month_start,
                     $lte: month_end
                 }
-            }));
+            }, {fields: {amount: 1}}));
         }
         // console.log(monthlyPrevious);
         // var previous = totalCat(Depenses.find({
@@ -129,7 +129,7 @@ function monthlyratioCat(cat) {
                 $gte: startmonth,
                 $lte: endmonth
             }
-        }));
+        }, {fields: {amount: 1}}));
         var ratio = Math.round(current / previous * 100);
         if (ratio > 100) ratio = 100;
         return ratio;
@@ -153,13 +153,13 @@ function monthlyMratioCat(cat) {
             $gte: startmonth,
             $lte: endmonth
         }
-    }));
+    }, {fields: {amount: 1}}));
     var total = totalCat(Depenses.find({
         timestamp: {
             $gte: startmonth,
             $lte: endmonth
         }
-    }));
+    }, {fields: {amount: 1}}));
     var ratio = Math.round(current / total * 100);
     if (ratio > 100) ratio = 100;
     return ratio;
@@ -484,7 +484,7 @@ if (Meteor.isClient) {
                 $gte: startmonth,
                 $lte: endmonth
             }
-        }));
+        }, {fields: {amount: 1}}));
         return current;
     }
     Template.monthly__sal.monthlyRatio = function () {
@@ -500,13 +500,13 @@ if (Meteor.isClient) {
                 $gte: startlastmonth,
                 $lte: startmonth
             }
-        }));
+        }, {fields: {amount: 1}}));
         var current = totalCat(Depenses.find({
             timestamp: {
                 $gte: startmonth,
                 $lte: endmonth
             }
-        }));
+        }, {fields: {amount: 1}}));
         var ratio = Math.round(current / 4300 * 100);
         if (ratio > 100) ratio = 100;
         return ratio;
@@ -528,7 +528,7 @@ if (Meteor.isClient) {
                 $gte: startmonth,
                 $lte: endmonth
             }
-        }));
+        }, {fields: {amount: 1}}));
     }
     Template.summary.rentAmount = function () {
         return monthlytotalCat('rent');
@@ -590,7 +590,7 @@ if (Meteor.isClient) {
                         $gte: month_start,
                         $lte: month_end
                     }
-                }));
+                }, {fields: {amount: 1}}));
             }
             var previous = average(monthlyPrevious);
             var current = totalCat(Depenses.find({
@@ -598,7 +598,7 @@ if (Meteor.isClient) {
                     $gte: startmonth,
                     $lte: endmonth
                 }
-            }));
+            }, {fields: {amount: 1}}));
             var ratio = Math.round(current / previous * 100);
             if (ratio > 100) ratio = 100;
             return ratio;
