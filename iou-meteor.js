@@ -134,9 +134,9 @@ function monthlyratioCat(cat) {
         if (ratio > 100) ratio = 100;
         return ratio;
     } 
-    // else {
-    //    return [];
-    //}
+     else {
+        return [];
+    }
 }
 
 function monthlyMratioCat(cat) {
@@ -603,9 +603,9 @@ if (Meteor.isClient) {
             if (ratio > 100) ratio = 100;
             return ratio;
         }
-        //else {
-        //    return [];
-        //}
+        else {
+            return [];
+        }
         // var previous = totalCat(Depenses.find({
         //   timestamp: {$gte: startlastmonth, $lte: startmonth}
         // }));
