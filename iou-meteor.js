@@ -201,7 +201,7 @@ function drawChartCurrent() {
             { Month: month, Category: "Rent", Amount: anymonthmonthlytotalCat('rent', month_start, month_end) },
             { Month: month, Category: "Bills", Amount: anymonthmonthlytotalCat('bills', month_start, month_end) },
             { Month: month, Category: "Food", Amount:  anymonthmonthlytotalCat('food', month_start, month_end) },
-            { Month: month, Category: "Supermarket", Amount: anymonthmonthlytotalCat('superMarket', month_start, month_end) },
+            { Month: month, Category: "Supermarket", Amount: anymonthmonthlytotalCat('supermarket', month_start, month_end) },
             { Month: month, Category: "Shopping", Amount: anymonthmonthlytotalCat('shopping', month_start, month_end) },
             { Month: month, Category: "Activity", Amount:  anymonthmonthlytotalCat('activity', month_start, month_end) },
             { Month: month, Category: "Car", Amount:  anymonthmonthlytotalCat('car', month_start, month_end) });
@@ -290,12 +290,12 @@ function drawChartCurrent() {
             return Math.round(d / 1e6) + "$";
         };
         var mySerie = myChart.addSeries("Category", dimple.plot.bar);
-        myChart.addLegend(90, 350, 50, 75, 'left', mySerie);
+        myChart.addLegend(60, 400, 300, 200);
         //mySerie.barGap = 0.05;
         myChart.draw();
         y.titleShape.remove();
         x.titleShape.remove();
-        $('.dimple-legend').find('text').attr("transform", "translate(0,10)");
+        //$('.dimple-legend').find('text').attr("transform", "translate(0,10)");
     //}
 }
 
