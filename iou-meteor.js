@@ -616,50 +616,27 @@ if (Meteor.isClient) {
         // if (ratio > 100) ratio = 100;
         // return ratio;
     }
-    Template.summary.helpers = function () {
-        rentRatio: function () {
-            return monthlyratioCat('rent');
-        }
-        billsRatio: function () {
-            return monthlyratioCat('bills');
-        }
-        foodRatio: function () {
-            return monthlyratioCat('food');
-        }
-        shoppingRatio: function () {
-            return monthlyratioCat('shopping');
-        }
-        supermarketRatio: function () {
-            return monthlyratioCat('supermarket');
-        }
-        activityRatio: function () {
-            return monthlyratioCat('activity');
-        }
-        carRatio: function () {
-            return monthlyratioCat('car');
-        }
+    Template.summary.rentRatio = function () {
+        return monthlyratioCat('rent');
     }
-    // Template.summary.rentRatio = function () {
-    //     return monthlyratioCat('rent');
-    // }
-    // Template.summary.billsRatio = function () {
-    //     return monthlyratioCat('bills');
-    // }
-    // Template.summary.foodRatio = function () {
-    //     return monthlyratioCat('food');
-    // }
-    // Template.summary.shoppingRatio = function () {
-    //     return monthlyratioCat('shopping');
-    // }
-    // Template.summary.supermarketRatio = function () {
-    //     return monthlyratioCat('supermarket');
-    // }
-    // Template.summary.activityRatio = function () {
-    //     return monthlyratioCat('activity');
-    // }
-    // Template.summary.carRatio = function () {
-    //     return monthlyratioCat('car');
-    // }
+    Template.summary.billsRatio = function () {
+        return monthlyratioCat('bills');
+    }
+    Template.summary.foodRatio = function () {
+        return monthlyratioCat('food');
+    }
+    Template.summary.shoppingRatio = function () {
+        return monthlyratioCat('shopping');
+    }
+    Template.summary.supermarketRatio = function () {
+        return monthlyratioCat('supermarket');
+    }
+    Template.summary.activityRatio = function () {
+        return monthlyratioCat('activity');
+    }
+    Template.summary.carRatio = function () {
+        return monthlyratioCat('car');
+    }
 
     Template.summary.rentMRatio = function () {
         return monthlyMratioCat('rent');
