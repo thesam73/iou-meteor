@@ -167,7 +167,20 @@
 			<span class="progress"><span class="progress-inner" style="width: {{totalRatio}}%;"></span></span>
 		</div>
 	</div>
-<table class="summary__table">
+
+	<table class="summary__table">
+	{{#each expensesentries}}
+		<tr class="{{table__name}}">
+			<td class="icon-home"></td>
+			<td class="money">$ {{amount}}</td>
+			<td class="summary__progress__bar">
+				<span class="content">{{category}}</span>
+				<span class="progress"><span class="progress-inner" style="width: {{ratio}}%;"></span></span>
+			</td>
+		</tr>
+	{{/each}} 
+	</table>
+<!-- <table class="summary__table">
 	<tr class="table__rent">
 		<td class="icon-home"></td>
 		<td class="money">$ {{rentAmount}}</td>
@@ -224,7 +237,7 @@
 			<span class="progress"><span class="progress-inner" style="width: {{carRatio}}%;"></span></span>
 		</td>
 	</tr>
-</table>
+</table> -->
 <div class="table__total">
 		<table class="hbar__stacked"><tr>
 			<td class="class__rent" style="width: {{rentMRatio}}%;"></td>

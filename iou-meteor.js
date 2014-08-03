@@ -299,51 +299,51 @@ function drawChartCurrent() {
     //}
 }
 
-function drawChart() {
-    var data = [{
-            value: totalCat(Depenses.find({
-                category: 'rent'
-            })),
-            color: "#7f8c8d"
-        }, {
-            value: totalCat(Depenses.find({
-                category: 'bills'
-            })),
-            color: "#2ecc71"
-        }, {
-            value: totalCat(Depenses.find({
-                category: 'food'
-            })),
-            color: "#3498db"
-        }, {
-            value: totalCat(Depenses.find({
-                category: 'supermarket'
-            })),
-            color: "#00CCC1"
-        }, {
-            value: totalCat(Depenses.find({
-                category: 'shopping'
-            })),
-            color: "#9b59b6"
-        }, {
-            value: totalCat(Depenses.find({
-                category: 'activity'
-            })),
-            color: "#e67e22"
-        }, {
-            value: totalCat(Depenses.find({
-                category: 'car'
-            })),
-            color: "#34495e"
-        }]
-        //console.log(data);
-        //Get context with jQuery - using jQuery's .get() method.
-    var ctx = $("#myChart").get(0).getContext("2d");
-    //This will get the first returned node in the jQuery collection.
-    var myNewChart = new Chart(ctx);
-    new Chart(ctx).Doughnut(data);
+// function drawChart() {
+//     var data = [{
+//             value: totalCat(Depenses.find({
+//                 category: 'rent'
+//             })),
+//             color: "#7f8c8d"
+//         }, {
+//             value: totalCat(Depenses.find({
+//                 category: 'bills'
+//             })),
+//             color: "#2ecc71"
+//         }, {
+//             value: totalCat(Depenses.find({
+//                 category: 'food'
+//             })),
+//             color: "#3498db"
+//         }, {
+//             value: totalCat(Depenses.find({
+//                 category: 'supermarket'
+//             })),
+//             color: "#00CCC1"
+//         }, {
+//             value: totalCat(Depenses.find({
+//                 category: 'shopping'
+//             })),
+//             color: "#9b59b6"
+//         }, {
+//             value: totalCat(Depenses.find({
+//                 category: 'activity'
+//             })),
+//             color: "#e67e22"
+//         }, {
+//             value: totalCat(Depenses.find({
+//                 category: 'car'
+//             })),
+//             color: "#34495e"
+//         }]
+//         //console.log(data);
+//         //Get context with jQuery - using jQuery's .get() method.
+//     var ctx = $("#myChart").get(0).getContext("2d");
+//     //This will get the first returned node in the jQuery collection.
+//     var myNewChart = new Chart(ctx);
+//     new Chart(ctx).Doughnut(data);
 
-}
+// }
 
 function groupBy(input, xCol, yCol) {
 
@@ -515,6 +515,55 @@ if (Meteor.isClient) {
         //drawChart();
     }
 
+    Template.summary.helpers({
+      expensesentries: function() {
+        var results = [];
+        results.push({
+            table__name: "table__rent",
+            amount: monthlytotalCat('rent'),
+            category: "rent",
+            ratio: monthlyratioCat('rent')
+        });
+        results.push({
+            table__name: "table__bills",
+            amount: monthlytotalCat('bills'),
+            category: "bills",
+            ratio: monthlyratioCat('bills')
+        });
+        results.push({
+            table__name: "table__food",
+            amount: monthlytotalCat('food'),
+            category: "food",
+            ratio: monthlyratioCat('food')
+        });
+        results.push({
+            table__name: "table__shopping",
+            amount: monthlytotalCat('shopping'),
+            category: "shopping",
+            ratio: monthlyratioCat('shopping')
+        });
+        results.push({
+            table__name: "table__supermarket",
+            amount: monthlytotalCat('supermarket'),
+            category: "supermarket",
+            ratio: monthlyratioCat('supermarket')
+        });
+        results.push({
+            table__name: "table__activity",
+            amount: monthlytotalCat('activity'),
+            category: "activity",
+            ratio: monthlyratioCat('activity')
+        });
+        results.push({
+            table__name: "table__car",
+            amount: monthlytotalCat('car'),
+            category: "car",
+            ratio: monthlyratioCat('car')
+        });
+        return results;
+    }
+    });
+
     Template.summary.totalAmount = function () {
         var d = new Date();
         var curr_month = d.getMonth() + 1; //Months are zero based
@@ -530,27 +579,28 @@ if (Meteor.isClient) {
             }
         }, {fields: {amount: 1}}));
     }
-    Template.summary.rentAmount = function () {
-        return monthlytotalCat('rent');
-    }
-    Template.summary.billsAmount = function () {
-        return monthlytotalCat('bills');
-    }
-    Template.summary.foodAmount = function () {
-        return monthlytotalCat('food');
-    }
-    Template.summary.shoppingAmount = function () {
-        return monthlytotalCat('shopping');
-    }
-    Template.summary.supermarketAmount = function () {
-        return monthlytotalCat('supermarket');
-    }
-    Template.summary.activityAmount = function () {
-        return monthlytotalCat('activity');
-    }
-    Template.summary.carAmount = function () {
-        return monthlytotalCat('car');
-    }
+    // Template.summary.rentAmount = function () {
+    //     console.log("dsdsdsd");
+    //     return monthlytotalCat('rent');
+    // }
+    // Template.summary.billsAmount = function () {
+    //     return monthlytotalCat('bills');
+    // }
+    // Template.summary.foodAmount = function () {
+    //     return monthlytotalCat('food');
+    // }
+    // Template.summary.shoppingAmount = function () {
+    //     return monthlytotalCat('shopping');
+    // }
+    // Template.summary.supermarketAmount = function () {
+    //     return monthlytotalCat('supermarket');
+    // }
+    // Template.summary.activityAmount = function () {
+    //     return monthlytotalCat('activity');
+    // }
+    // Template.summary.carAmount = function () {
+    //     return monthlytotalCat('car');
+    // }
     Template.summary.totalRatio = function () {
         var d = new Date();
         var curr_month = d.getMonth() + 1; //Months are zero based
@@ -616,27 +666,27 @@ if (Meteor.isClient) {
         // if (ratio > 100) ratio = 100;
         // return ratio;
     }
-    Template.summary.rentRatio = function () {
-        return monthlyratioCat('rent');
-    }
-    Template.summary.billsRatio = function () {
-        return monthlyratioCat('bills');
-    }
-    Template.summary.foodRatio = function () {
-        return monthlyratioCat('food');
-    }
-    Template.summary.shoppingRatio = function () {
-        return monthlyratioCat('shopping');
-    }
-    Template.summary.supermarketRatio = function () {
-        return monthlyratioCat('supermarket');
-    }
-    Template.summary.activityRatio = function () {
-        return monthlyratioCat('activity');
-    }
-    Template.summary.carRatio = function () {
-        return monthlyratioCat('car');
-    }
+    // Template.summary.rentRatio = function () {
+    //     return monthlyratioCat('rent');
+    // }
+    // Template.summary.billsRatio = function () {
+    //     return monthlyratioCat('bills');
+    // }
+    // Template.summary.foodRatio = function () {
+    //     return monthlyratioCat('food');
+    // }
+    // Template.summary.shoppingRatio = function () {
+    //     return monthlyratioCat('shopping');
+    // }
+    // Template.summary.supermarketRatio = function () {
+    //     return monthlyratioCat('supermarket');
+    // }
+    // Template.summary.activityRatio = function () {
+    //     return monthlyratioCat('activity');
+    // }
+    // Template.summary.carRatio = function () {
+    //     return monthlyratioCat('car');
+    // }
 
     Template.summary.rentMRatio = function () {
         return monthlyMratioCat('rent');
