@@ -3,7 +3,7 @@
 	<meta name="viewport" content="initial-scale=1.0" />
 	<link rel="stylesheet" href="/css/font-outline.css">
 	<meta name="mobile-web-app-capable" content="yes">
-	<link rel="icon" sizes="196x196" href="img/icon-196.png"> 
+	<link rel="icon" sizes="196x196" href="img/icon-196.png">
 	<link rel="icon" sizes="128x128" href="mg/icon-128.png">
 	<link rel="apple-touch-icon" sizes="128x128" href="mg/icon-128.png">
 	<link rel="apple-touch-icon-precomposed" sizes="128x128" href="mg/icon-128.png">
@@ -43,7 +43,7 @@
 				<div class="depenses__block">
 					{{> summaryall}}
 				</div>
-			</section>  
+			</section>
 			<section id="section__data" class="depenses">
 				<div class="depenses__block">
 					{{> depenses}}
@@ -128,10 +128,13 @@
 </template>
 
 <template name="depenses">
+	<div class="submit__form__row">
+		<a id="consolidatemonthly" class="btn btn__wide btn__margin">Consolidate</a>
+	</div>
 	<table class="depenses__table">
 		<tr>
 			<th>Amount</th>
-			<th>Category</th> 
+			<th>Category</th>
 			<th class="not-small">Payeur</th>
 			<th>Date</th>
 			<th>X</th>
@@ -177,7 +180,7 @@
 				<span class="progress"><span class="progress-inner" style="width: {{ratio}}%;"></span></span>
 			</td>
 		</tr>
-	{{/each}} 
+	{{/each}}
 	</table>
 <!-- <table class="summary__table">
 	<tr class="table__rent">
@@ -293,12 +296,12 @@
 	</div> -->
 	<div id="chartContainer"></div>
 <!-- 	<div id="chartContainer"></div>
-	<ul class="verticalBarGraph">  				
+	<ul class="verticalBarGraph">
 	<li class="set1" style="height: 57px; left: 0px;">57</li>
 	<li class="set2" style="height: 27px; left: 0px;">27</li>
 	<li class="set3" style="height: 17px; left: 0px;">17</li>
-	
-	<li class="set1" style="height: 99px; left: 40px;">99</li> 
+
+	<li class="set1" style="height: 99px; left: 40px;">99</li>
 	<li class="set2" style="height: 74px; left: 40px;">74</li>
 	<li class="set3" style="height: 54px; left: 40px;">54</li>
 	</ul>   -->
