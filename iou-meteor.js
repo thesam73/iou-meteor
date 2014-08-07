@@ -10,6 +10,14 @@ function anymonthmonthlytotalCat(cat, startmonth, endmonth) {
         }
     }, {fields: {amount: 1}}));
 }
+function anymonthmonthlytotal(startmonth, endmonth) {
+    return totalCat(Depenses.findFaster({
+        timestamp: {
+            $gte: startmonth,
+            $lte: endmonth
+        }
+    }, {fields: {amount: 1}}));
+}
 
 function totalCat(Items) {
     var total = 0;
@@ -18,6 +26,106 @@ function totalCat(Items) {
     });
     return total;
 }
+
+function monthlyCat(cat) {
+  var curr_month = Session.get("current_month");
+  var current = Monthlydepenses.findOne(
+    { month: curr_month }
+  );
+  var total = 0;
+  if (current != undefined) { total = current[String(cat)]; }
+  return total;
+}
+
+function monthlyCatRatio(cat) {
+  var curr_month = Session.get("current_month");
+  var total = monthlyCat(cat);
+  var otherMonth = Monthlydepenses.find({
+    month: {$not: curr_month}
+  });
+  var totalOtherMonth = 0;
+  if (otherMonth.count() > 0 ) {
+    otherMonth.forEach(function (item){
+      totalOtherMonth += Math.round(item[String(cat)]);
+    });
+    totalOtherMonth = totalOtherMonth / otherMonth.count();
+  }
+  var ratio = Math.round(total / totalOtherMonth * 100);
+  if (ratio > 100) ratio = 100;
+  return ratio;
+}
+
+function monthlyMratioCat(cat) {
+    var current = monthlyCat(cat);
+    var total = monthlyCat("total");
+    var ratio = Math.round(current / total * 100);
+    if (ratio > 100) ratio = 100;
+    return ratio;
+}
+
+function consolidateMonth() {
+  //Meteor.call('removeAllMonthly');
+  var firstmonth_start = Depenses.findFaster({}, {sort: {timestamp: 1}}).fetch()[0].timestamp.slice(0, -2) + '01';
+  var firstmonth_end = Depenses.findFaster({}, {sort: {timestamp: 1}}).fetch()[0].timestamp.slice(0, -2) + '01';
+  var lasttmonth_start = Depenses.findFaster({}, {sort: {timestamp: -1}}).fetch()[0].timestamp.slice(0, -2) + '01';
+  var lasttmonth_end = Depenses.findFaster({}, {sort: {timestamp: -1}}).fetch()[0].timestamp.slice(0, -2) + '31';
+  var lasttmonth = Depenses.findFaster({}, {sort: {timestamp: -1}}).fetch()[0].timestamp.slice(0, -2);
+  var m_firstmonth_start = moment(firstmonth_start, "YYYY-MM-DD");
+  var m_firstmonth_end = moment(firstmonth_end, "YYYY-MM-DD");
+  var m_lasttmonth_start = moment(lasttmonth_start, "YYYY-MM-DD");
+  var m_lasttmonth_end = moment(lasttmonth_end, "YYYY-MM-DD");
+  var m_lastmonth = moment(lasttmonth, "YYYY-MM");
+  var howmanymonth = m_lasttmonth_start.diff(m_firstmonth_start, 'months') + 1;
+  //Loop all months
+  for (i = 0; i < howmanymonth; i++) {
+    var month_start = m_lasttmonth_start.format("YYYY-MM-DD");
+    var month_end = m_lasttmonth_end.format("YYYY-MM-DD");
+    var month_value = m_lastmonth.format("YYYY-MM");
+    if (i>0) {
+      month_start = m_lasttmonth_start.subtract('M', 1).format("YYYY-MM-DD");
+      month_end = m_lasttmonth_end.subtract('M', 1).format("YYYY-MM-DD");
+      month_value = m_lastmonth.subtract('M', 1).format("YYYY-MM");
+    }
+    //Grab existing data
+    var monthly_data = Monthlydepenses.findFaster({
+      month: month_value
+    }).fetch()[0];
+    //console.log(monthly_data);
+    //If not existing data, insert new one, else update
+    if (monthly_data == undefined) {
+      Monthlydepenses.insert({
+        month: month_value,
+        rent: anymonthmonthlytotalCat('rent', month_start, month_end),
+        bills: anymonthmonthlytotalCat('bills', month_start, month_end),
+        food: anymonthmonthlytotalCat('food', month_start, month_end),
+        supermarket: anymonthmonthlytotalCat('supermarket', month_start, month_end),
+        shopping: anymonthmonthlytotalCat('shopping', month_start, month_end),
+        activity: anymonthmonthlytotalCat('activity', month_start, month_end),
+        car: anymonthmonthlytotalCat('car', month_start, month_end),
+        total: anymonthmonthlytotal(month_start, month_end)
+      });
+    }
+    else {
+      Monthlydepenses.update(monthly_data._id, {
+        month: month_value,
+        rent: anymonthmonthlytotalCat('rent', month_start, month_end),
+        bills: anymonthmonthlytotalCat('bills', month_start, month_end),
+        food: anymonthmonthlytotalCat('food', month_start, month_end),
+        supermarket: anymonthmonthlytotalCat('supermarket', month_start, month_end),
+        shopping: anymonthmonthlytotalCat('shopping', month_start, month_end),
+        activity: anymonthmonthlytotalCat('activity', month_start, month_end),
+        car: anymonthmonthlytotalCat('car', month_start, month_end),
+        total: anymonthmonthlytotal(month_start, month_end)
+      });
+    }
+  }
+}
+
+
+
+
+
+
 
 
 
@@ -147,31 +255,7 @@ function monthlyratioCat(cat) {
     }
 }
 
-function monthlyMratioCat(cat) {
-    var d = new Date();
-    var curr_month = d.getMonth() + 1; //Months are zero based
-    var curr_year = d.getFullYear();
-    var startmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-01';
-    var endmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-31';
-    curr_month = curr_month - 1;
-    var startlastmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-01';
-    var current = totalCat(Depenses.findFaster({
-        category: cat,
-        timestamp: {
-            $gte: startmonth,
-            $lte: endmonth
-        }
-    }, {fields: {amount: 1}}));
-    var total = totalCat(Depenses.findFaster({
-        timestamp: {
-            $gte: startmonth,
-            $lte: endmonth
-        }
-    }, {fields: {amount: 1}}));
-    var ratio = Math.round(current / total * 100);
-    if (ratio > 100) ratio = 100;
-    return ratio;
-}
+
 
 function drawChartCurrent() {
     //if (Depenses.findFaster().count() > 0) {
@@ -455,6 +539,7 @@ if (Meteor.isClient) {
       Session.set("current_month", current_month);
     });
 
+
     Template.depenses.depenses = function () {
         return Depenses.findFaster({}, {
             sort: {
@@ -467,61 +552,18 @@ if (Meteor.isClient) {
             var c = confirm("Delete depense?");
             if (c == true) {
                 Depenses.remove(this._id);
+                consolidateMonth();
             };
         },
         'click #consolidatemonthly': function () {
           //var curr_month = Session.get("current_month");
-          var firstmonth_start = Depenses.findFaster({}, {sort: {timestamp: 1}}).fetch()[0].timestamp.slice(0, -2) + '01';
-          var firstmonth_end = Depenses.findFaster({}, {sort: {timestamp: 1}}).fetch()[0].timestamp.slice(0, -2) + '01';
-          var lasttmonth_start = Depenses.findFaster({}, {sort: {timestamp: -1}}).fetch()[0].timestamp.slice(0, -2) + '01';
-          var lasttmonth_end = Depenses.findFaster({}, {sort: {timestamp: -1}}).fetch()[0].timestamp.slice(0, -2) + '31';
-          var m_firstmonth_start = moment(firstmonth_start, "YYYY-MM-DD");
-          var m_firstmonth_end = moment(firstmonth_end, "YYYY-MM-DD");
-          var m_lasttmonth_end = moment(lasttmonth_end, "YYYY-MM-DD");
-          var m_lasttmonth_start = moment(lasttmonth_start, "YYYY-MM-DD");
-          var howmanymonth = m_lasttmonth_start.diff(m_firstmonth_start, 'months') + 1;
-          //Loop all months
-          for (i = 0; i < howmanymonth; i++) {
-            var month_start = m_lasttmonth_start.format("YYYY-MM-DD");
-            var month_end = m_lasttmonth_end.format("YYYY-MM-DD");
-            var month_value = m_lasttmonth_start.format("YYYY-MM");
-            if (i>0) {
-              month_start = m_lasttmonth_start.subtract('M', 1).format("YYYY-MM-DD");
-              month_end = m_lasttmonth_end.subtract('M', 1).format("YYYY-MM-DD");
-              month_value = m_lasttmonth_start.subtract('M', 1).format("YYYY-MM");
-            }
-            //Grab existing data
-            var monthly_data = Monthlydepenses.findFaster({
-              month: month_value
-            });
-            //console.log(monthly_data.fetch()[0]);
-            //If not existing data, insert new one, else update
-            if (monthly_data.fetch()[0] == undefined) {
-              Monthlydepenses.insert({
-                month: month_value,
-                rent: anymonthmonthlytotalCat('rent', month_start, month_end),
-                bills: anymonthmonthlytotalCat('bills', month_start, month_end),
-                food: anymonthmonthlytotalCat('food', month_start, month_end),
-                shopping: anymonthmonthlytotalCat('shopping', month_start, month_end),
-                activity: anymonthmonthlytotalCat('activity', month_start, month_end),
-                car: anymonthmonthlytotalCat('car', month_start, month_end)
-              });
-            }
-            else {
-              Monthlydepenses.update(monthly_data.fetch()[0]._id, {
-                month: month_value,
-                rent: anymonthmonthlytotalCat('rent', month_start, month_end),
-                bills: anymonthmonthlytotalCat('bills', month_start, month_end),
-                food: anymonthmonthlytotalCat('food', month_start, month_end),
-                shopping: anymonthmonthlytotalCat('shopping', month_start, month_end),
-                activity: anymonthmonthlytotalCat('activity', month_start, month_end),
-                car: anymonthmonthlytotalCat('car', month_start, month_end)
-              });
-            }
-          }
+          consolidateMonth();
+        },
+        'click #cleanmonthly': function () {
+          //var curr_month = Session.get("current_month");
+          Meteor.call('removeAllMonthly');
         }
     }
-
 
     Template.login__screen.events = {
         'click #login__button': function () {
@@ -536,265 +578,59 @@ if (Meteor.isClient) {
     Template.submitmessage.message = function () {
         return "All good keep spending!";
     }
-
-    Template.monthly__sal.monthlyTotal = function () {
-        var d = new Date();
-        var curr_month = d.getMonth() + 1; //Months are zero based
-        var curr_year = d.getFullYear();
-        var startmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-01';
-        var endmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-31';
-        curr_month = curr_month - 1;
-        var startlastmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-01';
-        var current = totalCat(Depenses.findFaster({
-            timestamp: {
-                $gte: startmonth,
-                $lte: endmonth
-            }
-        }, {fields: {amount: 1}}));
-        return current;
-    }
-    Template.monthly__sal.monthlyRatio = function () {
-        var d = new Date();
-        var curr_month = d.getMonth() + 1; //Months are zero based
-        var curr_year = d.getFullYear();
-        var startmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-01';
-        var endmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-31';
-        curr_month = curr_month - 1;
-        var startlastmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-01';
-        var previous = totalCat(Depenses.findFaster({
-            timestamp: {
-                $gte: startlastmonth,
-                $lte: startmonth
-            }
-        }, {fields: {amount: 1}}));
-        var current = totalCat(Depenses.findFaster({
-            timestamp: {
-                $gte: startmonth,
-                $lte: endmonth
-            }
-        }, {fields: {amount: 1}}));
-        var ratio = Math.round(current / 4300 * 100);
-        if (ratio > 100) ratio = 100;
-        return ratio;
-    }
-    Template.summary.rendered = function () {
-        //drawChart();
-    }
-
-    Template.summary.helpers({
-      expensesentries: function() {
-        var results = [];
-        results.push({
-            table__name: "table__rent",
-            amount: monthlytotalCat('rent'),
-            category: "rent",
-            ratio: monthlyratioCat('rent')
-        });
-        results.push({
-            table__name: "table__bills",
-            amount: monthlytotalCat('bills'),
-            category: "bills",
-            ratio: monthlyratioCat('bills')
-        });
-        results.push({
-            table__name: "table__food",
-            amount: monthlytotalCat('food'),
-            category: "food",
-            ratio: monthlyratioCat('food')
-        });
-        results.push({
-            table__name: "table__shopping",
-            amount: monthlytotalCat('shopping'),
-            category: "shopping",
-            ratio: monthlyratioCat('shopping')
-        });
-        results.push({
-            table__name: "table__supermarket",
-            amount: monthlytotalCat('supermarket'),
-            category: "supermarket",
-            ratio: monthlyratioCat('supermarket')
-        });
-        results.push({
-            table__name: "table__activity",
-            amount: monthlytotalCat('activity'),
-            category: "activity",
-            ratio: monthlyratioCat('activity')
-        });
-        results.push({
-            table__name: "table__car",
-            amount: monthlytotalCat('car'),
-            category: "car",
-            ratio: monthlyratioCat('car')
-        });
-        return results;
-    }
-    });
-
-    Template.summary.totalAmount = function () {
-        var d = new Date();
-        var curr_month = d.getMonth() + 1; //Months are zero based
-        var curr_year = d.getFullYear();
-        var startmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-01';
-        var endmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-31';
-        curr_month = curr_month - 1;
-        var startlastmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-01';
-        return totalCat(Depenses.findFaster({
-            timestamp: {
-                $gte: startmonth,
-                $lte: endmonth
-            }
-        }, {fields: {amount: 1}}));
-    }
-    // Template.summary.rentAmount = function () {
-    //     console.log("dsdsdsd");
-    //     return monthlytotalCat('rent');
-    // }
-    // Template.summary.billsAmount = function () {
-    //     return monthlytotalCat('bills');
-    // }
-    // Template.summary.foodAmount = function () {
-    //     return monthlytotalCat('food');
-    // }
-    // Template.summary.shoppingAmount = function () {
-    //     return monthlytotalCat('shopping');
-    // }
-    // Template.summary.supermarketAmount = function () {
-    //     return monthlytotalCat('supermarket');
-    // }
-    // Template.summary.activityAmount = function () {
-    //     return monthlytotalCat('activity');
-    // }
-    // Template.summary.carAmount = function () {
-    //     return monthlytotalCat('car');
-    // }
-    Template.summary.totalRatio = function () {
-        var d = new Date();
-        var curr_month = d.getMonth() + 1; //Months are zero based
-        var curr_year = d.getFullYear();
-        var startmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-01';
-        var endmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-31';
-        curr_month = curr_month - 1;
-        var startlastmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-01';
-        if (Depenses.findFaster().count() > 0) {
-        //if (Session.get("active")) {
-            var firstmonth_start = Depenses.findFaster({}, {
-                sort: {
-                    timestamp: 1
-                }
-            }).fetch()[0].timestamp.slice(0, -2) + '01';
-            var firstmonth_end = Depenses.findFaster({}, {
-                sort: {
-                    timestamp: 1
-                }
-            }).fetch()[0].timestamp.slice(0, -2) + '31';
-            var m_month_start = moment(firstmonth_start, "YYYY-MM-DD");
-            var m_firstmonth = moment(firstmonth_start, "YYYY-MM-DD");
-            var m_month_end = moment(firstmonth_end, "YYYY-MM-DD");
-            var lasttmonth_start = Depenses.findFaster({}, {
-                sort: {
-                    timestamp: -1
-                }
-            }).fetch()[0].timestamp.slice(0, -2) + '01';
-            var m_lasttmonth = moment(lasttmonth_start, "YYYY-MM-DD");
-            var howmanymonth = m_lasttmonth.diff(m_firstmonth, 'months');
-            var monthlyPrevious = new Array();
-            for (i = 0; i < howmanymonth; i++) {
-                var month_start = m_month_start.add('M', i).format("YYYY-MM-DD");
-                var month_end = m_month_end.add('M', i).format("YYYY-MM-DD");
-                monthlyPrevious[i] = totalCat(Depenses.findFaster({
-                    timestamp: {
-                        $gte: month_start,
-                        $lte: month_end
+    Template.action.events = {
+        'click #updatedebt': function () {
+            var c = confirm("Reset debt?");
+            if (c == true) {
+                var Items = Depenses.findFaster({
+                    payeur: {
+                        $ne: 'both'
                     }
-                }, {fields: {amount: 1}}));
-            }
-            var previous = average(monthlyPrevious);
-            var current = totalCat(Depenses.findFaster({
-                timestamp: {
-                    $gte: startmonth,
-                    $lte: endmonth
-                }
-            }, {fields: {amount: 1}}));
-            var ratio = Math.round(current / previous * 100);
-            if (ratio > 100) ratio = 100;
-            return ratio;
+                });
+                Items.forEach(function (item) {
+                    Depenses.update(item._id, {
+                        $set: {
+                            "payeur": "both"
+                        }
+                    });
+                })
+            };
         }
-        else {
-            return [];
-        }
-        // var previous = totalCat(Depenses.findFaster({
-        //   timestamp: {$gte: startlastmonth, $lte: startmonth}
-        // }));
-        // var current = totalCat(Depenses.findFaster({
-        //   timestamp: {$gte: startmonth, $lte: endmonth}
-        // }));
-        // var ratio = Math.round(current / previous * 100);
-        // if (ratio > 100) ratio = 100;
-        // return ratio;
-    }
-    // Template.summary.rentRatio = function () {
-    //     return monthlyratioCat('rent');
-    // }
-    // Template.summary.billsRatio = function () {
-    //     return monthlyratioCat('bills');
-    // }
-    // Template.summary.foodRatio = function () {
-    //     return monthlyratioCat('food');
-    // }
-    // Template.summary.shoppingRatio = function () {
-    //     return monthlyratioCat('shopping');
-    // }
-    // Template.summary.supermarketRatio = function () {
-    //     return monthlyratioCat('supermarket');
-    // }
-    // Template.summary.activityRatio = function () {
-    //     return monthlyratioCat('activity');
-    // }
-    // Template.summary.carRatio = function () {
-    //     return monthlyratioCat('car');
-    // }
-
-    Template.summary.rentMRatio = function () {
-        return monthlyMratioCat('rent');
-    }
-    Template.summary.billsMRatio = function () {
-        return monthlyMratioCat('bills');
-    }
-    Template.summary.foodMRatio = function () {
-        return monthlyMratioCat('food');
-    }
-    Template.summary.shoppingMRatio = function () {
-        return monthlyMratioCat('shopping');
-    }
-    Template.summary.supermarketMRatio = function () {
-        return monthlyMratioCat('supermarket');
-    }
-    Template.summary.activityMRatio = function () {
-        return monthlyMratioCat('activity');
-    }
-    Template.summary.carMRatio = function () {
-        return monthlyMratioCat('car');
-    }
-    Template.summaryall.rendered = function () {
-        //drawChartMonthly()
-        //var depenseloaded = Depenses.findFaster({}, {sort: {timestamp: -1}});
-        //console.log(depenseloaded);
-        //
-        //if (Session.get("active")) {
-        //    if (Depenses.findFaster().count() > 0) {
-                //drawChartCurrent();
-        //    }
-        //};
-    }
-    Template.summaryall.Mdepenses = function () {
-        //return Depenses.findFaster({}, {sort: {timestamp: -1}});
-        var depenses = Depenses.findFaster().fetch();
-        var monthlyDepenses = _.groupBy(depenses, function (depense) {
-            return depense.timestamp.split("-", 2);
-        });
-        //console.log(monthlyDepenses);
     }
 
+    Template.entryfield.events = {
+        'click #submit': function () {
+            //submit the form
+            var amount = document.getElementById('amount');
+            var category = document.getElementById('category');
+            var sam = document.getElementById('payeur_sam').checked;
+            var marion = document.getElementById('payeur_marion').checked;
+            var payeur = 'both';
+            if (sam == true && marion == false) payeur = 'sam';
+            if (sam == false && marion == true) payeur = 'marion';
+            var date_html = document.getElementById('timestamp');
+            var d = new Date();
+            var curr_date = d.getDate();
+            var curr_month = d.getMonth() + 1; //Months are zero based
+            var curr_year = d.getFullYear();
+            var date = '' + curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-' + (curr_date <= 9 ? '0' + curr_date : curr_date);
+            if (Date.parse(date_html.value)) {
+                date = date_html.value;
+            };
+            if (amount.value != '' && category.value != '') {
+                Depenses.insert({
+                    amount: amount.value,
+                    category: category.value,
+                    payeur: payeur,
+                    timestamp: date,
+                    time: Date()
+                });
+                consolidateMonth();
+                $("#confirm").show().delay(700).fadeOut();
+                amount.value = '';
+            };
+        }
+    }
     Template.action.amountDebt = function () {
         var samItems = Depenses.findFaster({
             payeur: 'sam'
@@ -839,6 +675,134 @@ if (Meteor.isClient) {
             return "Sam";
         }
     }
+
+    Template.monthly__sal.monthlyTotal = function () {
+      return monthlyCat("total");
+    }
+
+
+
+
+    Template.monthly__sal.monthlyRatio = function () {
+      var total = monthlyCat("total");
+
+      var ratio = Math.round(total / 4300 * 100);
+      if (ratio > 100) ratio = 100;
+      return ratio;
+    }
+    Template.summary.totalAmount = function () {
+        return monthlyCat("total");
+    }
+    Template.summary.totalRatio = function () {
+      if (Monthlydepenses.findFaster().count() > 0) {
+        //console.log(Monthlydepenses);
+        var total = monthlyCat("total");
+
+        var current_m = moment(Session.get("current_month"), "YYYY-MM");
+        var prev_month = current_m.subtract('M', 1).format("YYYY-MM");
+        var prev = Monthlydepenses.findOne(
+          { month: prev_month }
+        );
+        var prev_total = 0;
+        if (prev != undefined) { prev_total = prev.total; }
+        var ratio = Math.round(total / prev_total * 100);
+        if (ratio > 100) ratio = 100;
+        return ratio;
+      }
+      else {
+        return [];
+      }
+    }
+
+    Template.summary.helpers({
+      expensesentries: function() {
+        var results = [];
+        results.push({
+            icon: "icon-home",
+            table__name: "table__rent",
+            amount: monthlyCat('rent'),
+            category: "rent",
+            ratio: monthlyCatRatio('rent')
+        });
+        results.push({
+            icon: "icon-setting-1",
+            table__name: "table__bills",
+            amount: monthlyCat('bills'),
+            category: "bills",
+            ratio: monthlyCatRatio('bills')
+        });
+        results.push({
+            icon: "icon-fast-food",
+            table__name: "table__food",
+            amount: monthlyCat('food'),
+            category: "food",
+            ratio: monthlyCatRatio('food')
+        });
+        results.push({
+            icon: "icon-shopping-cart",
+            table__name: "table__shopping",
+            amount: monthlyCat('shopping'),
+            category: "shopping",
+            ratio: monthlyCatRatio('shopping')
+        });
+        results.push({
+            icon: "icon-tshirt",
+            table__name: "table__supermarket",
+            amount: monthlyCat('supermarket'),
+            category: "supermarket",
+            ratio: monthlyCatRatio('supermarket')
+        });
+        results.push({
+            icon: "icon-ticket",
+            table__name: "table__activity",
+            amount: monthlyCat('activity'),
+            category: "activity",
+            ratio: monthlyCatRatio('activity')
+        });
+        results.push({
+            icon: "icon-boat",
+            table__name: "table__car",
+            amount: monthlyCat('car'),
+            category: "car",
+            ratio: monthlyCatRatio('car')
+        });
+        return results;
+    }
+    });
+
+
+    Template.summary.rentMRatio = function () {
+        return monthlyMratioCat('rent');
+    }
+    Template.summary.billsMRatio = function () {
+        return monthlyMratioCat('bills');
+    }
+    Template.summary.foodMRatio = function () {
+        return monthlyMratioCat('food');
+    }
+    Template.summary.shoppingMRatio = function () {
+        return monthlyMratioCat('shopping');
+    }
+    Template.summary.supermarketMRatio = function () {
+        return monthlyMratioCat('supermarket');
+    }
+    Template.summary.activityMRatio = function () {
+        return monthlyMratioCat('activity');
+    }
+    Template.summary.carMRatio = function () {
+        return monthlyMratioCat('car');
+    }
+
+    Template.summaryall.Mdepenses = function () {
+        //return Depenses.findFaster({}, {sort: {timestamp: -1}});
+        var depenses = Depenses.findFaster().fetch();
+        var monthlyDepenses = _.groupBy(depenses, function (depense) {
+            return depense.timestamp.split("-", 2);
+        });
+        //console.log(monthlyDepenses);
+    }
+
+
 
     Template.navmenu.events = {
         'click #btn__add': function (e) {
@@ -889,70 +853,16 @@ if (Meteor.isClient) {
             drawChartCurrent();
         }
     }
-    Template.action.events = {
-        'click #updatedebt': function () {
-            var c = confirm("Reset debt?");
-            if (c == true) {
-                var Items = Depenses.findFaster({
-                    payeur: {
-                        $ne: 'both'
-                    }
-                });
-                Items.forEach(function (item) {
-                    Depenses.update(item._id, {
-                        $set: {
-                            "payeur": "both"
-                        }
-                    });
-                })
-            };
-        }
-    }
-
-
-    Template.entryfield.events = {
-
-        'click #submit': function () {
-            //submit the form
-            var amount = document.getElementById('amount');
-            var category = document.getElementById('category');
-            //var payeur = document.getElementById('payeur');
-            var sam = document.getElementById('payeur_sam').checked;
-            var marion = document.getElementById('payeur_marion').checked;
-            var payeur = 'both';
-            if (sam == true && marion == false) payeur = 'sam';
-            if (sam == false && marion == true) payeur = 'marion';
-            var date_html = document.getElementById('timestamp');
-            var d = new Date();
-            var curr_date = d.getDate();
-            var curr_month = d.getMonth() + 1; //Months are zero based
-            var curr_year = d.getFullYear();
-            var date = '' + curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-' + (curr_date <= 9 ? '0' + curr_date : curr_date);
-            if (Date.parse(date_html.value)) {
-                date = date_html.value;
-            };
-            //console.log(amount + category);
-            if (amount.value != '' && category.value != '') {
-                Depenses.insert({
-                    amount: amount.value,
-                    category: category.value,
-                    //sam: sam.checked,
-                    //marion: marion.checked,
-                    payeur: payeur,
-                    timestamp: date,
-                    time: Date()
-                });
-                $("#confirm").show().delay(700).fadeOut();
-                amount.value = '';
-                //category.value = '';
-            };
-        }
-    }
 
 }
 
 if (Meteor.isServer) {
     Meteor.startup(function () {
+      return Meteor.methods({
+        removeAllMonthly: function() {
+          return Monthlydepenses.remove({});
+        }
+      });
         //$('#tabs').style.visibility = 'hidden';
         // code to run on server at startup
     });
