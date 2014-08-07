@@ -158,11 +158,11 @@ if (Meteor.isClient) {
 
     Template.login__screen.events = {
         'click #login__button': function () {
-            //var pass = document.getElementById('pass');
-            //if (pass.value == '7374') {
+            var pass = document.getElementById('pass');
+            if (pass.value == '7374') {
                 $('#login__fullscreen').fadeOut();
                 $('#tabs').fadeIn();
-            //}
+            }
         }
     }
 
