@@ -121,6 +121,59 @@ function consolidateMonth() {
   }
 }
 
+function drawHelper(cat, month) {
+  var current = Monthlydepenses.findOne( { month: month });
+  var total = 0;
+  if (current != undefined) { total = current[String(cat)]; }
+  return total;
+}
+
+function drawChartCurrent() {
+  $('#chartContainer').html('');
+  var curr_month = Session.get("current_month");
+  var howmanymonth = Monthlydepenses.find({}).count();
+  var dataDimple = new Array();
+  if (howmanymonth > 6) howmanymonth = 6;
+  var m_currentmonth = moment(curr_month, "YYYY-MM");
+
+  for (i = 0; i < howmanymonth; i++) {
+    var month = m_currentmonth.format("YYYY-MM");
+    if (i>0) {
+      month = m_currentmonth.subtract('M', 1).format("YYYY-MM");
+    }
+    dataDimple.push(
+      { Month: month, Category: "Rent", Amount: drawHelper('rent', month) },
+      { Month: month, Category: "Bills", Amount: drawHelper('bills', month) },
+      { Month: month, Category: "Food", Amount:  drawHelper('food', month) },
+      { Month: month, Category: "Supermarket", Amount: drawHelper('supermarket', month) },
+      { Month: month, Category: "Shopping", Amount: drawHelper('shopping', month) },
+      { Month: month, Category: "Activity", Amount:  drawHelper('activity', month) },
+      { Month: month, Category: "Car", Amount:  drawHelper('car', month) });
+  }
+  var svg = dimple.newSvg("#chartContainer", 250, 500);
+  var myChart = new dimple.chart(svg, dataDimple);
+  myChart.setBounds("50px", "20px", "200px", "300px");
+  myChart.defaultColors = [
+    new dimple.color("#7f8c8d"),
+    new dimple.color("#2ecc71"),
+    new dimple.color("#3498db"),
+    new dimple.color("#00CCC1"),
+    new dimple.color("#9b59b6"),
+    new dimple.color("#e67e22"),
+    new dimple.color("#34495e")
+  ];
+  var x = myChart.addCategoryAxis("x", "Month");
+  x.addOrderRule("Month");
+  var y = myChart.addMeasureAxis("y", "Amount");
+  y.tickFormat = function (d) {
+    return Math.round(d / 1e6) + "$";
+  };
+  var mySerie = myChart.addSeries("Category", dimple.plot.bar);
+  myChart.addLegend(60, 400, 300, 200);
+  myChart.draw();
+  y.titleShape.remove();
+  x.titleShape.remove();
+}
 
 
 
@@ -257,131 +310,70 @@ function monthlyratioCat(cat) {
 
 
 
-function drawChartCurrent() {
-    //if (Depenses.findFaster().count() > 0) {
-        $('#chartContainer').html('');
-
-        var firstmonth_start = Depenses.findFaster({}, {sort: {timestamp: 1}}).fetch()[0].timestamp.slice(0, -2) + '01';
-        var lasttmonth_start = Depenses.findFaster({}, {sort: {timestamp: -1}}).fetch()[0].timestamp.slice(0, -2) + '01';
-        var lasttmonth_end = Depenses.findFaster({}, {sort: {timestamp: -1}}).fetch()[0].timestamp.slice(0, -2) + '31';
-        var m_firstmonth = moment(firstmonth_start, "YYYY-MM-DD");
-        var m_lasttmonth = moment(lasttmonth_start, "YYYY-MM-DD");
-        var m_lasttmonth_end = moment(lasttmonth_end, "YYYY-MM-DD");
-        var m_lasttmonth_start = moment(lasttmonth_start, "YYYY-MM-DD");
-        var howmanymonth = m_lasttmonth.diff(m_firstmonth, 'months') + 1;
-
-        var dataDimple = new Array();
-        if (howmanymonth > 6) howmanymonth = 6;
-        for (i = 0; i < howmanymonth; i++) {
-          var month_start = m_lasttmonth_start.format("YYYY-MM-DD");
-          var month_end = m_lasttmonth_end.format("YYYY-MM-DD");
-          if (i>0) {
-            month_start = m_lasttmonth_start.subtract('M', 1).format("YYYY-MM-DD");
-            month_end = m_lasttmonth_end.subtract('M', 1).format("YYYY-MM-DD");
-          }
-          //console.log(howmanymonth +" " + month_start + " " + month_end);
-          var month = moment(month_start, "YYYY-MM-DD").format("YY-MMM");
-          dataDimple.push(
-            { Month: month, Category: "Rent", Amount: anymonthmonthlytotalCat('rent', month_start, month_end) },
-            { Month: month, Category: "Bills", Amount: anymonthmonthlytotalCat('bills', month_start, month_end) },
-            { Month: month, Category: "Food", Amount:  anymonthmonthlytotalCat('food', month_start, month_end) },
-            { Month: month, Category: "Supermarket", Amount: anymonthmonthlytotalCat('supermarket', month_start, month_end) },
-            { Month: month, Category: "Shopping", Amount: anymonthmonthlytotalCat('shopping', month_start, month_end) },
-            { Month: month, Category: "Activity", Amount:  anymonthmonthlytotalCat('activity', month_start, month_end) },
-            { Month: month, Category: "Car", Amount:  anymonthmonthlytotalCat('car', month_start, month_end) });
-        }
-        //console.log(dataDimple);
-
-
-        // dataDimple = [{
-        //         Month: "Last Month",
-        //         Category: "Rent",
-        //         Amount: monthlytotalCat('rent')
-        //     }, {
-        //         Month: "Last Month",
-        //         Category: "Bills",
-        //         Amount: monthlytotalCat('bills')
-        //     }, {
-        //         Month: "Last Month",
-        //         Category: "Food",
-        //         Amount: monthlytotalCat('food')
-        //     }, {
-        //         Month: "Last Month",
-        //         Category: "Supermarket",
-        //         Amount: monthlytotalCat('superMarket')
-        //     }, {
-        //         Month: "Last Month",
-        //         Category: "Shopping",
-        //         Amount: monthlytotalCat('shopping')
-        //     }, {
-        //         Month: "Last Month",
-        //         Category: "Activity",
-        //         Amount: monthlytotalCat('activity')
-        //     }, {
-        //         Month: "Last Month",
-        //         Category: "Car",
-        //         Amount: monthlytotalCat('car')
-        //     },
-
-        //     {
-        //         Month: "This Month",
-        //         Category: "Rent",
-        //         Amount: previousmonthmonthlytotalCat('rent')
-        //     }, {
-        //         Month: "This Month",
-        //         Category: "Bills",
-        //         Amount: previousmonthmonthlytotalCat('bills')
-        //     }, {
-        //         Month: "This Month",
-        //         Category: "Food",
-        //         Amount: previousmonthmonthlytotalCat('food')
-        //     }, {
-        //         Month: "This Month",
-        //         Category: "Supermarket",
-        //         Amount: previousmonthmonthlytotalCat('superMarket')
-        //     }, {
-        //         Month: "This Month",
-        //         Category: "Shopping",
-        //         Amount: previousmonthmonthlytotalCat('shopping')
-        //     }, {
-        //         Month: "This Month",
-        //         Category: "Activity",
-        //         Amount: previousmonthmonthlytotalCat('activity')
-        //     }, {
-        //         Month: "This Month",
-        //         Category: "Car",
-        //         Amount: previousmonthmonthlytotalCat('car')
-        //     }
-        // ];
-
-        var svg = dimple.newSvg("#chartContainer", 250, 500);
-
-        var myChart = new dimple.chart(svg, dataDimple);
-        myChart.setBounds("50px", "20px", "200px", "300px");
-        myChart.defaultColors = [
-            new dimple.color("#7f8c8d"),
-            new dimple.color("#2ecc71"),
-            new dimple.color("#3498db"),
-            new dimple.color("#00CCC1"),
-            new dimple.color("#9b59b6"),
-            new dimple.color("#e67e22"),
-            new dimple.color("#34495e")
-        ];
-        var x = myChart.addCategoryAxis("x", "Month");
-        x.addOrderRule("Month");
-        var y = myChart.addMeasureAxis("y", "Amount");
-        y.tickFormat = function (d) {
-            return Math.round(d / 1e6) + "$";
-        };
-        var mySerie = myChart.addSeries("Category", dimple.plot.bar);
-        myChart.addLegend(60, 400, 300, 200);
-        //mySerie.barGap = 0.05;
-        myChart.draw();
-        y.titleShape.remove();
-        x.titleShape.remove();
-        //$('.dimple-legend').findFaster('text').attr("transform", "translate(0,10)");
-    //}
-}
+// function drawChartCurrent() {
+//     //if (Depenses.findFaster().count() > 0) {
+//         $('#chartContainer').html('');
+//
+//         var firstmonth_start = Depenses.findFaster({}, {sort: {timestamp: 1}}).fetch()[0].timestamp.slice(0, -2) + '01';
+//         var lasttmonth_start = Depenses.findFaster({}, {sort: {timestamp: -1}}).fetch()[0].timestamp.slice(0, -2) + '01';
+//         var lasttmonth_end = Depenses.findFaster({}, {sort: {timestamp: -1}}).fetch()[0].timestamp.slice(0, -2) + '31';
+//         var m_firstmonth = moment(firstmonth_start, "YYYY-MM-DD");
+//         var m_lasttmonth = moment(lasttmonth_start, "YYYY-MM-DD");
+//         var m_lasttmonth_end = moment(lasttmonth_end, "YYYY-MM-DD");
+//         var m_lasttmonth_start = moment(lasttmonth_start, "YYYY-MM-DD");
+//         var howmanymonth = m_lasttmonth.diff(m_firstmonth, 'months') + 1;
+//
+//         var dataDimple = new Array();
+//         if (howmanymonth > 6) howmanymonth = 6;
+//         for (i = 0; i < howmanymonth; i++) {
+//           var month_start = m_lasttmonth_start.format("YYYY-MM-DD");
+//           var month_end = m_lasttmonth_end.format("YYYY-MM-DD");
+//           if (i>0) {
+//             month_start = m_lasttmonth_start.subtract('M', 1).format("YYYY-MM-DD");
+//             month_end = m_lasttmonth_end.subtract('M', 1).format("YYYY-MM-DD");
+//           }
+//           //console.log(howmanymonth +" " + month_start + " " + month_end);
+//           var month = moment(month_start, "YYYY-MM-DD").format("YY-MMM");
+//           dataDimple.push(
+//             { Month: month, Category: "Rent", Amount: anymonthmonthlytotalCat('rent', month_start, month_end) },
+//             { Month: month, Category: "Bills", Amount: anymonthmonthlytotalCat('bills', month_start, month_end) },
+//             { Month: month, Category: "Food", Amount:  anymonthmonthlytotalCat('food', month_start, month_end) },
+//             { Month: month, Category: "Supermarket", Amount: anymonthmonthlytotalCat('supermarket', month_start, month_end) },
+//             { Month: month, Category: "Shopping", Amount: anymonthmonthlytotalCat('shopping', month_start, month_end) },
+//             { Month: month, Category: "Activity", Amount:  anymonthmonthlytotalCat('activity', month_start, month_end) },
+//             { Month: month, Category: "Car", Amount:  anymonthmonthlytotalCat('car', month_start, month_end) });
+//         }
+//         //console.log(dataDimple);
+//
+//
+//         var svg = dimple.newSvg("#chartContainer", 250, 500);
+//
+//         var myChart = new dimple.chart(svg, dataDimple);
+//         myChart.setBounds("50px", "20px", "200px", "300px");
+//         myChart.defaultColors = [
+//             new dimple.color("#7f8c8d"),
+//             new dimple.color("#2ecc71"),
+//             new dimple.color("#3498db"),
+//             new dimple.color("#00CCC1"),
+//             new dimple.color("#9b59b6"),
+//             new dimple.color("#e67e22"),
+//             new dimple.color("#34495e")
+//         ];
+//         var x = myChart.addCategoryAxis("x", "Month");
+//         x.addOrderRule("Month");
+//         var y = myChart.addMeasureAxis("y", "Amount");
+//         y.tickFormat = function (d) {
+//             return Math.round(d / 1e6) + "$";
+//         };
+//         var mySerie = myChart.addSeries("Category", dimple.plot.bar);
+//         myChart.addLegend(60, 400, 300, 200);
+//         //mySerie.barGap = 0.05;
+//         myChart.draw();
+//         y.titleShape.remove();
+//         x.titleShape.remove();
+//         //$('.dimple-legend').findFaster('text').attr("transform", "translate(0,10)");
+//     //}
+// }
 
 // function drawChart() {
 //     var data = [{
