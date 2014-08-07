@@ -63,64 +63,6 @@ function monthlyMratioCat(cat) {
     return ratio;
 }
 
-function consolidateMonth() {
-  //Meteor.call('removeAllMonthly');
-  var firstmonth_start = Depenses.findFaster({}, {sort: {timestamp: 1}}).fetch()[0].timestamp.slice(0, -2) + '01';
-  var firstmonth_end = Depenses.findFaster({}, {sort: {timestamp: 1}}).fetch()[0].timestamp.slice(0, -2) + '01';
-  var lasttmonth_start = Depenses.findFaster({}, {sort: {timestamp: -1}}).fetch()[0].timestamp.slice(0, -2) + '01';
-  var lasttmonth_end = Depenses.findFaster({}, {sort: {timestamp: -1}}).fetch()[0].timestamp.slice(0, -2) + '31';
-  var lasttmonth = Depenses.findFaster({}, {sort: {timestamp: -1}}).fetch()[0].timestamp.slice(0, -2);
-  var m_firstmonth_start = moment(firstmonth_start, "YYYY-MM-DD");
-  var m_firstmonth_end = moment(firstmonth_end, "YYYY-MM-DD");
-  var m_lasttmonth_start = moment(lasttmonth_start, "YYYY-MM-DD");
-  var m_lasttmonth_end = moment(lasttmonth_end, "YYYY-MM-DD");
-  var m_lastmonth = moment(lasttmonth, "YYYY-MM");
-  var howmanymonth = m_lasttmonth_start.diff(m_firstmonth_start, 'months') + 1;
-  //Loop all months
-  for (i = 0; i < howmanymonth; i++) {
-    var month_start = m_lasttmonth_start.format("YYYY-MM-DD");
-    var month_end = m_lasttmonth_end.format("YYYY-MM-DD");
-    var month_value = m_lastmonth.format("YYYY-MM");
-    if (i>0) {
-      month_start = m_lasttmonth_start.subtract('M', 1).format("YYYY-MM-DD");
-      month_end = m_lasttmonth_end.subtract('M', 1).format("YYYY-MM-DD");
-      month_value = m_lastmonth.subtract('M', 1).format("YYYY-MM");
-    }
-    //Grab existing data
-    var monthly_data = Monthlydepenses.findFaster({
-      month: month_value
-    }).fetch()[0];
-    //console.log(monthly_data);
-    //If not existing data, insert new one, else update
-    if (monthly_data == undefined) {
-      Monthlydepenses.insert({
-        month: month_value,
-        rent: anymonthmonthlytotalCat('rent', month_start, month_end),
-        bills: anymonthmonthlytotalCat('bills', month_start, month_end),
-        food: anymonthmonthlytotalCat('food', month_start, month_end),
-        supermarket: anymonthmonthlytotalCat('supermarket', month_start, month_end),
-        shopping: anymonthmonthlytotalCat('shopping', month_start, month_end),
-        activity: anymonthmonthlytotalCat('activity', month_start, month_end),
-        car: anymonthmonthlytotalCat('car', month_start, month_end),
-        total: anymonthmonthlytotal(month_start, month_end)
-      });
-    }
-    else {
-      Monthlydepenses.update(monthly_data._id, {
-        month: month_value,
-        rent: anymonthmonthlytotalCat('rent', month_start, month_end),
-        bills: anymonthmonthlytotalCat('bills', month_start, month_end),
-        food: anymonthmonthlytotalCat('food', month_start, month_end),
-        supermarket: anymonthmonthlytotalCat('supermarket', month_start, month_end),
-        shopping: anymonthmonthlytotalCat('shopping', month_start, month_end),
-        activity: anymonthmonthlytotalCat('activity', month_start, month_end),
-        car: anymonthmonthlytotalCat('car', month_start, month_end),
-        total: anymonthmonthlytotal(month_start, month_end)
-      });
-    }
-  }
-}
-
 function drawHelper(cat, month) {
   var current = Monthlydepenses.findOne( { month: month });
   var total = 0;
@@ -183,337 +125,155 @@ function drawChartCurrent() {
 
 
 
-function totalmonthCat(Items) {
-    var ds = new Date();
-    var curr_date = ds.getFullYear();
-    var curr_month = ds.getMonth() + 1; //Months are zero based
-    var curr_date = curr_year + ',' + (curr_month <= 9 ? '0' + curr_month : curr_month);
-
-    //Items.findFaster({timestamp: { $lt: new Date(), $gt: new Date(curr_date+','+curr_month) }});
-
-    var total = 0;
-    Items.forEach(function (item) {
-        total += Math.round(item.amount);
-    });
-    return total;
-}
-
-
-
-function average(arr) {
-    return _.reduce(arr, function (memo, num) {
-        return memo + num;
-    }, 0) / arr.length;
-}
-
-function monthlytotalCat(cat) {
-    var d = new Date();
-    var curr_month = d.getMonth() + 1; //Months are zero based
-    var curr_year = d.getFullYear();
-    var startmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-01';
-    var endmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-31';
-    curr_month = curr_month - 1;
-    var startlastmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-01';
-    return totalCat(Depenses.findFaster({
-        category: cat,
-        timestamp: {
-            $gte: startmonth,
-            $lte: endmonth
-        }
-    }, {fields: {amount: 1}}));
-}
-
-function previousmonthmonthlytotalCat(cat) {
-    var d = new Date();
-    var curr_month = d.getMonth() + 1; //Months are zero based
-    var curr_year = d.getFullYear();
-    var startmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-01';
-    var endmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-31';
-    curr_month = curr_month - 1;
-    var startlastmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-01';
-    return totalCat(Depenses.findFaster({
-        category: cat,
-        timestamp: {
-            $gte: startlastmonth,
-            $lte: startmonth
-        }
-    }, {fields: {amount: 1}}));
-}
-
-
-
-function monthlyratioCat(cat) {
-    var d = new Date();
-    var curr_month = d.getMonth() + 1; //Months are zero based
-    var curr_year = d.getFullYear();
-    var startmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-01';
-    var endmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-31';
-    curr_month = curr_month - 1;
-    var startlastmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-01';
-    //get older value en set first day of month
-    if (Depenses.findFaster().count() > 0) {
-    //if (Session.get("active")) {
-        var firstmonth_start = Depenses.findFaster({}, {
-            sort: {
-                timestamp: 1
-            }
-        }).fetch()[0].timestamp.slice(0, -2) + '01';
-        var firstmonth_end = Depenses.findFaster({}, {
-            sort: {
-                timestamp: 1
-            }
-        }).fetch()[0].timestamp.slice(0, -2) + '31';
-        var m_month_start = moment(firstmonth_start, "YYYY-MM-DD");
-        var m_firstmonth = moment(firstmonth_start, "YYYY-MM-DD");
-        var m_month_end = moment(firstmonth_end, "YYYY-MM-DD");
-        var lasttmonth_start = Depenses.findFaster({}, {
-            sort: {
-                timestamp: -1
-            }
-        }).fetch()[0].timestamp.slice(0, -2) + '01';
-        var m_lasttmonth = moment(lasttmonth_start, "YYYY-MM-DD");
-        var howmanymonth = m_lasttmonth.diff(m_firstmonth, 'months');
-        var monthlyPrevious = new Array();
-        for (i = 0; i < howmanymonth; i++) {
-            var month_start = m_month_start.add('M', i).format("YYYY-MM-DD");
-            var month_end = m_month_end.add('M', i).format("YYYY-MM-DD");
-            monthlyPrevious[i] = totalCat(Depenses.findFaster({
-                category: cat,
-                timestamp: {
-                    $gte: month_start,
-                    $lte: month_end
-                }
-            }, {fields: {amount: 1}}));
-        }
-        // console.log(monthlyPrevious);
-        // var previous = totalCat(Depenses.findFaster({
-        //   category: cat,
-        //   timestamp: {$gte: startlastmonth, $lte: startmonth}
-        // }));
-        var previous = average(monthlyPrevious);
-        //console.log(cat + ":cat,   " + previous);
-        var current = totalCat(Depenses.findFaster({
-            category: cat,
-            timestamp: {
-                $gte: startmonth,
-                $lte: endmonth
-            }
-        }, {fields: {amount: 1}}));
-        var ratio = Math.round(current / previous * 100);
-        if (ratio > 100) ratio = 100;
-        return ratio;
-    }
-     else {
-        return [];
-    }
-}
-
-
-
-// function drawChartCurrent() {
-//     //if (Depenses.findFaster().count() > 0) {
-//         $('#chartContainer').html('');
+// function totalmonthCat(Items) {
+//     var ds = new Date();
+//     var curr_date = ds.getFullYear();
+//     var curr_month = ds.getMonth() + 1; //Months are zero based
+//     var curr_date = curr_year + ',' + (curr_month <= 9 ? '0' + curr_month : curr_month);
 //
-//         var firstmonth_start = Depenses.findFaster({}, {sort: {timestamp: 1}}).fetch()[0].timestamp.slice(0, -2) + '01';
-//         var lasttmonth_start = Depenses.findFaster({}, {sort: {timestamp: -1}}).fetch()[0].timestamp.slice(0, -2) + '01';
-//         var lasttmonth_end = Depenses.findFaster({}, {sort: {timestamp: -1}}).fetch()[0].timestamp.slice(0, -2) + '31';
-//         var m_firstmonth = moment(firstmonth_start, "YYYY-MM-DD");
-//         var m_lasttmonth = moment(lasttmonth_start, "YYYY-MM-DD");
-//         var m_lasttmonth_end = moment(lasttmonth_end, "YYYY-MM-DD");
-//         var m_lasttmonth_start = moment(lasttmonth_start, "YYYY-MM-DD");
-//         var howmanymonth = m_lasttmonth.diff(m_firstmonth, 'months') + 1;
+//     //Items.findFaster({timestamp: { $lt: new Date(), $gt: new Date(curr_date+','+curr_month) }});
 //
-//         var dataDimple = new Array();
-//         if (howmanymonth > 6) howmanymonth = 6;
-//         for (i = 0; i < howmanymonth; i++) {
-//           var month_start = m_lasttmonth_start.format("YYYY-MM-DD");
-//           var month_end = m_lasttmonth_end.format("YYYY-MM-DD");
-//           if (i>0) {
-//             month_start = m_lasttmonth_start.subtract('M', 1).format("YYYY-MM-DD");
-//             month_end = m_lasttmonth_end.subtract('M', 1).format("YYYY-MM-DD");
-//           }
-//           //console.log(howmanymonth +" " + month_start + " " + month_end);
-//           var month = moment(month_start, "YYYY-MM-DD").format("YY-MMM");
-//           dataDimple.push(
-//             { Month: month, Category: "Rent", Amount: anymonthmonthlytotalCat('rent', month_start, month_end) },
-//             { Month: month, Category: "Bills", Amount: anymonthmonthlytotalCat('bills', month_start, month_end) },
-//             { Month: month, Category: "Food", Amount:  anymonthmonthlytotalCat('food', month_start, month_end) },
-//             { Month: month, Category: "Supermarket", Amount: anymonthmonthlytotalCat('supermarket', month_start, month_end) },
-//             { Month: month, Category: "Shopping", Amount: anymonthmonthlytotalCat('shopping', month_start, month_end) },
-//             { Month: month, Category: "Activity", Amount:  anymonthmonthlytotalCat('activity', month_start, month_end) },
-//             { Month: month, Category: "Car", Amount:  anymonthmonthlytotalCat('car', month_start, month_end) });
+//     var total = 0;
+//     Items.forEach(function (item) {
+//         total += Math.round(item.amount);
+//     });
+//     return total;
+// }
+//
+// function average(arr) {
+//     return _.reduce(arr, function (memo, num) {
+//         return memo + num;
+//     }, 0) / arr.length;
+// }
+//
+// function monthlytotalCat(cat) {
+//     var d = new Date();
+//     var curr_month = d.getMonth() + 1; //Months are zero based
+//     var curr_year = d.getFullYear();
+//     var startmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-01';
+//     var endmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-31';
+//     curr_month = curr_month - 1;
+//     var startlastmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-01';
+//     return totalCat(Depenses.findFaster({
+//         category: cat,
+//         timestamp: {
+//             $gte: startmonth,
+//             $lte: endmonth
 //         }
-//         //console.log(dataDimple);
-//
-//
-//         var svg = dimple.newSvg("#chartContainer", 250, 500);
-//
-//         var myChart = new dimple.chart(svg, dataDimple);
-//         myChart.setBounds("50px", "20px", "200px", "300px");
-//         myChart.defaultColors = [
-//             new dimple.color("#7f8c8d"),
-//             new dimple.color("#2ecc71"),
-//             new dimple.color("#3498db"),
-//             new dimple.color("#00CCC1"),
-//             new dimple.color("#9b59b6"),
-//             new dimple.color("#e67e22"),
-//             new dimple.color("#34495e")
-//         ];
-//         var x = myChart.addCategoryAxis("x", "Month");
-//         x.addOrderRule("Month");
-//         var y = myChart.addMeasureAxis("y", "Amount");
-//         y.tickFormat = function (d) {
-//             return Math.round(d / 1e6) + "$";
-//         };
-//         var mySerie = myChart.addSeries("Category", dimple.plot.bar);
-//         myChart.addLegend(60, 400, 300, 200);
-//         //mySerie.barGap = 0.05;
-//         myChart.draw();
-//         y.titleShape.remove();
-//         x.titleShape.remove();
-//         //$('.dimple-legend').findFaster('text').attr("transform", "translate(0,10)");
-//     //}
+//     }, {fields: {amount: 1}}));
 // }
-
-// function drawChart() {
-//     var data = [{
-//             value: totalCat(Depenses.findFaster({
-//                 category: 'rent'
-//             })),
-//             color: "#7f8c8d"
-//         }, {
-//             value: totalCat(Depenses.findFaster({
-//                 category: 'bills'
-//             })),
-//             color: "#2ecc71"
-//         }, {
-//             value: totalCat(Depenses.findFaster({
-//                 category: 'food'
-//             })),
-//             color: "#3498db"
-//         }, {
-//             value: totalCat(Depenses.findFaster({
-//                 category: 'supermarket'
-//             })),
-//             color: "#00CCC1"
-//         }, {
-//             value: totalCat(Depenses.findFaster({
-//                 category: 'shopping'
-//             })),
-//             color: "#9b59b6"
-//         }, {
-//             value: totalCat(Depenses.findFaster({
-//                 category: 'activity'
-//             })),
-//             color: "#e67e22"
-//         }, {
-//             value: totalCat(Depenses.findFaster({
-//                 category: 'car'
-//             })),
-//             color: "#34495e"
-//         }]
-//         //console.log(data);
-//         //Get context with jQuery - using jQuery's .get() method.
-//     var ctx = $("#myChart").get(0).getContext("2d");
-//     //This will get the first returned node in the jQuery collection.
-//     var myNewChart = new Chart(ctx);
-//     new Chart(ctx).Doughnut(data);
-
+//
+// function previousmonthmonthlytotalCat(cat) {
+//     var d = new Date();
+//     var curr_month = d.getMonth() + 1; //Months are zero based
+//     var curr_year = d.getFullYear();
+//     var startmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-01';
+//     var endmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-31';
+//     curr_month = curr_month - 1;
+//     var startlastmonth = curr_year + '-' + (curr_month <= 9 ? '0' + curr_month : curr_month) + '-01';
+//     return totalCat(Depenses.findFaster({
+//         category: cat,
+//         timestamp: {
+//             $gte: startlastmonth,
+//             $lte: startmonth
+//         }
+//     }, {fields: {amount: 1}}));
 // }
-
-function groupBy(input, xCol, yCol) {
-
-    var output = {};
-
-    // This function can be easily changed to do max, min, avg, sum.
-    var sum = function (row, idx) {
-        if (!(row[xCol] in output)) {
-            output[row[xCol]] = +row[yCol];
-        } else {
-            output[row[xCol]] += +row[yCol];
-        }
-    };
-    _.each(input, sum);
-
-    return output;
-}
-
-function drawChartMonthly() {
-    var depenses = Depenses.findFasterFaster().fetch();
-    //    var groupedDates = _.groupBy(_.pluck(customers, 'timestamp'), function (date) {return date.split("-",2);});
-    var monthlyDepenses = _.groupBy(depenses, function (depense) {
-        return depense.timestamp.split("-", 2);
-    });
-
-    var dataMonthly = new Array();
-    var DCA = new Array();
-    for (var month in monthlyDepenses) {
-        var monthquote = "'" + month + "'";
-        var monthlySum = groupBy(monthlyDepenses[month], "category", "amount");
-        monthlySum.Date = monthquote;
-        dataMonthly.push(monthlySum);
-
-        var groups = _(monthlyDepenses[month]).groupBy('category');
-        //groups : Object {bills: Array[1], rent: Array[1]}
-        for (var category in groups) {
-            var DCA_cat = new Object();
-            DCA_cat.Date = month;
-            DCA_cat.Category = category;
-
-            var DCASum = groupBy(groups[category], "category", "amount");
-            DCA_cat.Amount = monthlySum[category];
-            //console.log('here');
-            DCA.push(DCA_cat);
-        }
-    }
-
-
-    var d = new Date();
-    var curr_month = d.getMonth() + 1; //Months are zero based
-    var curr_year = d.getFullYear();
-    var curr_date = curr_year + ',' + (curr_month <= 9 ? '0' + curr_month : curr_month);
-    var DCA_without_current = _.filter(DCA, function (item) {
-        return item.Date !== curr_date
-    });
-    var DCA_only_current = _.filter(DCA, function (item) {
-        return item.Date == curr_date
-    });
-    var DCA_monthgroup = _(DCA_without_current).groupBy('Date');
-    //console.log(DCA_monthgroup);
-    var DCA_average = _.chain(DCA_monthgroup)
-        .flatten()
-        .groupBy(function (value) {
-            return value.Category;
-        })
-        .map(function (value, key) {
-            var sum = _.reduce(value, function (memo, val) {
-                return memo + val.Amount;
-            }, 0);
-            return {
-                Category: key,
-                Amount: sum / value.length
-            };
-        })
-        .value();
-    //console.log(DCA_only_current);
-
-    var svgC = dimple.newSvg("#chartCurrentMonth", 400, 400);
-    var myChartC = new dimple.chart(svgC, DCA_only_current);
-    myChartC.addMeasureAxis("x", "Amount");
-    myChartC.addCategoryAxis("y", "Category");
-    myChartC.addSeries(null, dimple.plot.bar);
-    //var mySeriesC = myChartC.addSeries("Category", dimple.plot.bar);
-    myChartC.draw();
-
-
-    var svg = dimple.newSvg("#chartMonthly", 400, 400);
-    var myChart = new dimple.chart(svg, DCA);
-    var x = myChart.addCategoryAxis("x", "Date");
-    x.addOrderRule("Date");
-    myChart.addMeasureAxis("y", "Amount");
-    var mySeries = myChart.addSeries("Category", dimple.plot.bar);
-    myChart.draw();
-}
+//
+// function groupBy(input, xCol, yCol) {
+//
+//     var output = {};
+//
+//     // This function can be easily changed to do max, min, avg, sum.
+//     var sum = function (row, idx) {
+//         if (!(row[xCol] in output)) {
+//             output[row[xCol]] = +row[yCol];
+//         } else {
+//             output[row[xCol]] += +row[yCol];
+//         }
+//     };
+//     _.each(input, sum);
+//
+//     return output;
+// }
+//
+// function drawChartMonthly() {
+//     var depenses = Depenses.findFasterFaster().fetch();
+//     //    var groupedDates = _.groupBy(_.pluck(customers, 'timestamp'), function (date) {return date.split("-",2);});
+//     var monthlyDepenses = _.groupBy(depenses, function (depense) {
+//         return depense.timestamp.split("-", 2);
+//     });
+//
+//     var dataMonthly = new Array();
+//     var DCA = new Array();
+//     for (var month in monthlyDepenses) {
+//         var monthquote = "'" + month + "'";
+//         var monthlySum = groupBy(monthlyDepenses[month], "category", "amount");
+//         monthlySum.Date = monthquote;
+//         dataMonthly.push(monthlySum);
+//
+//         var groups = _(monthlyDepenses[month]).groupBy('category');
+//         //groups : Object {bills: Array[1], rent: Array[1]}
+//         for (var category in groups) {
+//             var DCA_cat = new Object();
+//             DCA_cat.Date = month;
+//             DCA_cat.Category = category;
+//
+//             var DCASum = groupBy(groups[category], "category", "amount");
+//             DCA_cat.Amount = monthlySum[category];
+//             //console.log('here');
+//             DCA.push(DCA_cat);
+//         }
+//     }
+//
+//
+//     var d = new Date();
+//     var curr_month = d.getMonth() + 1; //Months are zero based
+//     var curr_year = d.getFullYear();
+//     var curr_date = curr_year + ',' + (curr_month <= 9 ? '0' + curr_month : curr_month);
+//     var DCA_without_current = _.filter(DCA, function (item) {
+//         return item.Date !== curr_date
+//     });
+//     var DCA_only_current = _.filter(DCA, function (item) {
+//         return item.Date == curr_date
+//     });
+//     var DCA_monthgroup = _(DCA_without_current).groupBy('Date');
+//     //console.log(DCA_monthgroup);
+//     var DCA_average = _.chain(DCA_monthgroup)
+//         .flatten()
+//         .groupBy(function (value) {
+//             return value.Category;
+//         })
+//         .map(function (value, key) {
+//             var sum = _.reduce(value, function (memo, val) {
+//                 return memo + val.Amount;
+//             }, 0);
+//             return {
+//                 Category: key,
+//                 Amount: sum / value.length
+//             };
+//         })
+//         .value();
+//     //console.log(DCA_only_current);
+//
+//     var svgC = dimple.newSvg("#chartCurrentMonth", 400, 400);
+//     var myChartC = new dimple.chart(svgC, DCA_only_current);
+//     myChartC.addMeasureAxis("x", "Amount");
+//     myChartC.addCategoryAxis("y", "Category");
+//     myChartC.addSeries(null, dimple.plot.bar);
+//     //var mySeriesC = myChartC.addSeries("Category", dimple.plot.bar);
+//     myChartC.draw();
+//
+//
+//     var svg = dimple.newSvg("#chartMonthly", 400, 400);
+//     var myChart = new dimple.chart(svg, DCA);
+//     var x = myChart.addCategoryAxis("x", "Date");
+//     x.addOrderRule("Date");
+//     myChart.addMeasureAxis("y", "Amount");
+//     var mySeries = myChart.addSeries("Category", dimple.plot.bar);
+//     myChart.draw();
+// }
+//
 
 
 
@@ -536,7 +296,8 @@ if (Meteor.isClient) {
         return Depenses.findFaster({}, {
             sort: {
                 timestamp: -1
-            }
+            },
+            limit: 45
         });
     }
     Template.depenses.events = {
@@ -548,11 +309,10 @@ if (Meteor.isClient) {
             };
         },
         'click #consolidatemonthly': function () {
-          //var curr_month = Session.get("current_month");
-          consolidateMonth();
+          //consolidateMonth();
+          Meteor.call('consolidateMonthly');
         },
         'click #cleanmonthly': function () {
-          //var curr_month = Session.get("current_month");
           Meteor.call('removeAllMonthly');
         }
     }
@@ -617,7 +377,7 @@ if (Meteor.isClient) {
                     timestamp: date,
                     time: Date()
                 });
-                consolidateMonth();
+                Meteor.call('consolidateMonthly');
                 $("#confirm").show().delay(700).fadeOut();
                 amount.value = '';
             };
@@ -853,6 +613,62 @@ if (Meteor.isServer) {
       return Meteor.methods({
         removeAllMonthly: function() {
           return Monthlydepenses.remove({});
+        },
+        consolidateMonthly: function() {
+          var firstmonth_start = Depenses.findFaster({}, {sort: {timestamp: 1}}).fetch()[0].timestamp.slice(0, -2) + '01';
+          var firstmonth_end = Depenses.findFaster({}, {sort: {timestamp: 1}}).fetch()[0].timestamp.slice(0, -2) + '01';
+          var lasttmonth_start = Depenses.findFaster({}, {sort: {timestamp: -1}}).fetch()[0].timestamp.slice(0, -2) + '01';
+          var lasttmonth_end = Depenses.findFaster({}, {sort: {timestamp: -1}}).fetch()[0].timestamp.slice(0, -2) + '31';
+          var lasttmonth = Depenses.findFaster({}, {sort: {timestamp: -1}}).fetch()[0].timestamp.slice(0, -2);
+          var m_firstmonth_start = moment(firstmonth_start, "YYYY-MM-DD");
+          var m_firstmonth_end = moment(firstmonth_end, "YYYY-MM-DD");
+          var m_lasttmonth_start = moment(lasttmonth_start, "YYYY-MM-DD");
+          var m_lasttmonth_end = moment(lasttmonth_end, "YYYY-MM-DD");
+          var m_lastmonth = moment(lasttmonth, "YYYY-MM");
+          var howmanymonth = m_lasttmonth_start.diff(m_firstmonth_start, 'months') + 1;
+          //Loop all months
+          for (i = 0; i < howmanymonth; i++) {
+            var month_start = m_lasttmonth_start.format("YYYY-MM-DD");
+            var month_end = m_lasttmonth_end.format("YYYY-MM-DD");
+            var month_value = m_lastmonth.format("YYYY-MM");
+            if (i>0) {
+              month_start = m_lasttmonth_start.subtract('M', 1).format("YYYY-MM-DD");
+              month_end = m_lasttmonth_end.subtract('M', 1).format("YYYY-MM-DD");
+              month_value = m_lastmonth.subtract('M', 1).format("YYYY-MM");
+            }
+            //Grab existing data
+            var monthly_data = Monthlydepenses.findFaster({
+              month: month_value
+            }).fetch()[0];
+            //console.log(monthly_data);
+            //If not existing data, insert new one, else update
+            if (monthly_data == undefined) {
+              Monthlydepenses.insert({
+                month: month_value,
+                rent: anymonthmonthlytotalCat('rent', month_start, month_end),
+                bills: anymonthmonthlytotalCat('bills', month_start, month_end),
+                food: anymonthmonthlytotalCat('food', month_start, month_end),
+                supermarket: anymonthmonthlytotalCat('supermarket', month_start, month_end),
+                shopping: anymonthmonthlytotalCat('shopping', month_start, month_end),
+                activity: anymonthmonthlytotalCat('activity', month_start, month_end),
+                car: anymonthmonthlytotalCat('car', month_start, month_end),
+                total: anymonthmonthlytotal(month_start, month_end)
+              });
+            }
+            else {
+              Monthlydepenses.update(monthly_data._id, {
+                month: month_value,
+                rent: anymonthmonthlytotalCat('rent', month_start, month_end),
+                bills: anymonthmonthlytotalCat('bills', month_start, month_end),
+                food: anymonthmonthlytotalCat('food', month_start, month_end),
+                supermarket: anymonthmonthlytotalCat('supermarket', month_start, month_end),
+                shopping: anymonthmonthlytotalCat('shopping', month_start, month_end),
+                activity: anymonthmonthlytotalCat('activity', month_start, month_end),
+                car: anymonthmonthlytotalCat('car', month_start, month_end),
+                total: anymonthmonthlytotal(month_start, month_end)
+              });
+            }
+          }
         }
       });
         //$('#tabs').style.visibility = 'hidden';

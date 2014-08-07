@@ -128,12 +128,6 @@
 </template>
 
 <template name="depenses">
-	<div class="submit__form__row">
-		<a id="consolidatemonthly" class="btn btn__wide btn__margin">Consolidate</a>
-	</div>
-	<div class="submit__form__row">
-		<a id="cleanmonthly" class="btn btn__wide btn__margin">Clean</a>
-	</div>
 	<table class="depenses__table">
 		<tr>
 			<th>Amount</th>
@@ -152,6 +146,10 @@
 		</tr>
 		{{/each}}
 	</table>
+	<div class="submit__form__row">
+		<a id="consolidatemonthly" class="btn btn__half btn__margin">Consolidate</a>
+		<a id="cleanmonthly" class="btn btn__half btn__margin">Clean</a>
+	</div>
 </template>
 
 

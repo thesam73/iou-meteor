@@ -244,6 +244,7 @@ input#pass {
 .depenses__block {
 	margin: 1.5em auto;
 	text-align:center;
+	margin-bottom: 5em;
 }
 .depenses__table {
 	margin: 1.5em auto;
@@ -392,6 +393,10 @@ a.btn {
 .btn__wide {
 	width: 80%;
 }
+.btn__half {
+	width: 40%;
+}
+
 .btn__margin {
 	margin-top: 0.5em;
 }
@@ -414,7 +419,7 @@ a#updatedebt:active {
 		border: none;
 	}
 	#amount, #category, #payeur, #timestamp {
-		text-align:center; 
+		text-align:center;
 		height: 2em;
 		margin: 0.1em 0;
 		padding: 0;
@@ -428,7 +433,7 @@ a#updatedebt:active {
 	.select__payeur {
 		width: 66%;
 		display: inline-flex;
-		text-align:center; 
+		text-align:center;
 		height: 2em;
 		margin: 0.1em 0;
 		padding: 0;
@@ -531,7 +536,7 @@ h2 {
 
 .content section {
 	display: none;
-	
+
 }
 .current {
 	display: block!important;
@@ -569,10 +574,10 @@ td:before {
   we will use just the label to create pushbutton effect
   */
   input[type=checkbox] {
-  	display:none; 
+  	display:none;
   	margin:10px;
   }
-  
+
 /*
   Change the look'n'feel of labels (which are adjacent to radiobuttons).
   Add some margin, padding to label
@@ -591,11 +596,11 @@ td:before {
  Change background color for label next to checked radio button
  to make it look like highlighted button
  */
- input[type=checkbox]:checked + label { 
+ input[type=checkbox]:checked + label {
  	background-image: none;
  	background-color: #DDD;
  }
- input[type=checkbox]:checked + label:before { 
+ input[type=checkbox]:checked + label:before {
  	content: "\e091";
  	font-family: "outlined-iconset" !important;
  	font-style: normal !important;
@@ -614,7 +619,7 @@ td:before {
  	padding: 0;
  	position: relative;
  }
- 
+
  .verticalBarGraph li {
  	border: 1px solid #555;
  	border-bottom: none;
@@ -659,13 +664,13 @@ td:before {
     width: 1000px;
     background: #47a3da;
 }
- 
+
 .tabs nav li.tab-current:after {
     right: auto;
     left: 100%;
     width: 4000px;
 }
- 
+
 .tabs nav a {
     color: #becbd2;
     display: block;
@@ -674,15 +679,15 @@ td:before {
     padding: 0 1.25em;
     white-space: nowrap;
 }
- 
+
 .tabs nav a:hover {
     color: #768e9d;
 }
- 
+
 .tabs nav li.tab-current a {
     color: #47a3da;
 }
- 
+
 
 .tabs nav a:before {
     display: inline-block;
@@ -696,23 +701,23 @@ td:before {
     -webkit-font-smoothing: antialiased;
     margin: -0.25em 0.4em 0 0;
 }
- 
+
 .icon-food:before {
     content: "\e600";
 }
- 
+
 .icon-lab:before {
     content: "\e601";
 }
- 
+
 .icon-cup:before {
     content: "\e602";
 }
- 
+
 .icon-truck:before {
     content: "\e603";
 }
- 
+
 .icon-shop:before {
     content: "\e604";
 }*/
