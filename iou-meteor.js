@@ -119,7 +119,7 @@ function drawChartCurrent() {
 
 
 if (Meteor.isClient) {
-    Meteor.subscribe("Depenses");
+    //Meteor.subscribe("Depenses");
     Meteor.subscribe("Monthlydepenses");
 
     Deps.autorun(function () {
@@ -150,7 +150,13 @@ if (Meteor.isClient) {
             var c = confirm("Delete depense?");
             if (c == true) {
                 Depenses.remove(this._id);
-                consolidateMonth();
+                Meteor.call('consolidateMonthly');
+                Meteor.call('callAmountDebt', function(err, response){
+                Session.set("resAmountDebt", response);
+                });
+                Meteor.call('callNameDebt', function(err, response){
+                    Session.set("resNameDebt", response);
+                });
             };
         },
         'click #consolidatemonthly': function () {
@@ -231,6 +237,12 @@ if (Meteor.isClient) {
                 Meteor.call('consolidateMonthly');
                 $("#confirm").show().delay(700).fadeOut();
                 amount.value = '';
+                Meteor.call('callAmountDebt', function(err, response){
+                Session.set("resAmountDebt", response);
+                });
+                Meteor.call('callNameDebt', function(err, response){
+                    Session.set("resNameDebt", response);
+                });
             };
         }
     }
