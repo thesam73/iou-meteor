@@ -120,6 +120,7 @@ function drawChartCurrent() {
 
 if (Meteor.isClient) {
     //Meteor.subscribe("Depenses");
+    Meteor.subscribe("depenses-recent");
     Meteor.subscribe("Monthlydepenses");
 
     Deps.autorun(function () {
@@ -137,8 +138,14 @@ if (Meteor.isClient) {
         Session.set("resNameDebt", response);
     });
 
+    //Template.depenses.created = function(){
+    //  Meteor.subscribe('depenses-recent');
+    //};
+    //Template.depenses.helpers({
+    //  'depenses': function() {Depenses.find();}
+    //});
     Template.depenses.depenses = function () {
-      return [];
+      return Depenses.find();
         // return Depenses.findFaster({}, {
         //     sort: {
         //         timestamp: -1
@@ -449,7 +456,15 @@ if (Meteor.isClient) {
 }
 
 if (Meteor.isServer) {
+  
     Meteor.startup(function () {
+      //Monthlydepenses
+      Meteor.publish('Monthlydepenses', function () {
+        return Monthlydepenses.findFaster({}, {sort: {timestamp: -1}});
+        });
+      Meteor.publish('depenses-recent', function () {
+        return Depenses.findFaster({}, {sort: {timestamp: -1},limit: 50});
+        });
       return Meteor.methods({
         callAmountDebt: function() {
           var samItems = Depenses.findFaster({
