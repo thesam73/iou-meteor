@@ -301,7 +301,9 @@ input#pass {
 .class__car, .table__car .summary__progress__bar .progress-inner {
 	background-color: #34495e;
 }
-
+.class__sante, .table__sante .summary__progress__bar .progress-inner {
+	background-color: #E83F0C;
+}
 .table__rent {
 	color: #7f8c8d;
 }
@@ -322,6 +324,9 @@ input#pass {
 }
 .table__car {
 	color: #34495e;
+}
+.table__sante {
+	color: #E83F0C;
 }
 button.remove {
 	background-color: rgba(231, 76, 60, 0);

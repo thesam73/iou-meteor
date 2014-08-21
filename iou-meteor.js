@@ -90,7 +90,8 @@ function drawChartCurrent() {
       { Month: month, Category: "Supermarket", Amount: drawHelper('supermarket', month) },
       { Month: month, Category: "Shopping", Amount: drawHelper('shopping', month) },
       { Month: month, Category: "Activity", Amount:  drawHelper('activity', month) },
-      { Month: month, Category: "Car", Amount:  drawHelper('car', month) });
+      { Month: month, Category: "Car", Amount:  drawHelper('car', month) },
+      { Month: month, Category: "Sante", Amount:  drawHelper('sante', month) });
   }
   var svg = dimple.newSvg("#chartContainer", 250, 500);
   var myChart = new dimple.chart(svg, dataDimple);
@@ -102,7 +103,8 @@ function drawChartCurrent() {
     new dimple.color("#00CCC1"),
     new dimple.color("#9b59b6"),
     new dimple.color("#e67e22"),
-    new dimple.color("#34495e")
+    new dimple.color("#34495e"),
+    new dimple.color("#E83F0C")
   ];
   var x = myChart.addCategoryAxis("x", "Month");
   x.addOrderRule("Month");
@@ -374,6 +376,13 @@ if (Meteor.isClient) {
             category: "car",
             ratio: monthlyCatRatio('car')
         });
+        results.push({
+            icon: "icon-profile-remove",
+            table__name: "table__sante",
+            amount: monthlyCat('sante'),
+            category: "sante",
+            ratio: monthlyCatRatio('sante')
+        });
         return results;
     }
     });
@@ -400,7 +409,9 @@ if (Meteor.isClient) {
     Template.summary.carMRatio = function () {
         return monthlyMratioCat('car');
     }
-
+    Template.summary.carMRatio = function () {
+        return monthlyMratioCat('sante');
+    }
 
 
     Template.navmenu.events = {
@@ -551,6 +562,7 @@ if (Meteor.isServer) {
                 shopping: anymonthmonthlytotalCat('shopping', month_start, month_end),
                 activity: anymonthmonthlytotalCat('activity', month_start, month_end),
                 car: anymonthmonthlytotalCat('car', month_start, month_end),
+                sante: anymonthmonthlytotalCat('sante', month_start, month_end),
                 total: anymonthmonthlytotal(month_start, month_end)
               });
             }
@@ -564,6 +576,7 @@ if (Meteor.isServer) {
                 shopping: anymonthmonthlytotalCat('shopping', month_start, month_end),
                 activity: anymonthmonthlytotalCat('activity', month_start, month_end),
                 car: anymonthmonthlytotalCat('car', month_start, month_end),
+                sante: anymonthmonthlytotalCat('sante', month_start, month_end),
                 total: anymonthmonthlytotal(month_start, month_end)
               });
             }
