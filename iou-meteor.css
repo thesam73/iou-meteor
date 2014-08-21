@@ -155,12 +155,12 @@ input#pass {
 	width: 100%;
 }
 .summary__block {
-	margin: 2em auto;
+	margin: 1em auto;
 	text-align:center;
 	width: 95%;
 }
 .summary__table {
-	margin: 1.5em auto;
+	margin: 1em auto;
 	text-align:center;
 	/*	width: 95%;*/
 }
