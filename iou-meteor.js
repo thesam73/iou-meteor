@@ -130,6 +130,12 @@ if (Meteor.isClient) {
       Session.set("current_month", current_month);
     });
 
+    Meteor.call('callAmountDebt', function(err, response){
+        Session.set("resAmountDebt", response);
+    });
+    Meteor.call('callNameDebt', function(err, response){
+        Session.set("resNameDebt", response);
+    });
 
     Template.depenses.depenses = function () {
         return Depenses.findFaster({}, {
@@ -150,6 +156,12 @@ if (Meteor.isClient) {
         'click #consolidatemonthly': function () {
           //consolidateMonth();
           Meteor.call('consolidateMonthly');
+          Meteor.call('callAmountDebt', function(err, response){
+          Session.set("resAmountDebt", response);
+          });
+          Meteor.call('callNameDebt', function(err, response){
+              Session.set("resNameDebt", response);
+          });
         },
         'click #cleanmonthly': function () {
           Meteor.call('removeAllMonthly');
@@ -223,48 +235,33 @@ if (Meteor.isClient) {
         }
     }
     Template.action.amountDebt = function () {
-        var samItems = Depenses.findFaster({
-            payeur: 'sam'
-        });
-        var samSum = 0;
-        samItems.forEach(function (item) {
-            samSum += Math.round(item.amount);
-        })
-        var marionItems = Depenses.findFaster({
-            payeur: 'marion'
-        });
-        var marionSum = 0;
-        marionItems.forEach(function (item) {
-            marionSum += Math.round(item.amount);
-        })
-        var sum = marionSum - samSum;
-        if (sum < 0) {
-            return -sum / 2;
-        } else {
-            return sum / 2;
-        }
+       //Meteor.call('callAmountDebt', function(err, response){
+        return Session.get("resAmountDebt");
+       //});
+        // var samItems = Depenses.findFaster({
+        //     payeur: 'sam'
+        // });
+        // var samSum = 0;
+        // samItems.forEach(function (item) {
+        //     samSum += Math.round(item.amount);
+        // })
+        // var marionItems = Depenses.findFaster({
+        //     payeur: 'marion'
+        // });
+        // var marionSum = 0;
+        // marionItems.forEach(function (item) {
+        //     marionSum += Math.round(item.amount);
+        // })
+        // var sum = marionSum - samSum;
+        // if (sum < 0) {
+        //     return -sum / 2;
+        // } else {
+        //     return sum / 2;
+        // }
     }
     Template.action.nameDebt = function () {
-        var samItems = Depenses.findFaster({
-            payeur: 'sam'
-        });
-        var samSum = 0;
-        samItems.forEach(function (item) {
-            samSum += Math.round(item.amount);
-        })
-        var marionItems = Depenses.findFaster({
-            payeur: 'marion'
-        });
-        var marionSum = 0;
-        marionItems.forEach(function (item) {
-            marionSum += Math.round(item.amount);
-        })
-        var sum = marionSum - samSum;
-        if (sum < 0) {
-            return "Marion";
-        } else {
-            return "Sam";
-        }
+      //return Meteor.call('callnameDebt');
+      return Session.get("resNameDebt");
     }
 
     Template.monthly__sal.monthlyTotal = function () {
@@ -384,15 +381,6 @@ if (Meteor.isClient) {
         return monthlyMratioCat('car');
     }
 
-    Template.summaryall.Mdepenses = function () {
-        //return Depenses.findFaster({}, {sort: {timestamp: -1}});
-        var depenses = Depenses.findFaster().fetch();
-        var monthlyDepenses = _.groupBy(depenses, function (depense) {
-            return depense.timestamp.split("-", 2);
-        });
-        //console.log(monthlyDepenses);
-    }
-
 
 
     Template.navmenu.events = {
@@ -450,6 +438,50 @@ if (Meteor.isClient) {
 if (Meteor.isServer) {
     Meteor.startup(function () {
       return Meteor.methods({
+        callAmountDebt: function() {
+          var samItems = Depenses.findFaster({
+            payeur: 'sam'
+          });
+          var samSum = 0;
+          samItems.forEach(function (item) {
+              samSum += Math.round(item.amount);
+          })
+          var marionItems = Depenses.findFaster({
+              payeur: 'marion'
+          });
+          var marionSum = 0;
+          marionItems.forEach(function (item) {
+              marionSum += Math.round(item.amount);
+          })
+          var sum = marionSum - samSum;
+          if (sum < 0) {
+              return -sum / 2;
+          } else {
+              return sum / 2;
+          }
+        },
+        callNameDebt: function() {
+          var samItems = Depenses.findFaster({
+            payeur: 'sam'
+          });
+          var samSum = 0;
+          samItems.forEach(function (item) {
+              samSum += Math.round(item.amount);
+          })
+          var marionItems = Depenses.findFaster({
+              payeur: 'marion'
+          });
+          var marionSum = 0;
+          marionItems.forEach(function (item) {
+              marionSum += Math.round(item.amount);
+          })
+          var sum = marionSum - samSum;
+          if (sum < 0) {
+              return "Marion";
+          } else {
+              return "Sam";
+          }
+        },
         removeAllMonthly: function() {
           return Monthlydepenses.remove({});
         },
