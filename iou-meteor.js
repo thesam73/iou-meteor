@@ -138,12 +138,13 @@ if (Meteor.isClient) {
     });
 
     Template.depenses.depenses = function () {
-        return Depenses.findFaster({}, {
-            sort: {
-                timestamp: -1
-            },
-            limit: 45
-        });
+      return [];
+        // return Depenses.findFaster({}, {
+        //     sort: {
+        //         timestamp: -1
+        //     },
+        //     limit: 45
+        // });
     }
     Template.depenses.events = {
         'click button.remove': function () {
